@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent in = new Intent(MainActivity.this, LogIn.class);
+            Intent in = new Intent(MainActivity.this, Home.class);
             startActivity(in);
             finish(); // Optionally finish the MainActivity if you don't want to return to it
         }, 5000); ;
