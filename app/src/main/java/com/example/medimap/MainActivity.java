@@ -1,5 +1,6 @@
 package com.example.medimap;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -21,4 +22,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
+    Intent in =new Intent(this,LogIn.class);
+
 }
