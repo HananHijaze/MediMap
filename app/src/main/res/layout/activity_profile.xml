@@ -86,12 +86,11 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bmiTextView"
-        app:layout_constraintVertical_bias="0.02"
+        app:layout_constraintVertical_bias="0.43"
         app:layout_constraintWidth_percent="0.8" />
-
     <com.google.android.material.button.MaterialButtonToggleGroup
-        android:layout_width="413dp"
-        android:layout_height="91dp"
+        android:layout_width="423dp"
+        android:layout_height="70dp"
         android:background="@color/blue"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
