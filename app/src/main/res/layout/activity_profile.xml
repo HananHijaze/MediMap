@@ -1,14 +1,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:padding="16dp">
 
-    <!-- Profile Image -->
-
-    <!-- Name TextView -->
 
     <ImageView
         android:id="@+id/profileImage"
@@ -24,14 +22,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- BMI TextView -->
 
     <ImageButton
-        android:id="@+id/goBackButton"
-        android:layout_width="42dp"
-        android:layout_height="46dp"
+        android:id="@+id/logout"
+        android:layout_width="81dp"
+        android:layout_height="81dp"
         android:background="#FFFFFF"
-        android:src="@drawable/Logout"
+        android:contentDescription="logout_button"
+        android:src="@drawable/ic_logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -91,4 +89,51 @@
         app:layout_constraintVertical_bias="0.02"
         app:layout_constraintWidth_percent="0.8" />
 
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:layout_width="413dp"
+        android:layout_height="91dp"
+        android:background="@color/blue"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/left"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:icon="@drawable/ic_profile"
+            android:text="Profile"
+            app:backgroundTint="@color/blue"
+            app:iconGravity="textStart"
+            app:iconSize="24dp"
+            app:iconTint="@color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/center"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:icon="@drawable/ic_home"
+            android:text="Home"
+            app:backgroundTint="@color/blue"
+            app:iconSize="24dp"
+            app:iconTint="@color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/chatbot"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:icon="@drawable/ic_cal"
+            android:text="CALCULATER"
+            app:backgroundTint="@color/blue"
+            app:iconGravity="textStart"
+            app:iconSize="24dp"
+            app:iconTint="@color/white" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>
