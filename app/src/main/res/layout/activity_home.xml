@@ -256,15 +256,15 @@
             android:layout_width="373dp"
             android:layout_height="169dp"
             android:background="@drawable/custom_linear_layout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="Meal Plan Button"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/roadmap"
-            tools:layout_editor_absoluteX="28dp"
-            tools:layout_editor_absoluteY="273dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.421"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.669"
+            app:srcCompat="@drawable/roadmap" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
