@@ -28,6 +28,11 @@ public class Home extends AppCompatActivity {
                 .asGif()
                 .load(R.drawable.waterbottle2) // Replace with your GIF resource
                 .into(imageView);
+        ImageView sports= findViewById(R.id.imageView5);
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.sports) // Replace with your GIF resource
+                .into(sports);
 
     }
 }
