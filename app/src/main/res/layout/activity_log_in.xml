@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
 
         android:paddingBottom="2dp"
-        android:text="Don't have an account? Sign-up now"
+        android:text="Don't have an account? Sign-up"
         android:textColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

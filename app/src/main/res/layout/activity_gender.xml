@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="902dp"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -18,9 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="What's your gender?"
-            android:textSize="32sp"
-
             android:textColor="@color/blue"
+
+            android:textSize="32sp"
             android:textStyle="bold" />
 
         <RadioGroup
@@ -34,17 +34,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:background="@drawable/custom_linear_layout"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/femaleImage"
                     android:layout_width="85dp"
                     android:layout_height="85dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/female"
-                    android:contentDescription="Female Icon" />
+                    android:contentDescription="Female Icon"
+                    android:src="@drawable/female" />
 
                 <RadioButton
                     android:id="@+id/femaleOption"
@@ -55,7 +55,7 @@
                     android:text="Female"
                     android:textColor="@color/blue"
                     android:textSize="24dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Add marginTop to create space between the two options -->
@@ -64,17 +64,17 @@
                 android:layout_height="200dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/custom_linear_layout"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/maleImage"
                     android:layout_width="85dp"
                     android:layout_height="85dp"
-                    android:src="@drawable/male"
                     android:layout_gravity="center_vertical"
-                    android:contentDescription="Male Icon" />
+                    android:contentDescription="Male Icon"
+                    android:src="@drawable/male" />
 
                 <RadioButton
                     android:id="@+id/maleOption"
@@ -85,25 +85,32 @@
                     android:text="Male"
                     android:textColor="@color/blue"
                     android:textSize="24dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </RadioGroup>
 
         <Button
             android:id="@+id/loginButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="56dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="24dp"
             android:backgroundTint="@color/blue"
-            android:padding="12dp"
             android:gravity="center"
+            android:padding="12dp"
 
             android:text="Next"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/lineheart" />
     </LinearLayout>
 
-</ScrollView>
+
+</LinearLayout>

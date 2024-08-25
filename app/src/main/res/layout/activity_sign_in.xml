@@ -108,22 +108,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center_horizontal">
 
         <Button
             android:id="@+id/signup"
             style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
+            android:layout_width="353dp"
+            android:layout_height="56dp"
             android:backgroundTint="@color/blue"
             android:text="Sign Up" />
 
         <Button
             android:id="@+id/Login"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="142dp"
-            android:layout_height="wrap_content"
+            android:layout_width="353dp"
+            android:layout_height="56dp"
             android:text="Log in" />
 
     </LinearLayout>
