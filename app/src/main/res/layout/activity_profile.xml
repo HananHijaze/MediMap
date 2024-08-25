@@ -43,8 +43,9 @@
         android:layout_height="44dp"
         android:layout_marginTop="8dp"
         android:text="@string/name"
+        android:gravity="center"
         android:textColor="@color/blue"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -53,8 +54,8 @@
 
     <TextView
         android:id="@+id/bmiTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="314dp"
+        android:layout_height="51dp"
         android:background="@drawable/custom_linear_layout"
         android:padding="8dp"
         android:text="@string/bmi_xx"
@@ -63,16 +64,16 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nameTextView"
-        app:layout_constraintVertical_bias="0.067"
+        app:layout_constraintVertical_bias="0.053"
         app:layout_constraintWidth_percent="0.8" />
 
     <TextView
         android:id="@+id/weeklySummaryTextView"
-        android:layout_width="262dp"
-        android:layout_height="158dp"
+        android:layout_width="314dp"
+        android:layout_height="255dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/custom_linear_layout"
         android:padding="8dp"
@@ -83,11 +84,12 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bmiTextView"
-        app:layout_constraintVertical_bias="0.43"
+        app:layout_constraintVertical_bias="0.142"
         app:layout_constraintWidth_percent="0.8" />
+
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:layout_width="423dp"
         android:layout_height="70dp"
