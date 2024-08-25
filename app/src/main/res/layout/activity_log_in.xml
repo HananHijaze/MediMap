@@ -14,25 +14,27 @@
         android:layout_height="wrap_content"
 
         android:paddingBottom="2dp"
-        android:text="SignUp"
+        android:text="Don't have an account? Sign-up now"
         android:textColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.011" />
+        app:layout_constraintVertical_bias="0.743" />
+
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="229dp"
-        android:layout_height="92dp"
-        android:src="@drawable/login"
+        android:layout_width="224dp"
+        android:layout_height="90dp"
+        android:src="@drawable/piclog"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.104" />
+        app:layout_constraintVertical_bias="0.123" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email"
@@ -46,7 +48,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.268"
+        app:layout_constraintVertical_bias="0.294"
         app:startIconDrawable="@drawable/email">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -59,8 +61,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="381dp"
+        android:layout_height="73dp"
         android:hint="Password"
         app:counterEnabled="true"
         app:counterMaxLength="8"
@@ -69,7 +71,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.446"
+        app:layout_constraintVertical_bias="0.428"
         app:startIconDrawable="@drawable/password">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -91,8 +93,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.579" />
-
+        app:layout_constraintVertical_bias="0.513" />
 
     <Button
         android:id="@+id/cancel"
@@ -103,13 +104,14 @@
         android:drawableStart="@drawable/google"
         android:drawablePadding="8dp"
         android:paddingStart="16dp"
-        android:text="LogIn with Google"
+        android:text="Login with Google"
         android:textColor="@color/white"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.745" />
+        app:layout_constraintVertical_bias="0.684" />
 
     <Button
         android:id="@+id/signup"
@@ -122,16 +124,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.663" />
+        app:layout_constraintVertical_bias="0.584" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="543dp"
-        android:layout_height="172dp"
+        android:layout_width="426dp"
+        android:layout_height="160dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/lineheart" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
