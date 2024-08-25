@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.bumptech.glide.Glide;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,8 +30,13 @@ public class MainActivity extends AppCompatActivity {
             Intent in = new Intent(MainActivity.this, Home.class);
             startActivity(in);
             finish(); // Optionally finish the MainActivity if you don't want to return to it
-        }, 5000); ;
+        }, 10000); ;
+        ImageView imageView = findViewById(R.id.imageView7);
 
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.loading)
+                .into(imageView);
     }
 
 }

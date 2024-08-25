@@ -186,8 +186,7 @@
                 <ImageView
                     android:id="@+id/imageView5"
                     android:layout_width="338dp"
-                    android:layout_height="160dp"
-                    android:background="@drawable/sports" />
+                    android:layout_height="160dp" />
             </LinearLayout>
 
             <LinearLayout
