@@ -98,7 +98,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/left"
             style="@style/Widget.MaterialComponents.Button.Icon"
@@ -131,7 +130,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:icon="@drawable/ic_cal"
-            android:text="CALCULATER"
+            android:text="CALCULATOR"
             app:backgroundTint="@color/blue"
             app:iconGravity="textStart"
             app:iconSize="24dp"
