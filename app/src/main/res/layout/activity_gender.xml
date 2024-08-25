@@ -1,10 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Gender">
+    android:background="@color/white">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/questionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="What's your gender?"
+            android:textSize="32sp"
+
+            android:textColor="@color/blue"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/genderOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/custom_linear_layout"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/femaleImage"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/female"
+                    android:contentDescription="Female Icon" />
+
+                <RadioButton
+                    android:id="@+id/femaleOption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:paddingStart="16dp"
+                    android:text="Female"
+                    android:textColor="@color/blue"
+                    android:textSize="24dp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <!-- Add marginTop to create space between the two options -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/custom_linear_layout"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/maleImage"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:src="@drawable/male"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="Male Icon" />
+
+                <RadioButton
+                    android:id="@+id/maleOption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:paddingStart="16dp"
+                    android:text="Male"
+                    android:textColor="@color/blue"
+                    android:textSize="24dp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/blue"
+            android:padding="12dp"
+            android:gravity="center"
+
+            android:text="Log In"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</ScrollView>

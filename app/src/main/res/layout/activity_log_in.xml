@@ -28,7 +28,7 @@
         android:id="@+id/imageView3"
         android:layout_width="224dp"
         android:layout_height="90dp"
-        android:src="@drawable/Login"
+        android:src="@drawable/piclog"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
