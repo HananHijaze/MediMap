@@ -8,13 +8,7 @@
     android:background="@color/white"
     tools:context="height">
 
-    <!-- Question Text -->
 
-    <!-- Height Input Layout -->
-
-    <!-- Next Button -->
-
-    <!-- Decorative ImageView -->
 
     <TextView
         android:id="@+id/questionText"
@@ -24,12 +18,11 @@
         android:gravity="center_horizontal"
         android:text="How tall are you?"
         android:textColor="@color/blue"
-        android:textSize="32sp"
+        android:textSize="28dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.151"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_margin="40dp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -44,14 +37,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.328"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_margin="16dp"
         app:layout_constraintTop_toBottomOf="@id/questionText">
 
         <!-- Height Input -->
         <EditText
             android:id="@+id/heightInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="171dp"
+            android:layout_height="109dp"
             android:layout_gravity="center_vertical"
             android:background="@null"
             android:gravity="center"
@@ -89,17 +81,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.446"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_margin="24dp"
         app:layout_constraintTop_toBottomOf="@id/heightInputLayout" />
 
     <ImageView
         android:id="@+id/decorativeImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/nextButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nextButton"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/lineheart" />
 </androidx.constraintlayout.widget.ConstraintLayout>
