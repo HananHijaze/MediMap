@@ -1,6 +1,8 @@
 package com.example.medimap;
+import com.bumptech.glide.Glide;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +22,17 @@ public class Home extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        ImageView imageView = findViewById(R.id.waterImage);
+
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.waterbottle2) // Replace with your GIF resource
+                .into(imageView);
+        ImageView sports= findViewById(R.id.imageView5);
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.sports) // Replace with your GIF resource
+                .into(sports);
+
     }
 }
