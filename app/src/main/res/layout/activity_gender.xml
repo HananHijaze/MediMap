@@ -100,9 +100,9 @@
             android:padding="12dp"
             android:gravity="center"
 
-            android:text="Log In"
+            android:text="Next"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
