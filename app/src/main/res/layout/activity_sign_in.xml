@@ -34,7 +34,7 @@
         <com.google.android.material.textfield.TextInputEditText
 
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:inputType="text"
             android:maxLength="31" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -54,7 +54,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:inputType="phone"
             android:maxLength="10" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -69,7 +69,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,7 +86,7 @@
         <com.google.android.material.textfield.TextInputEditText
             maxLength="8"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -100,7 +100,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:inputType="text" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -131,8 +131,8 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="401dp"
-        android:layout_height="172dp"
+        android:layout_width="500dp"
+        android:layout_height="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

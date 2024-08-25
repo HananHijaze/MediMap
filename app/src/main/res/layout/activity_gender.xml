@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="902dp"
+        android:layout_height="700dp"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -18,9 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="What's your gender?"
-            android:textColor="@color/blue"
+            android:textAlignment="center"
 
-            android:textSize="32sp"
+            android:textColor="@color/blue"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <RadioGroup
@@ -32,7 +33,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
                 android:background="@drawable/custom_linear_layout"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -47,21 +48,22 @@
                     android:src="@drawable/female" />
 
                 <RadioButton
-                    android:id="@+id/femaleOption"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/radioButton"
+                    android:layout_width="173dp"
                     android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:paddingStart="16dp"
+                    android:layout_weight="1"
                     android:text="Female"
-                    android:textColor="@color/blue"
-                    android:textSize="24dp"
+                    android:textAlignment="textStart"
+                    android:textColor="#1775BA"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
+
             </LinearLayout>
 
             <!-- Add marginTop to create space between the two options -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/custom_linear_layout"
                 android:gravity="center_vertical"
@@ -77,15 +79,16 @@
                     android:src="@drawable/male" />
 
                 <RadioButton
-                    android:id="@+id/maleOption"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/radioButton"
+                    android:layout_width="173dp"
                     android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:paddingStart="16dp"
+                    android:layout_weight="1"
                     android:text="Male"
-                    android:textColor="@color/blue"
-                    android:textSize="24dp"
+                    android:textAlignment="textStart"
+                    android:textColor="#1775BA"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
+
             </LinearLayout>
 
         </RadioGroup>
@@ -93,21 +96,20 @@
         <Button
             android:id="@+id/loginButton"
             android:layout_width="100dp"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="24dp"
             android:backgroundTint="@color/blue"
             android:gravity="center"
             android:padding="12dp"
-
             android:text="Next"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="400dp"
+            android:layout_height="240dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/lineheart" />
     </LinearLayout>
