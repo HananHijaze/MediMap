@@ -52,7 +52,7 @@
         <!-- cm Label -->
         <EditText
             android:id="@+id/heightInput"
-            android:layout_width="wrap_content"
+            android:layout_width="66dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@null"
