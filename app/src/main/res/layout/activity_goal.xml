@@ -19,10 +19,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintHorizontal_bias="0.052"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintVertical_bias="0.058" />
 
     <LinearLayout
         android:id="@+id/option_gain_muscle"
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Gain muscle"
+            android:text="Gain muscle       "
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
@@ -68,21 +68,22 @@
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.358">
+        app:layout_constraintVertical_bias="0.386">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Weight Loss"
+            android:text="Weight Loss        "
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="128dp"
             android:layout_height="176dp"
             android:layout_weight="1"
             android:src="@drawable/weightloss" />
@@ -100,10 +101,9 @@
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.575">
+        app:layout_constraintVertical_bias="0.632">
 
         <TextView
             android:layout_width="wrap_content"
@@ -116,7 +116,7 @@
 
         <ImageView
             android:layout_width="257dp"
-            android:layout_height="171dp"
+            android:layout_height="120dp"
             android:layout_weight="1"
             android:src="@drawable/healthylifestyle" />
 
@@ -137,7 +137,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.727" />
+        app:layout_constraintVertical_bias="0.765" />
 
     <ImageView
         android:id="@+id/imageView9"

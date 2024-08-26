@@ -14,15 +14,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="What should we call you?"
-        android:textSize="32sp"
         android:textColor="@color/blue"
+        android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.123" />
+        app:layout_constraintVertical_bias="0.196" />
 
     <EditText
         android:id="@+id/nameEditText"
@@ -65,10 +65,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.78"
+        app:layout_constraintVertical_bias="0.903"
         app:srcCompat="@drawable/lineheart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

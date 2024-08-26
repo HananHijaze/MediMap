@@ -17,12 +17,17 @@
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@drawable/rounded_corners" />
-
+        <activity
+            android:name=".Allergies"
+            android:exported="false" />
         <activity
             android:name=".forgotPassword"
             android:exported="false" />
         <activity
-            android:name=".MainActivity2"
+            android:name=".DietType"
+            android:exported="false" />
+        <activity
+            android:name=".FrequencyMeal"
             android:exported="false" />
         <activity
             android:name=".Profile"

@@ -3,4 +3,7 @@
     <string name="bmi_xx">BMI: XX</string>
     <string name="weekly_summary">Weekly Summary:</string>
     <string name="name">Name</string>
+    <string name="do_you_have_any_allergies">Do you have any allergies?</string>
+    <string name="gluten">Gluten</string>
+    <string name="nuts">Nuts</string>
 </resources>

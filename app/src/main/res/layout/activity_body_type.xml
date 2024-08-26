@@ -7,21 +7,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BodyType">
+
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="260dp"
+        android:layout_height="29dp"
         android:layout_gravity="center_horizontal"
         android:text="What's your body type?"
         android:textColor="@color/blue"
-        android:textSize="28dp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintHorizontal_bias="0.192"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintVertical_bias="0.065" />
 
     <LinearLayout
         android:id="@+id/skinny"
@@ -49,8 +50,8 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="235dp"
-            android:layout_height="116dp"
+            android:layout_width="152dp"
+            android:layout_height="136dp"
             android:layout_weight="1"
             android:src="@drawable/skinny" />
 
@@ -67,22 +68,23 @@
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.357">
+        app:layout_constraintVertical_bias="0.38">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Ideal"
+            android:text="Normal"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
 
         <ImageView
             android:layout_width="250dp"
-            android:layout_height="131dp"
+            android:layout_height="136dp"
             android:layout_weight="1"
             android:src="@drawable/ideal" />
 
@@ -99,22 +101,23 @@
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.57">
+        app:layout_constraintVertical_bias="0.618">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="heavier"
+            android:text="heavy"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="90dp"
-            android:layout_height="134dp"
+            android:layout_width="241dp"
+            android:layout_height="139dp"
             android:layout_weight="1"
             android:src="@drawable/flabby_heavier" />
 
@@ -135,7 +138,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.742" />
+        app:layout_constraintVertical_bias="0.759" />
 
     <ImageView
         android:id="@+id/imageView9"
