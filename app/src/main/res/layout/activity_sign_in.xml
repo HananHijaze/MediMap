@@ -124,6 +124,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="353dp"
             android:layout_height="56dp"
+            app:strokeColor="@color/blue"
             android:text="Log in" />
 
     </LinearLayout>
