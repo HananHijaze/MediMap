@@ -8,17 +8,7 @@
     android:background="@color/white"
     tools:context=".forgotPassword">
 
-    <!-- Question Text -->
 
-    <!-- Female Option -->
-
-    <!-- Male Option -->
-
-    <!-- Next Button -->
-
-    <!-- Add this View to push the ImageView to the bottom -->
-
-    <!-- Decorative Image -->
 
     <TextView
         android:id="@+id/questionText"

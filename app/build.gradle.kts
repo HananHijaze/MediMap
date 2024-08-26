@@ -37,7 +37,6 @@ dependencies {
     implementation(libs.activity)
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     implementation(libs.play.services.maps)
-    implementation(libs.play.services.ads)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation(libs.constraintlayout)
