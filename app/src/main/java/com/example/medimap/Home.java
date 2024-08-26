@@ -1,7 +1,9 @@
 package com.example.medimap;
 import com.bumptech.glide.Glide;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -11,7 +13,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class Home extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +23,8 @@ public class Home extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        ImageButton map =findViewById(R.id.imageButton2);
+
         ImageView imageView = findViewById(R.id.waterImage);
 
         Glide.with(this)
@@ -33,6 +36,10 @@ public class Home extends AppCompatActivity {
                 .asGif()
                 .load(R.drawable.sports) // Replace with your GIF resource
                 .into(sports);
-
+        map.isClickable();
+        map.setOnClickListener(view -> {
+            Intent in = new Intent(this,Map.class);
+            startActivity(in);
+        });
     }
 }
