@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Allergies"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/do_you_have_any_allergies"
+        android:textAlignment="center"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <LinearLayout
+        android:id="@+id/allergyButtonsLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/questionText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <!-- Dairy Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/custom_linear_layout"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/button_dairy"
+                android:layout_width="327dp"
+                android:layout_height="70dp"
+                android:background="@android:color/transparent"
+                android:text="Dairy"
+                android:textColor="#1775BA"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Gluten Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/custom_linear_layout"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/button_gluten"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:background="@android:color/transparent"
+                android:text="@string/gluten"
+                android:textColor="#1775BA"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Nuts Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/custom_linear_layout"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/button_nuts"
+                android:layout_width="344dp"
+                android:layout_height="59dp"
+                android:background="@android:color/transparent"
+                android:text="@string/nuts"
+                android:textColor="#1775BA"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Seafood Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/custom_linear_layout"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/button_seafood"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@android:color/transparent"
+                android:text="Seafood"
+                android:textColor="#1775BA"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Soy Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/custom_linear_layout"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/button_soy"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@android:color/transparent"
+                android:text="Soy"
+                android:textColor="#1775BA"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Eggs Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/custom_linear_layout"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/button_eggs"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@android:color/transparent"
+                android:text="Eggs"
+                android:textColor="#1775BA"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:text="Next"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/allergyButtonsLayout"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
