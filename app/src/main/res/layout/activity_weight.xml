@@ -67,7 +67,8 @@
             android:gravity="center_vertical"
             android:text="kg"
             android:textColor="@color/blue"
-            android:textSize="24dp" />
+            android:textSize="24dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

@@ -55,12 +55,15 @@
             android:textSize="48sp"
             android:textStyle="bold" />
 
-        <ToggleButton
-            android:id="@+id/toggleButton"
+        <TextView
+            android:id="@+id/kgLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ToggleButton"
-            android:textColor="#198DCC" />
+            android:gravity="center_vertical"
+            android:text="cm"
+            android:textColor="@color/blue"
+            android:textSize="24dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
