@@ -17,6 +17,9 @@
         android:theme="@style/Theme.MediMap"
         tools:targetApi="31">
         <activity
+            android:name=".meal_plan"
+            android:exported="false" />
+        <activity
             android:name=".steps_tracking"
             android:exported="false" />
         <activity
@@ -72,7 +75,6 @@
         <activity
             android:name=".Goal"
             android:exported="false" />
-
         <activity
             android:name=".Gender"
             android:exported="false" />
