@@ -1,6 +1,7 @@
 package com.example.medimap;
 
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +21,8 @@ public class SignIn extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        Button loginButton = findViewById(R.id.Login);
+        loginButton.setBackgroundColor(getResources().getColor(R.color.white));
+
     }
 }

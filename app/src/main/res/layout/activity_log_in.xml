@@ -13,7 +13,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:textSize="16dp"
         android:paddingBottom="2dp"
         android:text="Don't have an account? Sign-up"
         android:textColor="@color/blue"
@@ -63,8 +63,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="381dp"
-        android:layout_height="73dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="Password"
         app:counterEnabled="true"
         app:counterMaxLength="8"
@@ -87,7 +87,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:textSize="16dp"
         android:paddingBottom="2dp"
         android:text="Forgot your password?"
         android:textColor="@color/blue"
@@ -116,7 +116,7 @@
         app:strokeColor="@color/blue" />
 
     <Button
-        android:id="@+id/signup"
+        android:id="@+id/login"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="353dp"
         android:layout_height="56dp"
