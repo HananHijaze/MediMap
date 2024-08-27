@@ -2,6 +2,7 @@ package com.example.medimap;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.button.MaterialButton;
 
 public class Profile extends AppCompatActivity {
-
+ImageButton settings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,11 @@ public class Profile extends AppCompatActivity {
         center.isCheckable();
         center.setOnClickListener(view -> {
             Intent in =new Intent(this,Home.class);
+            startActivity(in);
+        });
+        settings=findViewById(R.id.settings);
+        settings.setOnClickListener(view -> {
+            Intent in =new Intent(this,LogIn.class);
             startActivity(in);
         });
     }
