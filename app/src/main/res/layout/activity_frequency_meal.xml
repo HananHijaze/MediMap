@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FrequencyMeal"
-    android:background="@color/white">
+    android:background="@drawable/b2">
 
     <TextView
         android:id="@+id/questionTextMeals"
@@ -16,7 +16,7 @@
         android:text="How many meals would you like to eat in a day?"
         android:textAlignment="center"
         android:textColor="@color/blue"
-        android:textSize="20sp"
+        android:textSize="28dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +103,7 @@
         android:text="How many snacks would you like to eat in a day?"
         android:textAlignment="center"
         android:textColor="@color/blue"
-        android:textSize="20sp"
+        android:textSize="28dp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/mealButtonsLayout"
         app:layout_constraintStart_toStartOf="parent"
@@ -199,6 +199,6 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/snackButtonsLayout"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.094" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

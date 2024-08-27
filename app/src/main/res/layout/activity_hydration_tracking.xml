@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".hydration_tracking"
-    android:background="@color/white">
+    android:background="@drawable/b2">
 
     <ImageView
         android:id="@+id/imageView8"
@@ -21,8 +21,9 @@
 
     <ImageView
         android:id="@+id/waterImage"
-        android:layout_width="133dp"
-        android:layout_height="249dp"
+        android:layout_width="140dp"
+        android:layout_height="250dp"
+        android:background="@drawable/custom_button"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +39,7 @@
         android:layout_marginTop="40dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
-        android:text="+ 150ml"
+        android:text="+ 200ml"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

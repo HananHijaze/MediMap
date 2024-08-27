@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#FFFFFF"/>
-    <corners android:radius="20dp"/>
-    <stroke
-        android:width="2dp"
-    android:color="@color/orange"
-        android:dashWidth="10dp"
-    android:dashGap="5dp"/>
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Shadow Layer -->
+    <item android:right="4dp" android:bottom="4dp">
+        <shape>
+            <solid android:color="#33000000"/> <!-- Shadow color with some transparency -->
+            <corners android:radius="16dp"/>
+        </shape>
+    </item>
+
+    <!-- Main Shape -->
+    <item>
+        <shape>
+            <solid android:color="#FFFFFF"/> <!-- Background color -->
+            <corners android:radius="16dp"/>
+        </shape>
+    </item>
+
+</layer-list>
