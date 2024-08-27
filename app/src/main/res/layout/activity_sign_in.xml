@@ -36,7 +36,7 @@ android:background="@drawable/b2"
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -45,19 +45,19 @@ android:background="@drawable/b2"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="8dp"
         android:hint="Password"
         app:counterEnabled="true"
         app:counterMaxLength="8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email"
         app:startIconDrawable="@drawable/password">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,7 +66,7 @@ android:background="@drawable/b2"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         android:hint="Address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -76,21 +76,21 @@ android:background="@drawable/b2"
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/phone"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_width="408dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="8dp"
         android:hint="Phone"
         app:counterEnabled="true"
         app:counterMaxLength="9"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fullname"
         app:prefixText="+972"
@@ -98,7 +98,7 @@ android:background="@drawable/b2"
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="49dp"
             android:inputType="phone"
             android:maxLength="10" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -106,9 +106,9 @@ android:background="@drawable/b2"
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fullname"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_width="410dp"
+        android:layout_height="81dp"
+        android:layout_marginTop="20dp"
         android:hint="Full Name"
         app:counterEnabled="true"
         app:counterMaxLength="30"
@@ -119,8 +119,8 @@ android:background="@drawable/b2"
         app:startIconDrawable="@drawable/user_icon">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_width="375dp"
+            android:layout_height="49dp"
             android:inputType="text"
             android:maxLength="31" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -137,21 +137,21 @@ android:background="@drawable/b2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/address"
-        app:layout_constraintVertical_bias="0.201" />
+        app:layout_constraintVertical_bias="0.11" />
 
     <Button
         android:id="@+id/Login"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="353dp"
         android:layout_height="56dp"
-        android:background="@color/white"
-        android:text="Log in"
-        android:textColor="@color/black"
+        android:backgroundTint="@color/white"
+        android:text="Login"
+        android:textColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup"
-        app:layout_constraintVertical_bias="0.188"
+        app:layout_constraintVertical_bias="0.104"
         app:strokeColor="@color/blue" />
 
 
