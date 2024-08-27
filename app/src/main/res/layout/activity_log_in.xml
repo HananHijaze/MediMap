@@ -17,7 +17,7 @@
         android:paddingBottom="2dp"
         android:text="Don't have an account? Sign-up"
         android:textColor="@color/white"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +54,7 @@
         app:startIconDrawable="@drawable/email">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+            android:layout_width="344dp"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:textColorHint="@color/blue" />
@@ -63,8 +63,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="374dp"
-        android:layout_height="78dp"
+        android:layout_width="380dp"
+        android:layout_height="87dp"
         android:hint="Password"
         app:counterEnabled="true"
         app:counterMaxLength="8"
@@ -77,9 +77,8 @@
         app:startIconDrawable="@drawable/password">
 
         <com.google.android.material.textfield.TextInputEditText
-            maxLength="8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="345dp"
+            android:layout_height="55dp"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
   
