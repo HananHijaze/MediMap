@@ -21,6 +21,9 @@
             android:resource="@xml/shortcuts" />
 
         <activity
+            android:name=".meal_plan"
+            android:exported="false" />
+        <activity
             android:name=".steps_tracking"
             android:exported="false" />
         <activity
