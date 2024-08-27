@@ -1,5 +1,6 @@
 package com.example.medimap;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -21,8 +22,10 @@ public class SignIn extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Button loginButton = findViewById(R.id.Login);
-        loginButton.setBackgroundColor(getResources().getColor(R.color.white));
-
+        Button Login = findViewById(R.id.Login);
+        Login.setOnClickListener(view -> {
+            Intent in = new Intent(this, LogIn.class);
+            startActivity(in);
+        });
     }
 }
