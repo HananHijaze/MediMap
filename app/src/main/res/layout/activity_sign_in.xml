@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@color/white"
+android:background="@drawable/b2"
     tools:context=".SignIn">
 
     <ImageView
@@ -46,12 +46,12 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="36dp"
         android:hint="Password"
         app:counterEnabled="true"
         app:counterMaxLength="8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email"
         app:startIconDrawable="@drawable/password">
@@ -67,7 +67,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="16dp"
         android:hint="Address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -86,12 +86,12 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="28dp"
         android:hint="Phone"
         app:counterEnabled="true"
         app:counterMaxLength="9"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fullname"
         app:prefixText="+972"
@@ -129,14 +129,13 @@
     <LinearLayout
         android:layout_width="413dp"
         android:layout_height="161dp"
+        android:layout_marginTop="64dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/imageView4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/address"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@id/address">
 
         <Button
             android:id="@+id/signup"
@@ -152,18 +151,9 @@
             android:layout_width="353dp"
             android:layout_height="56dp"
             android:text="Log in"
+            android:textColor="@color/white"
             app:strokeColor="@color/blue" />
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="500dp"
-        android:layout_height="150dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.808"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/lineheart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

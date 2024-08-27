@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:id="@+id/main"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/b2"
     tools:context="Weight">
 
     <TextView
@@ -88,17 +88,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.527" />
-
-    <ImageView
-        android:id="@+id/decorativeImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nextButton"
-        app:layout_constraintVertical_bias="0.653"
-        app:srcCompat="@drawable/lineheart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

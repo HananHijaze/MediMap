@@ -6,159 +6,158 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Allergies"
-    android:background="@color/white">
+    android:background="@drawable/b2">
 
     <TextView
         android:id="@+id/questionText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="336dp"
+        android:layout_height="81dp"
+        android:layout_marginTop="40dp"
         android:text="@string/do_you_have_any_allergies"
         android:textAlignment="center"
         android:textColor="@color/blue"
-        android:textSize="20sp"
+        android:textSize="28dp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/allergyButtonsLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/questionText"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/questionText">
 
         <!-- Dairy Button -->
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
 
             <Button
                 android:id="@+id/button_dairy"
-                android:layout_width="327dp"
-                android:layout_height="70dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:text="Dairy"
                 android:textColor="#1775BA"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <!-- Gluten Button -->
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
 
             <Button
                 android:id="@+id/button_gluten"
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:text="@string/gluten"
                 android:textColor="#1775BA"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <!-- Nuts Button -->
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
 
             <Button
                 android:id="@+id/button_nuts"
-                android:layout_width="344dp"
-                android:layout_height="59dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:text="@string/nuts"
                 android:textColor="#1775BA"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <!-- Seafood Button -->
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
 
             <Button
                 android:id="@+id/button_seafood"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:text="Seafood"
                 android:textColor="#1775BA"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <!-- Soy Button -->
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
 
             <Button
                 android:id="@+id/button_soy"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:text="Soy"
                 android:textColor="#1775BA"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <!-- Eggs Button -->
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
 
             <Button
                 android:id="@+id/button_eggs"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:text="Eggs"
                 android:textColor="#1775BA"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
     <Button
@@ -176,6 +175,6 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/allergyButtonsLayout"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.191" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

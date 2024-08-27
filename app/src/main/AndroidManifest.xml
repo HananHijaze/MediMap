@@ -72,9 +72,7 @@
         <activity
             android:name=".Goal"
             android:exported="false" />
-        <activity
-            android:name=".Name"
-            android:exported="false" />
+
         <activity
             android:name=".Gender"
             android:exported="false" />

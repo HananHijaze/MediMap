@@ -3,22 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:background="@drawable/b2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DietType"
-    android:background="@color/white">
+    >
 
     <TextView
         android:id="@+id/questionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="60dp"
         android:text="Select Your Diet Type"
         android:textAlignment="center"
         android:textColor="@color/blue"
-        android:textSize="20sp"
+        android:textSize="28dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,23 +28,24 @@
         android:id="@+id/dietButtonsLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/questionText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/questionText">
 
         <!-- Vegetarian Diet Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:padding="16dp">
 
             <Button
                 android:id="@+id/button_vegetarian"
@@ -59,11 +62,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:padding="16dp">
 
             <Button
                 android:id="@+id/button_vegan"
@@ -80,11 +83,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:padding="16dp">
 
             <Button
                 android:id="@+id/button_keto"
@@ -101,11 +104,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:padding="16dp">
 
             <Button
                 android:id="@+id/button_glutenfree"
@@ -122,11 +125,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:padding="16dp">
 
             <Button
                 android:id="@+id/button_dairyfree"
@@ -143,11 +146,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
+            android:padding="16dp">
 
             <Button
                 android:id="@+id/button_pescatarian"
@@ -174,8 +177,9 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dietButtonsLayout"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.309" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

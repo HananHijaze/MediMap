@@ -3,59 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/white"
+    android:background="@drawable/b2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BodyType">
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="260dp"
-        android:layout_height="29dp"
-        android:layout_gravity="center_horizontal"
-        android:text="What's your body type?"
-        android:textColor="@color/blue"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.192"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.065" />
-
-    <LinearLayout
-        android:id="@+id/skinny"
-        android:layout_width="353dp"
-        android:layout_height="150dp"
-        android:background="@drawable/custom_linear_layout"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.45"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.145">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="Skinny"
-            android:textColor="@color/blue"
-            android:textSize="24dp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="152dp"
-            android:layout_height="136dp"
-            android:layout_weight="1"
-            android:src="@drawable/skinny" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/idela"
@@ -68,10 +19,9 @@
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.38">
+        app:layout_constraintVertical_bias="0.465">
 
         <TextView
             android:layout_width="wrap_content"
@@ -90,8 +40,24 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="327dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        android:text="What's your body type?"
+        android:textColor="@color/blue"
+        android:textSize="28dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.216"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.056" />
+
     <LinearLayout
-        android:id="@+id/flabby"
+        android:id="@+id/skinny"
         android:layout_width="353dp"
         android:layout_height="150dp"
         android:background="@drawable/custom_linear_layout"
@@ -101,25 +67,24 @@
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.618">
+        app:layout_constraintVertical_bias="0.229">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="heavy"
+            android:text="Skinny"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="241dp"
-            android:layout_height="139dp"
+            android:layout_width="152dp"
+            android:layout_height="136dp"
             android:layout_weight="1"
-            android:src="@drawable/flabby_heavier" />
+            android:src="@drawable/skinny" />
 
     </LinearLayout>
 
@@ -138,18 +103,38 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.759" />
+        app:layout_constraintVertical_bias="0.848" />
 
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/flabby"
+        android:layout_width="353dp"
+        android:layout_height="150dp"
+        android:background="@drawable/custom_linear_layout"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/lineheart" />
+        app:layout_constraintVertical_bias="0.702">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="heavy"
+            android:textColor="@color/blue"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="241dp"
+            android:layout_height="139dp"
+            android:layout_weight="1"
+            android:src="@drawable/flabby_heavier" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

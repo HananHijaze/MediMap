@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:id="@+id/main"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/b2"
     android:padding="16dp">
 
     <TextView
@@ -30,12 +30,13 @@
         android:layout_width="224dp"
         android:layout_height="90dp"
         android:src="@drawable/piclog"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.123" />
+        app:layout_constraintVertical_bias="0.122" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email"
@@ -126,17 +127,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.587" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="426dp"
-        android:layout_height="160dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/lineheart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,39 +5,30 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/b2"
     tools:context=".Birthdate">
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="426dp"
-        android:layout_height="160dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.533"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.971"
-        app:srcCompat="@drawable/lineheart" />
-
     <Button
-        android:id="@+id/signup"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="120dp"
-        android:layout_height="55dp"
+        android:id="@+id/nextButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="224dp"
         android:backgroundTint="@color/blue"
+        android:gravity="center"
         android:text="Next"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.689" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <CalendarView
         android:id="@+id/calendarView"
-        android:layout_width="347dp"
-        android:layout_height="302dp"
+        android:layout_width="376dp"
+        android:layout_height="336dp"
+
+        android:focusedMonthDateColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +43,7 @@
         android:textAlignment="center"
 
         android:textColor="@color/blue"
-        android:textSize="24sp"
+        android:textSize="28dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

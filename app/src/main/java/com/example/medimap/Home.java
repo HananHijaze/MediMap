@@ -1,10 +1,13 @@
 package com.example.medimap;
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Layout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +29,8 @@ public class Home extends AppCompatActivity {
         ImageButton map =findViewById(R.id.imageButton2);
 
         ImageView imageView = findViewById(R.id.waterImage);
+        LinearLayout water = findViewById(R.id.water);
+
 
         Glide.with(this)
                 .asGif()
@@ -39,6 +44,24 @@ public class Home extends AppCompatActivity {
         map.isClickable();
         map.setOnClickListener(view -> {
             Intent in = new Intent(this,Map.class);
+            startActivity(in);
+        });
+        water.isClickable();
+        water.setOnClickListener(view -> {
+            Intent in =new Intent(this,hydration_tracking.class);
+            startActivity(in);
+        });
+        MaterialButton leftButton = findViewById(R.id.left);
+        leftButton.isCheckable();
+        leftButton.setOnClickListener(view -> {
+            Intent in =new Intent(this,Profile.class);
+            startActivity(in);
+        });
+        MaterialButton center = findViewById(R.id.center);
+
+        center.isCheckable();
+        center.setOnClickListener(view -> {
+            Intent in =new Intent(this,Home.class);
             startActivity(in);
         });
     }
