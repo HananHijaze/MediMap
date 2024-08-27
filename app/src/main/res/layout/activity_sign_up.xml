@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
 android:background="@drawable/b2"
-    tools:context=".SignIn">
+    tools:context=".Signup">
 
     <ImageView
         android:id="@+id/sign_upimage"

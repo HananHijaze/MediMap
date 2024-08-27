@@ -27,7 +27,7 @@ Button login;
         signup= findViewById(R.id.textView2);
         signup.isClickable();
         signup.setOnClickListener(view -> {
-            Intent in =new Intent(this,SignIn.class);
+            Intent in =new Intent(this, Signup.class);
             startActivity(in);
         });
         login=findViewById(R.id.login);

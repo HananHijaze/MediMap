@@ -77,7 +77,7 @@
             android:name=".Gender"
             android:exported="false" />
         <activity
-            android:name=".SignIn"
+            android:name=".Signup"
             android:exported="false" />
         <activity
             android:name=".LogIn"
