@@ -16,6 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MediMap"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/shortcuts" />
+
         <activity
             android:name=".meal_plan"
             android:exported="false" />
@@ -28,11 +32,6 @@
         <activity
             android:name=".Map"
             android:exported="false" />
-
-        <meta-data
-            android:name="com.google.android.actions"
-            android:resource="@drawable/rounded_corners" />
-
         <activity
             android:name=".Allergies"
             android:exported="false" />

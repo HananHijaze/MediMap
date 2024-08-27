@@ -2,9 +2,12 @@ package com.example.medimap;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,6 +25,8 @@ import java.util.List;
 
 public class Map extends AppCompatActivity {
     MapView mapView;
+    CardView locationCardView;
+    TextView locationTitle, locationDescription, locationCoordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,10 @@ public class Map extends AppCompatActivity {
         // Set up the MapView
         mapView = findViewById(R.id.mapView);
         mapView.setMultiTouchControls(true); // Enable pinch to zoom, etc.
-
+        locationCardView = findViewById(R.id.locationCardView);
+        locationTitle = findViewById(R.id.location_title);
+        locationDescription = findViewById(R.id.location_description);
+        locationCoordinates = findViewById(R.id.location_coordinates);
         // Set initial map center and zoom level
         //32.80083539442172, 34.966981024359036
         GeoPoint startPoint = new GeoPoint(32.81990808206112, 35.00006160083927); // San Francisco coordinates
@@ -50,8 +58,21 @@ public class Map extends AppCompatActivity {
         marker.setPosition(startPoint);
         marker.setIcon(customMarkerIcon);
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        marker.setTitle("hachsharat Hatishuv");
+        marker.setTitle("hachsharat Hayishuv");
         marker.setIcon(customMarkerIcon);
+        marker.setOnMarkerClickListener((marker1, mapView) -> {
+            displayLocationData("hachsharat Hayishuv", "Multipurpose building", marker1.getPosition());
+            return true;
+        });
+        mapView.getOverlays().add(marker);
+    }
+    private void displayLocationData(String title, String description, GeoPoint coordinates) {
+        locationTitle.setText(title);
+        locationDescription.setText(description);
+        locationCoordinates.setText(String.format("Coordinates: %f, %f", coordinates.getLatitude(), coordinates.getLongitude()));
+
+        locationCardView.setVisibility(View.VISIBLE);
+    /*   mapView.getOverlays().add(marker);
         mapView.getOverlays().add(marker);
 
         mapView.getOverlays().add(marker);
@@ -82,10 +103,10 @@ public class Map extends AppCompatActivity {
             trackMarker.setPosition(point);
             trackMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             trackMarker.setTitle("Tracking Point");
-            mapView.getOverlays().add(trackMarker);
+            mapView.getOverlays().add(trackMarker);*/
     }
 }
-    protected void onResume() {
+   /* protected void onResume() {
         super.onResume();
         mapView.onResume(); // Needed for compass, my location overlays, v6.0.0 and up
     }
@@ -94,5 +115,5 @@ public class Map extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mapView.onPause(); // Needed for compass, my location overlays, v6.0.0 and up
-    }
-}
+    }*/
+
