@@ -32,6 +32,7 @@ public class Home extends AppCompatActivity {
 
         ImageView imageView = findViewById(R.id.waterImage);
         LinearLayout water = findViewById(R.id.water);
+        ImageButton mealplan = findViewById(R.id.mealplan);
 
 
         Glide.with(this)
@@ -66,5 +67,10 @@ public class Home extends AppCompatActivity {
             Intent in =new Intent(this,Home.class);
             startActivity(in);
         });
+        /*mealplan.isClickable();
+        mealplan.setOnClickListener(view -> {
+            Intent in =new Intent(this,MealPlan.class);
+            startActivity(in);
+        });*/
     }
 }
