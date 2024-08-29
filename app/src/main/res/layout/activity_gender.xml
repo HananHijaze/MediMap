@@ -9,6 +9,22 @@
 
     tools:context=".forgotPassword">
 
+    <ProgressBar
+        android:id="@+id/circularProgressBar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+        android:layout_width="51dp"
+        android:layout_height="53dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="4dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/questionText"
@@ -99,7 +115,6 @@
         android:id="@+id/nextButton"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="252dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
         android:text="Next"
@@ -108,6 +123,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.688" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
