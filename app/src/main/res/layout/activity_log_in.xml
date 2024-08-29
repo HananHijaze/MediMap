@@ -103,7 +103,7 @@
         android:layout_width="353dp"
         android:layout_height="56dp"
         android:backgroundTint="@color/white"
-        android:drawableStart="@drawable/google"
+        android:drawableLeft="@drawable/google"
         android:drawablePadding="8dp"
         android:paddingStart="16dp"
         android:text="Login with Google"

@@ -27,7 +27,7 @@
         android:id="@+id/calendarView"
         android:layout_width="376dp"
         android:layout_height="336dp"
-
+        android:background="@drawable/rounded_corners"
         android:focusedMonthDateColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
