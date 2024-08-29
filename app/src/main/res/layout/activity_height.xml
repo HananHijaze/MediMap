@@ -9,22 +9,21 @@
 
     tools:context="height">
 
+
     <ProgressBar
         android:id="@+id/circularProgressBar"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-        android:layout_width="51dp"
-        android:layout_height="53dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
         android:progressDrawable="@drawable/circular_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
         android:id="@+id/questionText"
@@ -33,23 +32,22 @@
         android:gravity="center_horizontal"
         android:text="How tall are you?"
         android:textColor="@color/blue"
-        android:textSize="28dp"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.195"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.189" />
 
     <LinearLayout
         android:id="@+id/heightInputLayout"
-        android:layout_width="351dp"
-        android:layout_height="84dp"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
         android:background="@drawable/custom_linear_layout"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +57,7 @@
 
         <EditText
             android:id="@+id/heightInput"
-            android:layout_width="113dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@null"
@@ -69,13 +67,13 @@
             android:maxLength="3"
             android:paddingStart="16dp"
             android:textColor="@color/blue"
-            android:textSize="48sp"
+            android:textSize="40sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/kgLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="cm"
             android:textColor="@color/blue"
@@ -87,13 +85,13 @@
     <Button
         android:id="@+id/nextButton"
         android:layout_width="100dp"
-        android:layout_height="56dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
         android:padding="12dp"
         android:text="Next"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
