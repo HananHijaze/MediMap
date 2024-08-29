@@ -11,16 +11,15 @@
     <ProgressBar
         android:id="@+id/circularProgressBar"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-        android:layout_width="51dp"
-        android:layout_height="53dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
         android:progressDrawable="@drawable/circular_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,43 +30,43 @@
         android:layout_gravity="center_horizontal"
         android:text="What's your goal?"
         android:textColor="@color/blue"
-        android:textSize="28dp"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.052"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.058" />
+        app:layout_constraintVertical_bias="0.136" />
 
     <LinearLayout
         android:id="@+id/option_gain_muscle"
-        android:layout_width="391dp"
-        android:layout_height="153dp"
+        android:layout_width="380dp"
+        android:layout_height="120dp"
         android:background="@drawable/custom_linear_layout"
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.145">
+        app:layout_constraintVertical_bias="0.253">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Gain muscle       "
+            android:text="Gain muscle"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="235dp"
-            android:layout_height="126dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/muscle_image" />
 
@@ -75,32 +74,32 @@
 
     <LinearLayout
         android:id="@+id/option_lose_weight"
-        android:layout_width="391dp"
-        android:layout_height="153dp"
+        android:layout_width="380dp"
+        android:layout_height="120dp"
         android:background="@drawable/custom_linear_layout"
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.386">
+        app:layout_constraintVertical_bias="0.44">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Weight Loss        "
+            android:text="Weight Loss"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="128dp"
-            android:layout_height="176dp"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
             android:layout_weight="1"
             android:src="@drawable/weightloss" />
 
@@ -108,31 +107,32 @@
 
     <LinearLayout
         android:id="@+id/option_healthy_life_style"
-        android:layout_width="391dp"
-        android:layout_height="153dp"
+        android:layout_width="380dp"
+        android:layout_height="120dp"
         android:background="@drawable/custom_linear_layout"
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.632">
+        app:layout_constraintVertical_bias="0.628">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Healthy LifeStyle"
+            android:text="Healthy Life"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="257dp"
-            android:layout_height="120dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/healthylifestyle" />
 
@@ -141,18 +141,18 @@
     <Button
         android:id="@+id/nextButton"
         android:layout_width="100dp"
-        android:layout_height="56dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
         android:padding="12dp"
         android:text="Next"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintVertical_bias="0.768" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

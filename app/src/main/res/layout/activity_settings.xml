@@ -32,7 +32,7 @@
                 android:fontFamily="sans-serif-smallcaps"
                 android:text="Your Info"
                 android:textColor="@color/blue"
-                android:textSize="24sp"
+                android:textSize="28sp"
                 android:textStyle="bold" />
 
             <!-- Email -->
