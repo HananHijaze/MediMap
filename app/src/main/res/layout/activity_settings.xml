@@ -10,8 +10,11 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/updateButton">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,7 +35,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-
+            <!-- Email -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,16 +43,16 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="majdgeath@gmail.com"
-                app:startIconDrawable="@drawable/email">
+                app:hintEnabled="false">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="textEmailAddress"
-                    android:editable="false" />
+                    android:editable="false"
+                    android:text="majdgeath@gmail.com" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Name -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,242 +60,243 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="majd"
-                app:startIconDrawable="@drawable/user_icon">
+                app:hintEnabled="false">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
-                    android:editable="false" />
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:editable="true"
-                    android:inputType="numberDecimal" />
+                    android:editable="false"
+                    android:text="majd" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Gender -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gender:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Gender">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
-                    android:editable="true" />
+                    android:editable="true"
+                    android:hint="Gender" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Height -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Height:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="178">
-
+                android:layout_height="wrap_content">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="number"
+                    android:hint="178" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Weight -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Weight:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="82">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="numberDecimal"
-                    android:editable="true" />
+                    android:hint="82" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Birth Date -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Birth Date:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="25/11/2001">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="date"
-                    android:editable="true" />
+                    android:hint="25/11/2001" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Body Type -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Body Type:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="normal">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
-                    android:editable="true" />
+                    android:hint="normal" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Goal -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Goal:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Healthy LifeStyle">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
-                    android:editable="true" />
+                    android:hint="Healthy LifeStyle" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Step Count Goal -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Step Count Goal:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="6000">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
-                    android:editable="true" />
+                    android:hint="6000" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Hydration Goal -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hydration Goal:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="2500">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
-                    android:editable="true" />
+                    android:hint="2500" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Workout Location -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Workout Location:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Home">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
-                    android:editable="true" />
+                    android:hint="Home" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Diet Type -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Diet Type:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="keto">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
-                    android:editable="true" />
+                    android:hint="keto" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Allergies -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Allergies:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="None">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
-                    android:editable="true" />
+                    android:hint="None" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Meals Per Day -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Meals Per Day:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="2">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
-                    android:editable="true" />
+                    android:hint="2" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Snacks Per Day -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Snacks Per Day:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="2">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
-                    android:editable="true" />
+                    android:hint="2" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Water Default -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Water Default:" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="100">
+                android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
-                    android:editable="true" />
+                    android:hint="100" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
     </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+    <Button
+        android:id="@+id/updateButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue"
+        android:text="Update"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"
+        app:strokeColor="@color/white"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
