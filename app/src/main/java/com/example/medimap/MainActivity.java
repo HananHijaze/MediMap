@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             Intent in = new Intent(MainActivity.this, Home.class);
             startActivity(in);
             finish(); // Optionally finish the MainActivity if you don't want to return to it
-        }, 10000); ;
+        }, 5000); ;
         ImageView imageView = findViewById(R.id.imageView7);
 
         Glide.with(this)

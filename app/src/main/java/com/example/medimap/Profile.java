@@ -37,9 +37,15 @@ ImageButton settings;
             Intent in =new Intent(this,Home.class);
             startActivity(in);
         });
+
+        ImageButton logout = findViewById(R.id.logout);
+        logout.setOnClickListener(view -> {
+            Intent in =new Intent(this,LogIn.class);
+            startActivity(in);
+                });
         settings=findViewById(R.id.settings);
         settings.setOnClickListener(view -> {
-            Intent in =new Intent(this,LogIn.class);
+            Intent in =new Intent(this,Settings.class);
             startActivity(in);
         });
     }

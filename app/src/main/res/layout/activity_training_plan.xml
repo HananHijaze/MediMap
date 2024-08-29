@@ -12,10 +12,11 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="272dp"
-        android:layout_height="76dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text=" Training Days"
+        android:gravity="center"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/blue"
@@ -26,7 +27,7 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.066" />
+        app:layout_constraintVertical_bias="0.072" />
 
     <CalendarView
         android:id="@+id/calendarView"
@@ -65,6 +66,32 @@
             android:layout_marginStart="80dp"
             android:gravity="center_vertical"
             android:text="Training: " />
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="36dp"
+            android:layout_height="35dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.029"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_history" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="31dp"
+
+            android:layout_height="36dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.132"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_cal" />
 
     </androidx.cardview.widget.CardView>
 
