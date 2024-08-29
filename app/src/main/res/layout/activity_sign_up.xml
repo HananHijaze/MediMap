@@ -35,8 +35,8 @@ android:background="@drawable/b2"
         app:startIconDrawable="@drawable/email">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_width="370dp"
+            android:layout_height="63dp"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,8 +56,8 @@ android:background="@drawable/b2"
         app:startIconDrawable="@drawable/password">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_width="370dp"
+            android:layout_height="63dp"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,16 +75,16 @@ android:background="@drawable/b2"
         app:startIconDrawable="@drawable/address">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_width="370dp"
+            android:layout_height="63dp"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/phone"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="407dp"
-        android:layout_height="71dp"
+        android:layout_width="411dp"
+        android:layout_height="76dp"
         android:layout_marginTop="8dp"
         android:hint="Phone"
         app:counterEnabled="true"
@@ -97,8 +97,8 @@ android:background="@drawable/b2"
         app:startIconDrawable="@drawable/phone_icon">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_width="370dp"
+            android:layout_height="60dp"
             android:inputType="phone"
             android:maxLength="10" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -119,8 +119,8 @@ android:background="@drawable/b2"
         app:startIconDrawable="@drawable/user_icon">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_width="370dp"
+            android:layout_height="63dp"
             android:inputType="text"
             android:maxLength="31" />
     </com.google.android.material.textfield.TextInputLayout>
