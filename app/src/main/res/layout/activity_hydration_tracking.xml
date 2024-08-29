@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".hydration_tracking"
-    android:background="@drawable/b2">
+    android:background="@drawable/b2"
+    tools:context=".hydration_tracking">
 
     <ImageView
         android:id="@+id/imageView8"
@@ -33,7 +33,7 @@
         app:srcCompat="@drawable/waterbottle2" />
 
     <Button
-        android:id="@+id/nextButton"
+        android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -46,13 +46,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.734" />
+        app:layout_constraintVertical_bias="0.733" />
+
+
+    <Button
+        android:id="@+id/edit"
+        android:layout_width="75dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/ic_edit"
+        android:gravity="center"
+        android:textColor="@color/blue"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.87"
+        app:strokeColor="@color/blue" />
 
     <TextView
         android:id="@+id/mlCountText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="200 ml"
+        android:text="200ml / 3,000ml"
         android:textColor="@color/blue"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -60,6 +78,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.665" />
+        app:layout_constraintVertical_bias="0.67" />
+
+    <EditText
+        android:id="@+id/editTextNumber2"
+        android:layout_width="216dp"
+        android:layout_height="37dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.808" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
