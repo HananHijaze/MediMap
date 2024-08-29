@@ -16,9 +16,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class Home extends AppCompatActivity {
-    LinearLayout mealplan,  traning;;
+  /*  LinearLayout mealplan,  traning;;
     ImageButton mealplanpic;
-    ImageView imageView5;
+    ImageView imageView5;*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +35,7 @@ public class Home extends AppCompatActivity {
 
         ImageView imageView = findViewById(R.id.waterImage);
         LinearLayout water = findViewById(R.id.water);
-         mealplan = findViewById(R.id.mealplan);
+         /*mealplan = findViewById(R.id.mealplan);*/
 
 
         Glide.with(this)
@@ -70,12 +70,12 @@ public class Home extends AppCompatActivity {
             Intent in =new Intent(this,Home.class);
             startActivity(in);
         });
-        mealplan.isClickable();
+       /* mealplan.isClickable();
         mealplan.setOnClickListener(view -> {
             Intent in =new Intent(this,meal_plan.class);
             startActivity(in);
-        });
-        mealplanpic=findViewById(R.id.mealplanpic);
+        });*/
+       /* mealplanpic=findViewById(R.id.mealplanpic);
         mealplanpic.setOnClickListener(view -> {
             Intent in =new Intent(this,meal_plan.class);
             startActivity(in);
@@ -93,6 +93,6 @@ public class Home extends AppCompatActivity {
         imageView5.setOnClickListener(view -> {
             Intent in =new Intent(this,TrainingPlan.class);
             startActivity(in);
-        });
+        });*/
     }
 }
