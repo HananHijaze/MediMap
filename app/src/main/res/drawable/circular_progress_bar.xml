@@ -13,7 +13,7 @@
             android:fromDegrees="-90"
             android:toDegrees="270">
             <shape android:shape="ring" android:innerRadiusRatio="3.5" android:thicknessRatio="8" android:useLevel="true">
-                <solid android:color="#4CAF50" /> <!-- Green progress -->
+                <solid android:color="@color/blue" /> <!-- Green progress -->
             </shape>
         </rotate>
     </item>
