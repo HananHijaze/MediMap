@@ -54,7 +54,7 @@
     </RadioGroup>
 
     <Button
-        android:id="@+id/loginButton"
+        android:id="@+id/nextButton"
         android:layout_width="100dp"
         android:layout_height="56dp"
         android:layout_gravity="center_horizontal"
