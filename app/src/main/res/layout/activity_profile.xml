@@ -104,32 +104,25 @@
         app:layout_constraintVertical_bias="0.142"
         app:layout_constraintWidth_percent="0.8" />
 
+
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/buttonToggleGroup"
-        android:layout_width="422dp"
-        android:layout_height="86dp"
+        android:layout_width="417dp"
+        android:layout_height="87dp"
         android:background="@color/blue"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/left"
-            android:layout_width="130dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="Profile"
-            android:textColor="@android:color/white"
-            app:backgroundTint="@color/blue"
-            app:icon="@drawable/ic_profile"
-            app:iconGravity="top" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/center"
-            android:layout_width="130dp"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
             android:padding="16dp"
             android:text="Home"
@@ -139,16 +132,17 @@
             app:iconGravity="top" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/chatbot"
-            android:layout_width="130dp"
-            android:layout_height="match_parent"
+            android:id="@+id/left"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
             android:padding="16dp"
-            android:text="Calculator"
+            android:text="Profile"
             android:textColor="@android:color/white"
             app:backgroundTint="@color/blue"
-            app:icon="@drawable/ic_cal"
+            app:icon="@drawable/ic_profile"
             app:iconGravity="top" />
-
     </com.google.android.material.button.MaterialButtonToggleGroup>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
