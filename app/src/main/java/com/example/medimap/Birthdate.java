@@ -22,7 +22,7 @@ public class Birthdate extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        int x;
         Button nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(v -> {
             Intent intent = new Intent(Birthdate.this, Gender.class);
