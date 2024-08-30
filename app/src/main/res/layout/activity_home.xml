@@ -87,10 +87,11 @@
                         android:layout_width="358dp"
                         android:layout_height="176dp"
                         android:gravity="center_vertical"
+                        android:id="@+id/steps"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:id="@+id/imageView"
+                            android:id="@+id/stepsImage"
                             android:layout_width="140dp"
                             android:layout_height="112dp"
                             android:rotation="26"
@@ -161,15 +162,15 @@
                         android:layout_width="0dp"
                         android:layout_height="300dp"
                         android:layout_marginEnd="8dp"
-                        android:id="@+id/mealplan1"
                         android:layout_weight="1"
                         android:background="@drawable/custom_linear_layout"
                         android:gravity="center"
+                        android:id="@+id/mealPlan"
                         android:orientation="vertical">
 
                         <ImageButton
                             android:layout_width="156dp"
-                            android:id="@+id/mealplan"
+                            android:id="@+id/mealPlanButton"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:adjustViewBounds="true"
@@ -196,11 +197,12 @@
                     android:layout_height="200dp"
                     android:background="@drawable/custom_linear_layout"
                     android:gravity="center"
+                    android:id="@+id/training"
                     android:orientation="vertical"
                     android:layout_marginBottom="16dp">
 
                     <ImageView
-                        android:id="@+id/imageView5"
+                        android:id="@+id/trainingImage"
                         android:layout_width="338dp"
                         android:layout_height="160dp" />
 
@@ -255,7 +257,9 @@
             android:layout_height="wrap_content"
             android:background="@color/blue"
             android:orientation="horizontal"
-            android:layout_gravity="bottom">
+            android:padding="0dp"
+            android:layout_gravity="bottom"
+            tools:ignore="ExtraText">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/left"
