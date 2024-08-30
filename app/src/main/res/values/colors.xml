@@ -2,9 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name = "gray">#C0C0C0</color>
-    <color name = "blue">#198ECD</color>
-    <color name = "red">#FF0000</color>
-    <color name = "orange">#FF9900</color>
+    <color name="gray">#C0C0C0</color>
+    <color name="blue">#198ECD</color>
+    <color name="red">#FF0000</color>
+    <color name="orange">#FF9900</color>
 
+    <!-- Define the missing colors -->
+    <color name="colorPrimary">#198ECD</color> <!-- You can use your blue color -->
+    <color name="colorPrimaryDark">#004D6B</color> <!-- Darker shade of blue -->
+    <color name="colorAccent">#FF9900</color> <!-- You can use your orange color -->
 </resources>

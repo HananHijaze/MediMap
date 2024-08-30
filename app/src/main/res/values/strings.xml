@@ -9,4 +9,11 @@
     <string name="shortcut_short_label">Example</string>
     <string name="shortcut_long_label">Open Example</string>
     <string name="shortcut_disabled_message">Shortcut disabled</string>
+
+    <!-- String array for difficulty levels -->
+    <string-array name="difficulty_levels">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>
