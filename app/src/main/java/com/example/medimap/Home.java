@@ -83,6 +83,12 @@ public class Home extends AppCompatActivity {
                 .asGif()
                 .load(R.drawable.sports) // GIF
                 .into(trainingImage);
+        trainingImage.isClickable();
+        trainingImage.setOnClickListener(view -> {
+            Intent in =new Intent(this,TrainingPlan.class);
+            startActivity(in);
+        });
+
 
         training.isClickable();
         training.setOnClickListener(view -> {

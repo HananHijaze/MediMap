@@ -28,6 +28,9 @@
             android:name=".meal_plan"
             android:exported="false" />
         <activity
+            android:name=".TrainingPlan"
+            android:exported="false" />
+        <activity
             android:name=".steps_tracking"
             android:exported="false" />
         <activity
