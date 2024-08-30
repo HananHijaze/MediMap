@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -88,32 +89,30 @@ public class Map extends AppCompatActivity {
         final EditText input = dialogView.findViewById(R.id.locationNameEditText);
         final Spinner difficultySpinner = dialogView.findViewById(R.id.difficultySpinner);
 
+        // Find the buttons in the dialog layout
+        Button addButton = dialogView.findViewById(R.id.addButton);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+
         // Set up the Spinner with difficulty levels using built-in Android layouts
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.difficulty_levels, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         difficultySpinner.setAdapter(adapter);
 
-        // Set up the buttons
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String locationName = input.getText().toString();
-                String difficulty = difficultySpinner.getSelectedItem().toString();
-                if (!locationName.isEmpty()) {
-                    addNewLocation(locationName, difficulty);
-                }
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Handle button clicks
+        addButton.setOnClickListener(v -> {
+            String locationName = input.getText().toString();
+            String difficulty = difficultySpinner.getSelectedItem().toString();
+            if (!locationName.isEmpty()) {
+                addNewLocation(locationName, difficulty);
+                dialog.dismiss();
             }
         });
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
     }
 
     private void addNewLocation(String locationName, String difficulty) {
