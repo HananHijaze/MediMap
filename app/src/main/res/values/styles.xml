@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -11,7 +10,13 @@
     <!-- Custom AlertDialog style -->
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">#FFFFFF</item>
-        <item name="android:windowMinWidthMajor">80%</item> <!-- Reduced width -->
-        <item name="android:windowMinWidthMinor">80%</item> <!-- Reduced width -->
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+    </style>
+
+    <!-- Custom Button Style for Dialog -->
+    <style name="DialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#FFFFFF</item> <!-- White text color -->
+        <item name="android:backgroundTint">@color/colorPrimary</item> <!-- Primary color background -->
     </style>
 </resources>
