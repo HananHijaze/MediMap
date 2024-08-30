@@ -1,8 +1,14 @@
 package com.example.medimap;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,15 +24,12 @@ import org.osmdroid.library.BuildConfig;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Polyline;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Map extends AppCompatActivity {
     MapView mapView;
     CardView locationCardView;
     TextView locationTitle, locationDescription, locationCoordinates;
+    ImageButton addLocationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,19 +41,22 @@ public class Map extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-        // Set up the MapView
         mapView = findViewById(R.id.mapView);
-        mapView.setMultiTouchControls(true); // Enable pinch to zoom, etc.
+        mapView.setMultiTouchControls(true);
+
         locationCardView = findViewById(R.id.locationCardView);
         locationTitle = findViewById(R.id.location_title);
         locationDescription = findViewById(R.id.location_description);
         locationCoordinates = findViewById(R.id.location_coordinates);
+        addLocationButton = findViewById(R.id.addLocationButton);
+
         // Set initial map center and zoom level
-        //32.80083539442172, 34.966981024359036
-        GeoPoint startPoint = new GeoPoint(32.81990808206112, 35.00006160083927); // San Francisco coordinates
+        GeoPoint startPoint = new GeoPoint(32.81990808206112, 35.00006160083927);
         mapView.getController().setZoom(15.0);
         mapView.getController().setCenter(startPoint);
+
         Drawable customMarkerIcon = ContextCompat.getDrawable(this, R.drawable.ic_location);
 
         // Add a marker at the specified location
@@ -65,55 +71,77 @@ public class Map extends AppCompatActivity {
             return true;
         });
         mapView.getOverlays().add(marker);
+
+        // Set up the button to add a new location
+        addLocationButton.setOnClickListener(v -> showAddLocationDialog());
     }
+
+    private void showAddLocationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
+        builder.setTitle("Add New Location");
+
+        // Set up the layout for the dialog
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_location, null);
+        builder.setView(dialogView);
+
+        // Find the EditText and Spinner in the dialog layout
+        final EditText input = dialogView.findViewById(R.id.locationNameEditText);
+        final Spinner difficultySpinner = dialogView.findViewById(R.id.difficultySpinner);
+
+        // Set up the Spinner with difficulty levels using built-in Android layouts
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.difficulty_levels, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        difficultySpinner.setAdapter(adapter);
+
+        // Set up the buttons
+        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String locationName = input.getText().toString();
+                String difficulty = difficultySpinner.getSelectedItem().toString();
+                if (!locationName.isEmpty()) {
+                    addNewLocation(locationName, difficulty);
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void addNewLocation(String locationName, String difficulty) {
+        // Get the current center of the map
+        GeoPoint currentPoint = (GeoPoint) mapView.getMapCenter();
+
+        Drawable customMarkerIcon = ContextCompat.getDrawable(this, R.drawable.ic_location);
+
+        Marker newMarker = new Marker(mapView);
+        newMarker.setPosition(currentPoint);
+        newMarker.setIcon(customMarkerIcon);
+        newMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        newMarker.setTitle(locationName);
+        newMarker.setSubDescription("Difficulty: " + difficulty);
+        newMarker.setOnMarkerClickListener((marker, mapView) -> {
+            displayLocationData(locationName, "Difficulty: " + difficulty, marker.getPosition());
+            return true;
+        });
+
+        mapView.getOverlays().add(newMarker);
+        mapView.invalidate(); // Refresh the map to show the new marker
+    }
+
     private void displayLocationData(String title, String description, GeoPoint coordinates) {
         locationTitle.setText(title);
         locationDescription.setText(description);
         locationCoordinates.setText(String.format("Coordinates: %f, %f", coordinates.getLatitude(), coordinates.getLongitude()));
 
         locationCardView.setVisibility(View.VISIBLE);
-    /*   mapView.getOverlays().add(marker);
-        mapView.getOverlays().add(marker);
-
-        mapView.getOverlays().add(marker);
-        List<GeoPoint> trackingPoints = new ArrayList<>();
-        trackingPoints.add(startPoint); // Starting point
-        //32.733984958494936, 35.07107631931142
-        trackingPoints.add(new GeoPoint(32.74616455590612, 35.025553384666075)); // Example point 1
-        trackingPoints.add(new GeoPoint(32.80083539442172, 34.966981024359036)); // Example point 2
-        trackingPoints.add(new GeoPoint(32.733984958494936, 35.07107631931142)); // Example point 3
-
-        // Create a Polyline to represent the path
-        for (GeoPoint point : trackingPoints) {
-            // Create a list of points for the Polyline
-            List<GeoPoint> segmentPoints = new ArrayList<>();
-            segmentPoints.add(startPoint); // Start point
-            segmentPoints.add(point);      // End point
-
-            // Create a Polyline for the segment
-            Polyline segmentPath = new Polyline();
-            segmentPath.setPoints(segmentPoints);
-            segmentPath.setColor(0xFF0000FF); // Blue color for the path
-
-            // Add the Polyline to the map's overlays
-            mapView.getOverlays().add(segmentPath);
-
-            // Add a marker for the tracking point
-            Marker trackMarker = new Marker(mapView);
-            trackMarker.setPosition(point);
-            trackMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            trackMarker.setTitle("Tracking Point");
-            mapView.getOverlays().add(trackMarker);*/
     }
 }
-   /* protected void onResume() {
-        super.onResume();
-        mapView.onResume(); // Needed for compass, my location overlays, v6.0.0 and up
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause(); // Needed for compass, my location overlays, v6.0.0 and up
-    }*/
-
