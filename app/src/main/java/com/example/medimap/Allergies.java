@@ -29,7 +29,7 @@ public class Allergies extends AppCompatActivity {
         });
 
         // Get the current page number passed from the previous activity
-        currentPage = getIntent().getIntExtra("currentPage", 6);
+        currentPage = getIntent().getIntExtra("currentPage", 7);
         // Initialize the circular progress bar
         circularProgressBar = findViewById(R.id.circularProgressBar);
         updateProgressBar();  // Update progress bar based on the current page

@@ -28,7 +28,7 @@ public class WorkOutPlaces extends AppCompatActivity {
             return insets;
         });
         // Get the current page number passed from the previous activity
-        currentPage = getIntent().getIntExtra("currentPage", 8);
+        currentPage = getIntent().getIntExtra("currentPage", 9);
         // Initialize the circular progress bar
         circularProgressBar = findViewById(R.id.circularProgressBar);
         updateProgressBar();  // Update progress bar based on the current page

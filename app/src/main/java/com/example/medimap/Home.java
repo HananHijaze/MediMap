@@ -5,6 +5,7 @@ import com.google.android.material.button.MaterialButton;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Layout;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,6 +31,11 @@ public class Home extends AppCompatActivity {
             return insets;
 
         });
+        // This is a LinearLayout that works like a button.
+        // It uses the "onCustomButtonClick" method as its click handler.
+        LinearLayout customButton = findViewById(R.id.customButton);
+        customButton.setOnClickListener(this::onCustomButtonClick);
+
 
         ImageButton map =findViewById(R.id.imageButton2);
 
@@ -95,4 +101,9 @@ public class Home extends AppCompatActivity {
             startActivity(in);
         });*/
     }
+    public void onCustomButtonClick(View view) {
+        // This is a LinearLayout that works like a button.
+        // It uses the "onCustomButtonClick" method as its click handler.
+    }
+
 }
