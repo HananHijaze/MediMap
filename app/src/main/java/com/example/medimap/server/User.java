@@ -1,4 +1,4 @@
-package com.example.medimap;
+package com.example.medimap.server;
 
 import java.util.Date;
 
@@ -18,17 +18,11 @@ public class User {
     private int hydrationgoal;
     private String wheretoworkout;
     private String dietType;
-    private String allergies;
     private int mealsperday;
     private int snackesperday;
+    private int waterDefault;
 
-    // Constructors
-    public User() {}
-
-    public User(Long id, String email, String name, String password, String gender, double height, double weight, Date birthDate,
-                String bodyType, String goal, int stepcountgoal, int hydrationgoal, String wheretoworkout, String dietType,
-                String allergies, int mealsperday, int snackesperday) {
-        this.id = id;
+    public User( String email, String name, String password, String gender, double height, double weight, Date birthDate, String bodyType, String goal, int stepcountgoal, int hydrationgoal, String wheretoworkout, String dietType, int mealsperday, int snackesperday, int waterDefault) {
         this.email = email;
         this.name = name;
         this.password = password;
@@ -42,9 +36,9 @@ public class User {
         this.hydrationgoal = hydrationgoal;
         this.wheretoworkout = wheretoworkout;
         this.dietType = dietType;
-        this.allergies = allergies;
         this.mealsperday = mealsperday;
         this.snackesperday = snackesperday;
+        this.waterDefault = waterDefault;
     }
 
     // Getters and Setters
@@ -160,14 +154,6 @@ public class User {
         this.dietType = dietType;
     }
 
-    public String getAllergies() {
-        return allergies;
-    }
-
-    public void setAllergies(String allergies) {
-        this.allergies = allergies;
-    }
-
     public int getMealsperday() {
         return mealsperday;
     }
@@ -182,5 +168,13 @@ public class User {
 
     public void setSnackesperday(int snackesperday) {
         this.snackesperday = snackesperday;
+    }
+
+    public int getWaterDefault() {
+        return waterDefault;
+    }
+
+    public void setWaterDefault(int waterDefault) {
+        this.waterDefault = waterDefault;
     }
 }

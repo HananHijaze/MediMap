@@ -1,20 +1,19 @@
-package com.example.medimap;
-
+package com.example.medimap.server;
 
 import java.time.LocalDate;
 
 public class Hydration {
 
-    private Long id;
-    private String customerEmail;
-    private Double drank;
+    private Long id; // Primary Key
+    private Long customerId; // Foreign Key referencing User.email
+    private Double drank; // Amount of water consumed (e.g., in liters)
     private LocalDate date;
 
     // Constructors
     public Hydration() {}
 
-    public Hydration(String customerEmail, Double drank, LocalDate date) {
-        this.customerEmail = customerEmail;
+    public Hydration(Long customerId, Double drank, LocalDate date) {
+        this.customerId = customerId;
         this.drank = drank;
         this.date = date;
     }
@@ -28,12 +27,12 @@ public class Hydration {
         this.id = id;
     }
 
-    public String getCustomerEmail() {
-        return customerEmail;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public Double getDrank() {
