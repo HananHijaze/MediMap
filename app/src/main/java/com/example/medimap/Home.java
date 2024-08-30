@@ -17,9 +17,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class Home extends AppCompatActivity {
-  /*  LinearLayout mealplan,  traning;;
-    ImageButton mealplanpic;
-    ImageView imageView5;*/
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,69 +36,85 @@ public class Home extends AppCompatActivity {
         customButton.setOnClickListener(this::onCustomButtonClick);
 
 
+        ImageView stepsImage = findViewById(R.id.stepsImage); //1.steps
+        LinearLayout steps = findViewById(R.id.steps);
+
+        ImageView imageView = findViewById(R.id.waterImage); //2.water
+        LinearLayout water = findViewById(R.id.water);
+
+        ImageButton mealPlanButton = findViewById(R.id.mealPlanButton); //3.meal plan
+        LinearLayout mealPlan = findViewById(R.id.mealPlan);
+
+        ImageView trainingImage = findViewById(R.id.trainingImage); //4.training plan
+        LinearLayout training = findViewById(R.id.training);
+
         ImageButton map =findViewById(R.id.imageButton2);
 
-        ImageView imageView = findViewById(R.id.waterImage);
-        LinearLayout water = findViewById(R.id.water);
-         /*mealplan = findViewById(R.id.mealplan);*/
+
+        //1.steps implementation
+        steps.isClickable();
+        steps.setOnClickListener(view -> {
+            Intent in =new Intent(this,steps_tracking.class);
+            startActivity(in);
+        });
 
 
+        //2.water implementation
         Glide.with(this)
                 .asGif()
                 .load(R.drawable.waterbottle2) // Replace with your GIF resource
                 .into(imageView);
-        ImageView sports= findViewById(R.id.imageView5);
-        Glide.with(this)
-                .asGif()
-                .load(R.drawable.sports) // Replace with your GIF resource
-                .into(sports);
-        map.isClickable();
-        map.setOnClickListener(view -> {
-            Intent in = new Intent(this,Map.class);
-            startActivity(in);
-        });
+
         water.isClickable();
         water.setOnClickListener(view -> {
             Intent in =new Intent(this,hydration_tracking.class);
             startActivity(in);
         });
+
+        //3.meal implementation
+        mealPlanButton.isClickable();
+        mealPlanButton.setOnClickListener(view -> {
+            Intent in = new Intent(this,meal_plan.class);
+            startActivity(in);
+        });
+
+        //training implementation
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.sports) // GIF
+                .into(trainingImage);
+
+        training.isClickable();
+        training.setOnClickListener(view -> {
+            Intent in =new Intent(this,TrainingPlan.class);
+            startActivity(in);
+        });
+
+
+        //5.map implementation
+        map.isClickable(); //map implementation
+        map.setOnClickListener(view -> {
+            Intent in = new Intent(this,Map.class);
+            startActivity(in);
+        });
+
+
+        //Profile implementation
         MaterialButton leftButton = findViewById(R.id.left);
         leftButton.isCheckable();
         leftButton.setOnClickListener(view -> {
             Intent in =new Intent(this,Profile.class);
             startActivity(in);
         });
-        MaterialButton center = findViewById(R.id.center);
 
+        //Home implementation
+        MaterialButton center = findViewById(R.id.center);
         center.isCheckable();
         center.setOnClickListener(view -> {
             Intent in =new Intent(this,Home.class);
             startActivity(in);
         });
-       /* mealplan.isClickable();
-        mealplan.setOnClickListener(view -> {
-            Intent in =new Intent(this,meal_plan.class);
-            startActivity(in);
-        });*/
-       /* mealplanpic=findViewById(R.id.mealplanpic);
-        mealplanpic.setOnClickListener(view -> {
-            Intent in =new Intent(this,meal_plan.class);
-            startActivity(in);
-        });
 
-        traning=findViewById(R.id.traning);
-        traning.isClickable();
-        traning.setOnClickListener(view -> {
-            Intent in =new Intent(this,TrainingPlan.class);
-            startActivity(in);
-        });
-
-        imageView5=findViewById(R.id.imageView5);
-        imageView5.isClickable();
-        imageView5.setOnClickListener(view -> {
-            Intent in =new Intent(this,TrainingPlan.class);
-            startActivity(in);
-        });*/
     }
     public void onCustomButtonClick(View view) {
         // This is a LinearLayout that works like a button.
