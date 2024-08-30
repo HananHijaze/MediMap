@@ -1,4 +1,4 @@
-package com.example.medimap;
+package com.example.medimap.server;
 
 
 public class Meal {

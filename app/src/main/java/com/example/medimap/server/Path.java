@@ -1,4 +1,4 @@
-package com.example.medimap;
+package com.example.medimap.server;
 
 
 public class Path {
@@ -12,9 +12,34 @@ public class Path {
     private double endLongitude;
     private double distance;
     private int difficulty;
-    private String pathCoordinates; // Assuming JSON or a string of coordinates
+    private Double rating;
 
+
+    // Constructors
+    public Path() {}
+    // Parameterized constructor
+    public Path( String name, String description, double startLatitude, double startLongitude, double endLatitude, double endLongitude, double distance, int difficulty) {
+
+        this.name = name;
+        this.description = description;
+        this.startLatitude = startLatitude;
+        this.startLongitude = startLongitude;
+        this.endLatitude = endLatitude;
+        this.endLongitude = endLongitude;
+        this.distance = distance;
+        this.difficulty = difficulty;
+        this.rating = null;
+    }
     // Getters and Setters
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
     public Long getId() {
         return id;
     }
@@ -87,11 +112,5 @@ public class Path {
         this.difficulty = difficulty;
     }
 
-    public String getPathCoordinates() {
-        return pathCoordinates;
-    }
 
-    public void setPathCoordinates(String pathCoordinates) {
-        this.pathCoordinates = pathCoordinates;
-    }
 }

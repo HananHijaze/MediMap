@@ -1,20 +1,19 @@
-package com.example.medimap;
-
+package com.example.medimap.server;
 
 import java.time.LocalDate;
 
 public class StepCount {
 
-    private Long id;
-    private String customerEmail;
+    private Long id; // Primary Key
+    private Long customerId; // Foreign Key referencing User.email
     private Integer steps;
     private LocalDate date;
 
     // Constructors
     public StepCount() {}
 
-    public StepCount(String customerEmail, Integer steps, LocalDate date) {
-        this.customerEmail = customerEmail;
+    public StepCount(Long customerId, Integer steps, LocalDate date) {
+        this.customerId = customerId;
         this.steps = steps;
         this.date = date;
     }
@@ -28,12 +27,12 @@ public class StepCount {
         this.id = id;
     }
 
-    public String getCustomerEmail() {
-        return customerEmail;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public Integer getSteps() {
