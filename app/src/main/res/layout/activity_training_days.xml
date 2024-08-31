@@ -25,11 +25,12 @@
     <!-- Sunday CardView -->
 
     <!-- Monday CardView -->
+
     <TextView
         android:id="@+id/questionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pick the your prefered training days"
+        android:text="Pick the your preferred training days"
         android:textAlignment="center"
         android:textColor="@color/blue"
         android:textSize="28sp"
@@ -39,7 +40,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.175" />
+        app:layout_constraintVertical_bias="0.177" />
 
     <Button
         android:id="@+id/nextButton"
@@ -217,20 +218,6 @@
             android:textSize="25dp"
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
-    <ProgressBar
-        android:id="@+id/circularProgressBar"
-        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/circular_progress_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
