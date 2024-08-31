@@ -3,6 +3,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Layout;
 import android.widget.ImageButton;
@@ -60,8 +61,13 @@ public class Home extends AppCompatActivity {
         MaterialButton leftButton = findViewById(R.id.left);
         leftButton.isCheckable();
         leftButton.setOnClickListener(view -> {
+            SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("userEmail", "Majd");
+            editor.apply();
             Intent in =new Intent(this,Profile.class);
             startActivity(in);
+
         });
         MaterialButton center = findViewById(R.id.center);
 
