@@ -6,8 +6,8 @@
     <string name="do_you_have_any_allergies">Do you have any allergies?</string>
     <string name="gluten">Gluten</string>
     <string name="nuts">Nuts</string>
-    <string name="shortcut_short_label">Example</string>
-    <string name="shortcut_long_label">Open Example</string>
+    <string name="shortcut_short_label">Water</string>
+    <string name="shortcut_long_label">Add Water</string>
     <string name="shortcut_disabled_message">Shortcut disabled</string>
 
     <!-- String array for difficulty levels -->

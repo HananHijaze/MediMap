@@ -1,6 +1,9 @@
 package com.example.medimap;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +23,10 @@ public class build_profile extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Intent in = new Intent(this, Home.class);
+            startActivity(in);
+            finish(); // Optionally finish the MainActivity if you don't want to return to it
+        }, 5000);
     }
 }
