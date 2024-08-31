@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +33,7 @@ public class Home extends AppCompatActivity {
         });
         // This is a LinearLayout that works like a button.
         // It uses the "onCustomButtonClick" method as its click handler.
-        LinearLayout customButton = findViewById(R.id.customButton);
+        Button customButton = findViewById(R.id.customButton);
         customButton.setOnClickListener(this::onCustomButtonClick);
 
 
