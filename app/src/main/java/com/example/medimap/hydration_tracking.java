@@ -3,10 +3,8 @@ package com.example.medimap;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -37,7 +35,7 @@ public class hydration_tracking extends AppCompatActivity {
             builder.setTitle("Enter Amount");
 
             // Set up the layout for the dialog
-            View dialogView = getLayoutInflater().inflate(R.layout.edit_amount_dialog, null);
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_amount, null);
             builder.setView(dialogView);
 
             // Find the EditText and Spinner in the dialog layout

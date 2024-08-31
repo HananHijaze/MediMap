@@ -8,9 +8,6 @@
     android:background="@drawable/b2"
     tools:context=".TrainingDays">
 
-    <!-- Sunday CardView -->
-
-    <!-- Monday CardView -->
     <ProgressBar
         android:id="@+id/circularProgressBar"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
@@ -27,22 +24,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
         android:id="@+id/questionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
         android:text="Pick the your preferred training days"
         android:textAlignment="center"
         android:textColor="@color/blue"
         android:textSize="28sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.177" />
+        app:layout_constraintTop_toBottomOf="@+id/circularProgressBar" />
 
     <Button
         android:id="@+id/nextButton"
@@ -59,10 +54,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.642" />
+        app:layout_constraintTop_toBottomOf="@+id/friday"
+        app:layout_constraintVertical_bias="0.182" />
 
-    <!-- Tuesday CardView -->
+    <!-- Sunday CardView -->
     <androidx.cardview.widget.CardView
         android:id="@+id/sunday"
         android:layout_width="79dp"
@@ -85,7 +80,7 @@
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
-    <!-- Wednesday CardView -->
+    <!-- Monday CardView -->
     <androidx.cardview.widget.CardView
         android:id="@+id/monday"
         android:layout_width="79dp"
@@ -108,9 +103,7 @@
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
-    <!-- Thursday CardView -->
-
-    <!-- Friday CardView -->
+    <!-- Tuesday CardView -->
     <androidx.cardview.widget.CardView
         android:id="@+id/tuesday"
         android:layout_width="79dp"
@@ -133,6 +126,7 @@
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
+    <!-- Wednesday CardView -->
     <androidx.cardview.widget.CardView
         android:id="@+id/wednesday"
         android:layout_width="79dp"
@@ -155,6 +149,7 @@
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
+    <!-- Thursday CardView -->
     <androidx.cardview.widget.CardView
         android:id="@+id/thursday"
         android:layout_width="79dp"
@@ -177,7 +172,7 @@
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
-    <!-- Saturday CardView -->
+    <!-- Friday CardView -->
     <androidx.cardview.widget.CardView
         android:id="@+id/friday"
         android:layout_width="79dp"
@@ -199,6 +194,7 @@
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
+    <!-- Saturday CardView -->
     <androidx.cardview.widget.CardView
         android:id="@+id/saturday"
         android:layout_width="79dp"
