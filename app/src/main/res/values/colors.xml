@@ -11,4 +11,5 @@
     <color name="colorPrimary">#198ECD</color> <!-- You can use your blue color -->
     <color name="colorPrimaryDark">#004D6B</color> <!-- Darker shade of blue -->
     <color name="colorAccent">#FF9900</color> <!-- You can use your orange color -->
+
 </resources>

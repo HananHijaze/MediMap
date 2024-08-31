@@ -6,4 +6,13 @@
     </style>
 
     <style name="Theme.MediMap" parent="Base.Theme.MediMap" />
+
+    <style name="Theme.MediMap.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.MediMap.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.MediMap.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
