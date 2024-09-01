@@ -30,18 +30,13 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
     // UI elements: ProgressBar to show progress and TextView to display the step count
     private ProgressBar progressBar;
     private TextView steps;
+    private TextView goal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Enable Edge-to-Edge layout for better UI experience
         EdgeToEdge.enable(this);
-
-        // Set the content view to the activity_steps_tracking layout
         setContentView(R.layout.activity_steps_tracking);
-
-        // Adjust padding based on system bars (status bar, navigation bar) to prevent overlap with UI elements
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -51,6 +46,8 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
         // Initialize the ProgressBar and TextView from the layout
         progressBar = findViewById(R.id.progressBar);
         steps = findViewById(R.id.steps);
+        goal = findViewById(R.id.goal);
+
 
         // Initialize SensorManager and get the step counter sensor
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -93,12 +90,6 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
 
             // Calculate the number of steps taken since the last reset
             int currentSteps = totalSteps - previousTotalSteps;
-
-            // Set the step goal (e.g., 10,000 steps)
-            int stepGoal = 10000;
-
-            // Set the maximum value for the progress bar to the step goal
-            progressBar.setMax(stepGoal);
 
             // Update the progress bar to reflect the current step count
             progressBar.setProgress(currentSteps);
