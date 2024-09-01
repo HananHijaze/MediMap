@@ -68,7 +68,7 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
         if(event.sensor.getType()==Sensor.TYPE_STEP_COUNTER) {
             totalSteps = (int) event.values[0];
             int currentSteps = totalSteps - previousTotalSteps;
-            progressBar.setProgress(currentSteps/totalSteps);
+            progressBar.setProgress(currentSteps);
             steps.setText(String.valueOf(currentSteps));
         }
 
