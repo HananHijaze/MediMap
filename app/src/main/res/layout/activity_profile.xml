@@ -29,22 +29,23 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/Hydration"
-                android:layout_width="372dp"
+                android:layout_width="match_parent"
                 android:layout_height="121dp"
                 app:cardCornerRadius="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.714"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.865">
+                app:layout_constraintVertical_bias="0.91">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="average water intake all week: "
                     android:textColor="@color/blue"
-                    android:textSize="25sp"
+                    android:textSize="20dp"
                     android:textStyle="bold" />
 
                 <ProgressBar
@@ -54,14 +55,6 @@
                     android:layout_height="31dp"
                     android:layout_gravity="center" />
 
-                <TextView
-                    android:id="@+id/weaklywatertxt"
-                    android:layout_width="342dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="bottom|center"
-                    android:text="You didn't reach your target, try to hit it next week!"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <ImageView
@@ -91,9 +84,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
-
-
-
             <ImageButton
                 android:id="@+id/logout"
                 android:layout_width="60dp"
@@ -108,84 +98,136 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
-            <SeekBar
-                android:id="@+id/bmi_indicator"
-                android:layout_width="372dp"
-                android:layout_height="37dp"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/bmi_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:progressDrawable="@drawable/seekbar_custom"
-                android:progress="40"
-                android:thumb="@drawable/triangle_thumb"
+                app:cardCornerRadius="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.468" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Underweight"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.051"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bmiImage" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Normal"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.33"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bmiImage" />
+                    <TextView
+                        android:id="@+id/bmi_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your BMI: "
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.053" />
 
-            <TextView
-                android:id="@+id/textView16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="152dp"
-                android:text="Overweight"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bmiImage" />
+                    <ImageView
+                        android:id="@+id/bmiImage"
+                        android:layout_width="394dp"
+                        android:layout_height="42dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/seekbarpalette"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.456" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="103dp"
-                android:text="Obese"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bmiImage" />
+                    <SeekBar
+                        android:id="@+id/bmi_indicator"
+                        android:layout_width="372dp"
+                        android:layout_height="37dp"
+                        android:layout_marginTop="16dp"
+                        android:progress="40"
+                        android:progressDrawable="@android:color/transparent"
+                        android:thumb="@drawable/triangle_thumb"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.468" />
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Severely Obese"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="0.002" />
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Underweight"
+                        android:textColor="#6DB8FF"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
 
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.051"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/bmiImage" />
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Normal"
+                        android:textColor="#00FF00"
+
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.369"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/bmiImage" />
+
+                    <TextView
+                        android:id="@+id/textView16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="140dp"
+                        android:text="Overweight"
+                        android:textColor="#FFD700"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/bmiImage" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="100dp"
+                        android:text="Obese"
+                        android:textColor="#FFA500"
+
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/bmiImage" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Severely Obese"
+                        android:textColor="#FF4500"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.989"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/bmiImage"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
             <TextView
                 android:id="@+id/nameTextView"
                 android:layout_width="wrap_content"
@@ -202,37 +244,25 @@
                 app:layout_constraintTop_toBottomOf="@id/profileImage" />
 
 
-            <TextView
-                android:id="@+id/bmi_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Your BMI: "
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.376" />
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/steps"
-                android:layout_width="369dp"
+                android:layout_width="match_parent"
                 android:layout_height="128dp"
                 app:cardCornerRadius="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.659">
+                app:layout_constraintVertical_bias="0.695">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text=" average steps all week:"
                     android:textColor="@color/blue"
-                    android:textSize="25sp"
+                    android:textSize="20dp"
                     android:textStyle="bold" />
 
                 <ProgressBar
@@ -242,14 +272,6 @@
                     android:layout_height="39dp"
                     android:layout_gravity="center" />
 
-                <TextView
-                    android:id="@+id/weaklyStepstxt"
-                    android:layout_width="342dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="bottom|center"
-                    android:text="nicly done you have hit your average steps count goal!!"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
