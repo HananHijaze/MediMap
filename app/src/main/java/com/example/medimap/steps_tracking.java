@@ -44,6 +44,7 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
         stepSensor=mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         loadData();
         resetSteps();
+        //test
     }
 
 
