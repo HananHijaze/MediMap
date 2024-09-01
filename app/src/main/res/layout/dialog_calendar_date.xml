@@ -33,7 +33,7 @@
                 android:layout_weight="1"
                 android:layout_margin="1dp"
                 app:cardBackgroundColor="@color/blue"
-                app:cardCornerRadius="10dp">
+                app:cardCornerRadius="100dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
             <!-- Monday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Feb"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -69,7 +69,7 @@
             <!-- Tuesday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Mar"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -90,7 +90,7 @@
             <!-- Wednesday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Apr"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -119,7 +119,7 @@
             <!-- Thursday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/May"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -140,7 +140,7 @@
             <!-- Friday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Jun"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -161,7 +161,7 @@
             <!-- Saturday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Jul"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -182,7 +182,7 @@
             <!-- Saturday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Aug"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -211,7 +211,7 @@
             <!-- Thursday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Sep"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -232,7 +232,7 @@
             <!-- Friday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Oct"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -253,7 +253,7 @@
             <!-- Saturday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Nov"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -274,7 +274,7 @@
             <!-- Saturday CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Dec"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -312,10 +312,10 @@
                 android:layout_margin="5dp" />
 
             <Button
-                android:id="@+id/addButton"
+                android:id="@+id/Save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"
+                android:text="save"
                 android:textColor="@android:color/white"
                 android:backgroundTint="@color/blue"
                 android:layout_margin="5dp"/>

@@ -92,18 +92,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
-            <ImageView
-                android:id="@+id/bmiImage"
-                android:layout_width="394dp"
-                android:layout_height="42dp"
-                android:layout_marginBottom="8dp"
-                android:src="@drawable/seekbarpalette"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.456" />
+
 
             <ImageButton
                 android:id="@+id/logout"
@@ -124,8 +113,8 @@
                 android:layout_width="372dp"
                 android:layout_height="37dp"
                 android:layout_marginTop="16dp"
+                android:progressDrawable="@drawable/seekbar_custom"
                 android:progress="40"
-                android:progressDrawable="@android:color/transparent"
                 android:thumb="@drawable/triangle_thumb"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -195,7 +184,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bmiImage"
                 app:layout_constraintVertical_bias="0.002" />
 
             <TextView
