@@ -37,9 +37,6 @@
             android:name=".TrainingPlan"
             android:exported="false" />
         <activity
-            android:name=".steps_tracking"
-            android:exported="false" />
-        <activity
             android:name=".hydration_tracking"
             android:exported="false" />
         <activity
@@ -95,6 +92,9 @@
             android:exported="false" />
         <activity
             android:name=".LogIn"
+            android:exported="false" />
+        <activity
+            android:name=".steps_tracking"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

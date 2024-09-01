@@ -14,7 +14,7 @@ public class HydrationRoom {
 
     private Double drank; // Amount of water consumed (e.g., in liters)
 
-    private LocalDate date;
+    private LocalDate date; // LocalDate field
 
     // Constructors
     public HydrationRoom(Long customerId, Double drank, LocalDate date) {
