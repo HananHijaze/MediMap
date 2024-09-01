@@ -38,7 +38,7 @@ public class Goal extends AppCompatActivity {
         Button nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(v -> {
             // Navigate to the Home page
-            Intent intent = new Intent(Goal.this, Home.class);  // Replace HomeActivity with the actual class for your home page
+            Intent intent = new Intent(Goal.this, build_profile.class);  // Replace HomeActivity with the actual class for your home page
             startActivity(intent);
             finish();  // Optionally finish this activity so the user cannot go back to it
         });

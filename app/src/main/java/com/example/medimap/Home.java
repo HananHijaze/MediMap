@@ -3,9 +3,11 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +34,7 @@ public class Home extends AppCompatActivity {
         });
         // This is a LinearLayout that works like a button.
         // It uses the "onCustomButtonClick" method as its click handler.
-        LinearLayout customButton = findViewById(R.id.customButton);
+        Button customButton = findViewById(R.id.customButton);
         customButton.setOnClickListener(this::onCustomButtonClick);
 
 
@@ -109,8 +111,13 @@ public class Home extends AppCompatActivity {
         MaterialButton leftButton = findViewById(R.id.left);
         leftButton.isCheckable();
         leftButton.setOnClickListener(view -> {
+            SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("userEmail", "Majd");
+            editor.apply();
             Intent in =new Intent(this,Profile.class);
             startActivity(in);
+
         });
 
         //Home implementation
