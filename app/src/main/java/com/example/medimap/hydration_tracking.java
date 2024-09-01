@@ -32,7 +32,7 @@ public class hydration_tracking extends AppCompatActivity {
 
     private void showEditAmountDialog() {
             AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
-            builder.setTitle("Enter Amount");
+            builder.setTitle("Default Water Amount");
 
             // Set up the layout for the dialog
             View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_amount, null);
