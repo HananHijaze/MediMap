@@ -20,6 +20,12 @@ public interface UserApi {
     @GET("api/users/{id}")
     Call<User> getUserById(@Path("id") Long id);
 
+    // Get a user by eMail
+    @GET("api/users/{email}")
+    static Call<User> getUserByEmail(@Path("email") String email) {
+        return null;
+    }
+
     // Create a new user
     @POST("api/users")
     Call<User> createUser(@Body User user);
