@@ -1,5 +1,10 @@
 package com.example.medimap;
 
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -7,9 +12,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.Calendar;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +25,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.medimap.server.StepCountApi;
+
+import retrofit2.Retrofit;
+
 public class steps_tracking extends AppCompatActivity implements SensorEventListener {
+    private StepCountApi stepCountApi;
 
     // Declare variables for SensorManager and the step counter sensor
     private SensorManager mSensorManager = null;
@@ -31,6 +44,7 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
     private ProgressBar progressBar;
     private TextView steps;
     private TextView goal;
+    private Button editGoal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +55,19 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+
         });
+        Retrofit retrofit = RetrofitClient.getClient();
+        stepCountApi = retrofit.create(StepCountApi.class);
+
 
         // Initialize the ProgressBar and TextView from the layout
         progressBar = findViewById(R.id.progressBar);
         steps = findViewById(R.id.steps);
         goal = findViewById(R.id.goal);
+        editGoal = findViewById(R.id.editGoal);
+        editGoal.setOnClickListener(v -> showEditAmountDialog());
+
 
 
         // Initialize SensorManager and get the step counter sensor
@@ -55,10 +76,65 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
 
         // Load the previous step count data from SharedPreferences
         loadData();
+        scheduleDailyReset();
+        // Load and display the saved goal
+        loadGoal();
 
-        // Set up the functionality to reset steps
-        resetSteps();
     }
+
+    private void showEditAmountDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
+        builder.setTitle("New Steps Goal");
+
+        // Set up the layout for the dialog
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_goal, null);
+        builder.setView(dialogView);
+
+        // Find the EditText
+        final EditText input = dialogView.findViewById(R.id.amountInput);
+
+        // Find the buttons in the dialog layout
+        Button addButton = dialogView.findViewById(R.id.Save);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Handle button clicks
+        addButton.setOnClickListener(v -> {
+            String amount = input.getText().toString();
+            if (!amount.isEmpty()) {
+                // Update the TextView
+                goal.setText("Goal: " + amount);
+
+                // Save the new goal to SharedPreferences
+                saveGoal(amount);
+
+                dialog.dismiss();
+            } else {
+                Toast.makeText(this, "Please enter goal", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+    }
+
+    // Method to save the goal in SharedPreferences
+    private void saveGoal(String goal) {
+        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("goal", goal);
+        editor.apply();
+    }
+    // Method to load the goal from SharedPreferences
+    private void loadGoal() {
+        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        String savedGoal = sharedPreferences.getString("goal", "6000"); // Default goal is 6000
+        goal.setText("Goal: " + savedGoal);
+    }
+
+
+
 
     @Override
     protected void onResume() {
@@ -82,6 +158,7 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
     }
 
     @Override
+
     public void onSensorChanged(SensorEvent event) {
         // Check if the event is from the step counter sensor
         if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
@@ -99,26 +176,32 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
         }
     }
 
-    private void resetSteps() {
-        // Set a click listener on the steps TextView to inform the user to long press for resetting steps
-        steps.setOnClickListener(v ->
-                Toast.makeText(steps_tracking.this, "Long tap to reset steps", Toast.LENGTH_SHORT).show()
-        );
+    private void scheduleDailyReset() {
+        // Get an instance of AlarmManager
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        // Set a long-click listener on the steps TextView to reset the step count
-        steps.setOnLongClickListener(v -> {
-            // Reset the previous total steps to the current total steps
-            previousTotalSteps = totalSteps;
+        // Set the alarm to start at midnight
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
 
-            // Reset the TextView and ProgressBar to show 0 steps
-            steps.setText("0");
-            progressBar.setProgress(0);
+        // Create an Intent to broadcast
+        Intent intent = new Intent(this, StepResetReceiver.class);
 
-            // Save the reset step count to SharedPreferences
-            saveData();
-            return true;
-        });
+        // Create a PendingIntent that will perform a broadcast
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        // Set the alarm to repeat daily at midnight
+        if (alarmManager != null) {
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY,
+                    pendingIntent);
+        }
     }
+
 
     private void saveData() {
         // Save the previous total steps to SharedPreferences
@@ -139,4 +222,6 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // No action needed for accuracy changes in step tracking
     }
+
+
 }
