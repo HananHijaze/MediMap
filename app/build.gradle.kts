@@ -35,6 +35,48 @@ android {
 }
 
 dependencies {
+//
+//    // Retrofit dependencies (already present, ensure only one version)
+//    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+//    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+//
+//    // AndroidX and Material Components
+//    implementation("androidx.appcompat:appcompat:1.1.0")
+//    implementation("com.google.android.material:material:1.10.0")
+//
+//    // MPAndroidChart
+//    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+//
+//    // OkHttp for networking and logging (ensure only one logging-interceptor)
+//    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+//    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+//
+//    // OSMdroid for map handling
+//    implementation("org.osmdroid:osmdroid-android:6.1.11")
+//
+//    // Glide for image loading
+//    implementation("com.github.bumptech.glide:glide:4.15.1")
+//    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+//
+//    // Play Services Maps
+//    implementation(libs.play.services.maps)
+//
+//    // Lifecycle components
+//    implementation(libs.lifecycle.livedata.ktx)
+//    implementation(libs.lifecycle.viewmodel.ktx)
+//
+//    // Navigation components
+//    implementation(libs.navigation.fragment)
+//    implementation(libs.navigation.ui)
+//
+//    // ConstraintLayout
+//    implementation(libs.constraintlayout)
+//
+//    // Test dependencies
+//    testImplementation(libs.junit)
+//    androidTestImplementation(libs.ext.junit)
+//    androidTestImplementation(libs.espresso.core)
+    ////////////////////////////////////////////////////
 
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
