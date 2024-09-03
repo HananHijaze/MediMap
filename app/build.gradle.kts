@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.activity)
     implementation ("org.osmdroid:osmdroid-android:6.1.11")
     implementation("androidx.room:room-runtime:2.5.2")
+    implementation(libs.room.common)
     annotationProcessor("androidx.room:room-compiler:2.5.2")
 
     implementation ("com.github.bumptech.glide:glide:4.15.1")
