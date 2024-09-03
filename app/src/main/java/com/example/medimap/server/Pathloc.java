@@ -1,35 +1,28 @@
 package com.example.medimap.server;
 
-
-public class Path {
+public class Pathloc {
 
     private Long id;
     private String name;
     private String description;
     private double startLatitude;
     private double startLongitude;
-    private double endLatitude;
-    private double endLongitude;
-    private double distance;
     private int difficulty;
     private Double rating;
 
-
     // Constructors
-    public Path() {}
-    // Parameterized constructor
-    public Path( String name, String description, double startLatitude, double startLongitude, double endLatitude, double endLongitude, double distance, int difficulty) {
+    public Pathloc() {}
 
+    // Parameterized constructor
+    public Pathloc(String name, String description, double startLatitude, double startLongitude, int difficulty) {
         this.name = name;
         this.description = description;
         this.startLatitude = startLatitude;
         this.startLongitude = startLongitude;
-        this.endLatitude = endLatitude;
-        this.endLongitude = endLongitude;
-        this.distance = distance;
         this.difficulty = difficulty;
         this.rating = null;
     }
+
     // Getters and Setters
 
     public Double getRating() {
@@ -80,30 +73,6 @@ public class Path {
         this.startLongitude = startLongitude;
     }
 
-    public double getEndLatitude() {
-        return endLatitude;
-    }
-
-    public void setEndLatitude(double endLatitude) {
-        this.endLatitude = endLatitude;
-    }
-
-    public double getEndLongitude() {
-        return endLongitude;
-    }
-
-    public void setEndLongitude(double endLongitude) {
-        this.endLongitude = endLongitude;
-    }
-
-    public double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
-
     public int getDifficulty() {
         return difficulty;
     }
@@ -111,6 +80,4 @@ public class Path {
     public void setDifficulty(int difficulty) {
         this.difficulty = difficulty;
     }
-
-
 }
