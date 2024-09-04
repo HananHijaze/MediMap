@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,11 +12,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.UserRoom;
+
 import java.util.Set;
 
 public class build_profile extends AppCompatActivity {
 
     private static final String PREFS_NAME = "UserSignUpData"; // SharedPreferences file name
+    private AppDatabaseRoom appDatabase; // Room database instance
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,29 +33,33 @@ public class build_profile extends AppCompatActivity {
             return insets;
         });
 
-        // Retrieve all user data from SharedPreferences
-        retrieveAndDisplayUserData();
+        // Initialize the Room database instance
+        appDatabase = AppDatabaseRoom.getInstance(this);
 
-        // Simulate loading for 5 seconds
+        // Retrieve all user data from SharedPreferences and save to the database
+        retrieveAndSaveUserDataToDatabase();
+
+        // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent in = new Intent(this, Home.class);
             startActivity(in);
-            finish(); // Optionally finish the MainActivity if you don't want to return to it
+            finish(); // Optionally finish this activity if you don't want to return to it
         }, 5000);
     }
 
-    private void retrieveAndDisplayUserData() {
+    // Method to retrieve user data from SharedPreferences and save to the Room database
+    private void retrieveAndSaveUserDataToDatabase() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-        // Retrieve data
+        // Retrieve data from SharedPreferences
         String fullName = sharedPreferences.getString("fullName", "N/A");
         String email = sharedPreferences.getString("email", "N/A");
         String phone = sharedPreferences.getString("phone", "N/A");
         String address = sharedPreferences.getString("address", "N/A");
         String password = sharedPreferences.getString("password", "N/A");
         String gender = sharedPreferences.getString("gender", "N/A");
-        String height = sharedPreferences.getString("height", "N/A");
-        String weight = sharedPreferences.getString("weight", "N/A");
+        int height = Integer.parseInt(sharedPreferences.getString("height", "0"));
+        int weight = Integer.parseInt(sharedPreferences.getString("weight", "0"));
         String bodyType = sharedPreferences.getString("bodyType", "N/A");
         String dietType = sharedPreferences.getString("dietType", "N/A");
         Set<String> allergies = sharedPreferences.getStringSet("allergies", null);
@@ -72,26 +79,29 @@ public class build_profile extends AppCompatActivity {
             birthdate = sdf.format(date);
         }
 
-        // Display the data in TextViews or other UI components
-     /*   TextView profileSummary = findViewById(R.id.profile_summary);
-        profileSummary.setText(
-                "Full Name: " + fullName + "\n" +
-                        "Email: " + email + "\n" +
-                        "Phone: " + phone + "\n" +
-                        "Address: " + address + "\n" +
-                        "Gender: " + gender + "\n" +
-                        "Height: " + height + " cm\n" +
-                        "Weight: " + weight + " kg\n" +
-                        "Body Type: " + bodyType + "\n" +
-                        "Diet Type: " + dietType + "\n" +
-                        "Allergies: " + (allergies != null ? allergies.toString() : "None") + "\n" +
-                        "Birthdate: " + birthdate + "\n" +
-                        "Meals: " + meals + "\n" +
-                        "Snacks: " + snacks + "\n" +
-                        "Workout Place: " + workoutPlace + "\n" +
-                        "Workout Time: " + workoutTime + "\n" +
-                        "Training Days: " + (trainingDays != null ? trainingDays.toString() : "None") + "\n" +
-                        "Goal: " + goal
-        );*/
+        // Create a new UserRoom object with the retrieved data
+        UserRoom newUser = new UserRoom(
+                email,
+                fullName,
+                password,
+                gender,
+                height,
+                weight,
+                birthdate,
+                bodyType,
+                goal,
+                10000,  // Step count goal (placeholder, modify as needed)
+                3000,   // Hydration goal in mL (placeholder, modify as needed)
+                workoutPlace,
+                dietType,
+                Integer.parseInt(meals),   // Meals per day
+                Integer.parseInt(snacks),  // Snacks per day
+                2000                       // Default water intake (placeholder, modify as needed)
+        );
+
+        // Insert the user data into the Room database asynchronously
+        new Thread(() -> {
+            appDatabase.userDao().insertUser(newUser);
+        }).start();  // Room operations must be done on a background thread
     }
 }
