@@ -131,7 +131,7 @@
                 android:layout_width="345dp"
                 android:layout_height="60dp"
                 android:background="@android:color/transparent"
-                android:text="Gluten-Free"
+                android:text="Paleo"
                 android:textColor="#1775BA"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -152,7 +152,7 @@
                 android:layout_width="363dp"
                 android:layout_height="70dp"
                 android:background="@android:color/transparent"
-                android:text="Dairy-Free"
+                android:text="Balanced"
                 android:textColor="#1775BA"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -173,7 +173,7 @@
                 android:layout_width="350dp"
                 android:layout_height="59dp"
                 android:background="@android:color/transparent"
-                android:text="Pescatarian"
+                android:text="Low Carb"
                 android:textColor="#1775BA"
                 android:textSize="20sp"
                 android:textStyle="bold" />
