@@ -87,7 +87,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Dedicated  place"
+            android:text="Gym"
             android:textColor="#1775BA"
             android:textSize="24sp"
             android:textStyle="bold" />
