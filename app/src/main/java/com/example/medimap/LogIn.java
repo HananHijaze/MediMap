@@ -1,32 +1,37 @@
 package com.example.medimap;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
+import com.example.medimap.server.RetrofitClient;
 import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class LogIn extends AppCompatActivity {
+public class LogIn extends AppCompatActivity
+{
     TextView signUp, forgetPass;
     TextInputEditText email, password;
     Button login;
     UserDao userDao;
-    UserApi userApi;
+    private UserApi userApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +45,13 @@ public class LogIn extends AppCompatActivity {
         signUp = findViewById(R.id.signUp);
         forgetPass = findViewById(R.id.textView);
 
-
-        //1.initialize retrofit instance and creating an implementation of the UserApi interface
-        Retrofit retrofit = RetrofitClient.getClient();
+        // Initialize Retrofit instance and create an implementation of the UserApi interface
+        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
         userApi = retrofit.create(UserApi.class);
 
-        //2.Initialize Room database and UserDao
+        // Initialize Room database and UserDao
         AppDatabaseRoom db = AppDatabaseRoom.getInstance(this);
         userDao = db.userDao();
-
 
         // Setup login button click listener
         login.setOnClickListener(view -> {
@@ -72,19 +75,14 @@ public class LogIn extends AppCompatActivity {
         });
     }
 
-    //////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
 
-    // Function to check login through server
+    // Function to check login through server (With internet)
     private void performLogin() {
         String emailIn = email.getText().toString().trim();
         String passwordIn = password.getText().toString().trim();
 
-        if (emailIn.isEmpty() || passwordIn.isEmpty())
-        {
-            Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+        // Check the inserted fields aren't empty
         if (emailIn.isEmpty() || passwordIn.isEmpty())
         {
             Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
@@ -92,52 +90,63 @@ public class LogIn extends AppCompatActivity {
         }
 
         // Call the API to get the user by email
-        Call<User> call = UserApi.getUserByEmail(emailIn); // Only declare this once
+        Call<User> call = userApi.getUserByEmail(emailIn);
+
         call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful() && response.body() != null) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if (response.isSuccessful() && response.body() != null)
+                {
                     User user = response.body();
 
                     // Check if the password matches
-                    if (user.getPassword().equals(passwordIn)) {
+                    if (user.getPassword().equals(passwordIn))
+                    {
                         Toast.makeText(LogIn.this, "Login successful (server)", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LogIn.this, Home.class);
                         startActivity(intent);
-                    } else {
+                    }
+                    else
+                    {
                         Toast.makeText(LogIn.this, "Incorrect email or password (server)", Toast.LENGTH_SHORT).show();
                     }
-                } else {
+                }
+
+                else
+                {
                     Toast.makeText(LogIn.this, "User not found", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(@NonNull Call<User> call, Throwable t) {
                 Toast.makeText(LogIn.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
-                Log.e("Login Error", t.getMessage());
+                Log.e("Login Error", "Error Message: " + t.getMessage(), t);
             }
         });
     }
 
-
-    // Function to check login locally using Room database
+    // Function to check login locally using Room database (Without internet)
     private void performLocalLogin() {
         String emailIn = email.getText().toString().trim();
         String passwordIn = password.getText().toString().trim();
 
-        if (emailIn.isEmpty() || passwordIn.isEmpty()) {
+        if (emailIn.isEmpty() || passwordIn.isEmpty())
+        {
             Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Fetch user from the Room database
-        UserRoom user = UserDao.getUserByEmail(emailIn);
-        if (user != null && user.getPassword().equals(passwordIn)) {
+        UserRoom user = userDao.getUserByEmail(emailIn); // Corrected access to userDao instance
+        if (user != null && user.getPassword().equals(passwordIn))
+        {
             Toast.makeText(LogIn.this, "Login successful (local)", Toast.LENGTH_SHORT).show();
             Intent in = new Intent(LogIn.this, Home.class);
             startActivity(in);
-        } else {
+        }
+        else
+        {
             Toast.makeText(LogIn.this, "Incorrect email or password (local)", Toast.LENGTH_SHORT).show();
         }
     }
