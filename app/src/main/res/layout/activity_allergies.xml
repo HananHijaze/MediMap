@@ -53,13 +53,15 @@
 
         <!-- Dairy Button -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_dairy"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="8dp"
+            android:background="@drawable/border_unselected"> <!-- Use unselected border initially -->
 
             <Button
                 android:id="@+id/button_dairy"
@@ -74,13 +76,15 @@
 
         <!-- Gluten Button -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_gluten"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="8dp"
+            android:background="@drawable/border_unselected"> <!-- Use unselected border initially -->
 
             <Button
                 android:id="@+id/button_gluten"
@@ -95,13 +99,15 @@
 
         <!-- Nuts Button -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_nuts"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="8dp"
+            android:background="@drawable/border_unselected"> <!-- Use unselected border initially -->
 
             <Button
                 android:id="@+id/button_nuts"
@@ -116,13 +122,15 @@
 
         <!-- Seafood Button -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_seafood"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="8dp"
+            android:background="@drawable/border_unselected"> <!-- Use unselected border initially -->
 
             <Button
                 android:id="@+id/button_seafood"
@@ -137,13 +145,15 @@
 
         <!-- Soy Button -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_soy"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="8dp"
+            android:background="@drawable/border_unselected"> <!-- Use unselected border initially -->
 
             <Button
                 android:id="@+id/button_soy"
@@ -158,13 +168,15 @@
 
         <!-- Eggs Button -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_eggs"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="8dp"
+            android:background="@drawable/border_unselected"> <!-- Use unselected border initially -->
 
             <Button
                 android:id="@+id/button_eggs"
@@ -179,13 +191,15 @@
 
         <!-- None Button -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_none"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            app:cardElevation="8dp"
+            android:background="@drawable/border_unselected"> <!-- Use unselected border initially -->
 
             <Button
                 android:id="@+id/button_none"
