@@ -25,7 +25,9 @@ public interface UserDao {
     UserRoom getUserById(Long userId);
 
     @Query("SELECT * FROM user_table WHERE email = :email LIMIT 1")
-    UserRoom getUserByEmail(String email);
+    static UserRoom getUserByEmail(String email) {
+        return null;
+    }
 
     @Query("DELETE FROM user_table")
     void deleteAllUsers();

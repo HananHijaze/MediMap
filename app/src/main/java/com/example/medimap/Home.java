@@ -133,5 +133,4 @@ public class Home extends AppCompatActivity {
         // This is a LinearLayout that works like a button.
         // It uses the "onCustomButtonClick" method as its click handler.
     }
-
 }

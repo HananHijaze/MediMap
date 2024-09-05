@@ -11,7 +11,7 @@
 
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="2dp"
@@ -54,6 +54,7 @@
         app:startIconDrawable="@drawable/email">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailin"
             android:layout_width="344dp"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -77,11 +78,12 @@
         app:startIconDrawable="@drawable/password">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordin"
             android:layout_width="345dp"
             android:layout_height="55dp"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
-  
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
