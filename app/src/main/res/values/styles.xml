@@ -5,6 +5,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- Apply custom TextInputLayout style globally -->
+        <item name="textInputStyle">@style/CustomTextInputLayout</item>
     </style>
 
     <!-- Custom AlertDialog style -->
@@ -30,6 +33,14 @@
         <item name="colorControlActivated">@color/blue</item>
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Custom TextInputLayout style for blue frame and hint color -->
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/blue</item> <!-- Frame color for TextInputLayout -->
+        <item name="hintTextColor">@color/blue</item>  <!-- Hint color for TextInputLayout -->
+        <item name="boxStrokeWidth">2dp</item> <!-- Width of the outline -->
+        <item name="boxStrokeWidthFocused">2dp</item> <!-- Width when focused -->
     </style>
 
 </resources>

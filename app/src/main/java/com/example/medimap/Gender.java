@@ -46,12 +46,14 @@ public class Gender extends AppCompatActivity {
 
         femaleLayout.setOnClickListener(v -> {
             selectedGender = "Female"; // Set the selected gender to "Female"
-            // Toast.makeText(this, "Female selected", Toast.LENGTH_SHORT).show(); // Show a Toast when Female is selected
+            femaleLayout.setSelected(true); // Mark Female as selected
+            maleLayout.setSelected(false); // Deselect Male
         });
 
         maleLayout.setOnClickListener(v -> {
             selectedGender = "Male"; // Set the selected gender to "Male"
-            // Toast.makeText(this, "Male selected", Toast.LENGTH_SHORT).show(); // Show a Toast when Male is selected
+            maleLayout.setSelected(true); // Mark Male as selected
+            femaleLayout.setSelected(false); // Deselect Female
         });
 
         // Set up the "Next" button to navigate to the next activity
@@ -85,7 +87,7 @@ public class Gender extends AppCompatActivity {
     }
 
     // Function to retrieve and show the saved gender in a Toast for verification
-   private void retrieveAndShowGender() {
+    private void retrieveAndShowGender() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String savedGender = sharedPreferences.getString("gender", "No gender selected");
 
