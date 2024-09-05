@@ -57,7 +57,7 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
             return insets;
 
         });
-        Retrofit retrofit = RetrofitClient.getClient();
+        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
         stepCountApi = retrofit.create(StepCountApi.class);
 
 

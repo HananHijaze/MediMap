@@ -49,6 +49,7 @@ public class Allergies extends AppCompatActivity {
         findViewById(R.id.button_seafood).setOnClickListener(v -> toggleAllergySelection("Seafood"));
         findViewById(R.id.button_soy).setOnClickListener(v -> toggleAllergySelection("Soy"));
         findViewById(R.id.button_eggs).setOnClickListener(v -> toggleAllergySelection("Eggs"));
+        findViewById(R.id.button_none).setOnClickListener(v -> clearAllergiesSelection());  // "None" button functionality
 
         // Set up the "Next" button to navigate to the next activity
         Button nextButton = findViewById(R.id.nextButton);
@@ -60,7 +61,7 @@ public class Allergies extends AppCompatActivity {
                 intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
                 startActivity(intent);
             } else {
-                Toast.makeText(Allergies.this, "Please select at least one allergy", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Allergies.this, "Please select at least one allergy or 'None'", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -73,11 +74,18 @@ public class Allergies extends AppCompatActivity {
 
     // Function to toggle the selection of an allergy
     private void toggleAllergySelection(String allergy) {
+        selectedAllergies.remove("None"); // Remove "None" if other allergies are selected
         if (selectedAllergies.contains(allergy)) {
             selectedAllergies.remove(allergy);
         } else {
             selectedAllergies.add(allergy);
         }
+    }
+
+    // Function to clear all selected allergies when "None" is selected
+    private void clearAllergiesSelection() {
+        selectedAllergies.clear();  // Clear all selections
+        selectedAllergies.add("None");  // Add "None" to the selected allergies
     }
 
     // Function to save the selected allergies in SharedPreferences
@@ -95,6 +103,6 @@ public class Allergies extends AppCompatActivity {
         Set<String> savedAllergies = sharedPreferences.getStringSet("allergies", new HashSet<>());
 
         // Optional: Display the saved allergies in a Toast
-       // Toast.makeText(this, "Allergies: " + savedAllergies.toString(), Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Allergies: " + savedAllergies.toString(), Toast.LENGTH_SHORT).show();
     }
 }

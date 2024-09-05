@@ -107,8 +107,8 @@ public class Signup extends AppCompatActivity {
         if (TextUtils.isEmpty(passwordEditText.getText())) {
             passwordEditText.setError("Password is required");
             isValid = false;
-        } else if (passwordEditText.getText().toString().length() < 8) {
-            passwordEditText.setError("Password must be at least 8 characters long");
+        } else if (passwordEditText.getText().toString().length() > 8) {
+            passwordEditText.setError("Password must be Maximum 8 characters long");
             isValid = false;
         }
 

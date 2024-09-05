@@ -57,7 +57,7 @@ public class Profile extends AppCompatActivity {
             Intent in = new Intent(this, LogIn.class);
             startActivity(in);
         });
-
+        //settings button
         settings = findViewById(R.id.settings);
         settings.setOnClickListener(view -> {
             Intent in = new Intent(this, Settings.class);
