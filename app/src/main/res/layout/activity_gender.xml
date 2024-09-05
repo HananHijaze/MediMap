@@ -38,10 +38,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/linearLayoutFemale"
         android:layout_width="360dp"
         android:layout_height="120dp"
-        android:background="@drawable/gender_selector"
+        android:background="@drawable/border_unselected"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="8dp"
@@ -74,10 +74,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/linearLayoutMale"
         android:layout_width="360dp"
         android:layout_height="120dp"
-        android:background="@drawable/gender_selector"
+        android:background="@drawable/border_unselected"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="8dp"
