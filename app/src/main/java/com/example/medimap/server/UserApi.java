@@ -20,7 +20,7 @@ public interface UserApi {
     @GET("api/users/{id}")
     Call<User> getUserById(@Path("id") Long id);
 
-    // Get a user by eMail
+    // Corrected: Get a user by email
     @GET("api/users/{email}")
     Call<User> getUserByEmail(@Path("email") String email);
 
