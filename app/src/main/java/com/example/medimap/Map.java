@@ -30,6 +30,7 @@ import org.osmdroid.views.overlay.Marker;
 
 import com.example.medimap.server.Pathloc;
 import com.example.medimap.server.PathlocApi;
+import com.example.medimap.server.RetrofitClient;
 
 import java.util.List;
 
@@ -169,7 +170,7 @@ public class Map extends AppCompatActivity {
     }
 
     private void addNewPathlocToServer(Pathloc newPathloc) {
-        pathlocApi = RetrofitClient.getClient().create(PathlocApi.class);
+        pathlocApi = RetrofitClient.getRetrofitInstance().create(PathlocApi.class);
         Call<Pathloc> call = pathlocApi.createPath(newPathloc);
         call.enqueue(new Callback<Pathloc>() {
             @Override
@@ -207,7 +208,7 @@ public class Map extends AppCompatActivity {
     }
 
     private void getAllPathsFromServer() {
-        pathlocApi = RetrofitClient.getClient().create(PathlocApi.class);
+        pathlocApi = RetrofitClient.getRetrofitInstance().create(PathlocApi.class);
 
         Call<List<Pathloc>> call = pathlocApi.getAllPaths();
         call.enqueue(new Callback<List<Pathloc>>() {

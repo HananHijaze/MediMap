@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 app:hintEnabled="false">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="textEmailAddress"
@@ -63,6 +64,7 @@
                 android:layout_height="wrap_content"
                 app:hintEnabled="false">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
@@ -79,6 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/gender"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
@@ -95,6 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/height"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
@@ -110,6 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/weight"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="numberDecimal"
@@ -125,6 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/birthdate"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="date"
@@ -140,6 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bodytype"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
@@ -155,6 +162,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/goal"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
@@ -170,6 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/stepcountgoal"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
@@ -185,6 +194,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/hydrationgoal"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
@@ -200,6 +210,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/workoutlocation"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
@@ -215,6 +226,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/diettype"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
@@ -230,6 +242,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/allergies"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="text"
@@ -245,6 +258,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/mealsperday"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
@@ -260,6 +274,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/snacksperday"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"
@@ -275,6 +290,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/waterdefault"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="number"

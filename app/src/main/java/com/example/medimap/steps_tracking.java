@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import com.example.medimap.server.RetrofitClient;
 
 import com.example.medimap.server.StepCountApi;
 
@@ -57,7 +58,7 @@ public class steps_tracking extends AppCompatActivity implements SensorEventList
             return insets;
 
         });
-        Retrofit retrofit = RetrofitClient.getClient();
+        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
         stepCountApi = retrofit.create(StepCountApi.class);
 
 
