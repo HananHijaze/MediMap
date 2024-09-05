@@ -40,10 +40,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.667" />
 
+    <!-- Home workout option -->
     <LinearLayout
+        android:id="@+id/homeLayout"
         android:layout_width="380dp"
         android:layout_height="100dp"
-        android:background="@drawable/custom_linear_layout"
+        android:background="@drawable/border_unselected"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="8dp"
@@ -64,14 +66,14 @@
             android:textColor="#1775BA"
             android:textSize="24sp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
+    <!-- Gym workout option -->
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/gymLayout"
         android:layout_width="380dp"
         android:layout_height="100dp"
-        android:background="@drawable/custom_linear_layout"
+        android:background="@drawable/border_unselected"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="8dp"
@@ -91,7 +93,6 @@
             android:textColor="#1775BA"
             android:textSize="24sp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
     <TextView
@@ -99,8 +100,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="where do you usually
-        workout?"
+        android:text="Where do you usually workout?"
         android:textColor="@color/blue"
         android:textSize="28sp"
         android:textStyle="bold"
