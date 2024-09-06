@@ -14,23 +14,23 @@ import retrofit2.http.Path;
 public interface MealPlanApi {
 
     // Get a list of all meal plans
-    @GET("api/mealplans")
+    @GET("mealplans")
     Call<List<MealPlan>> getAllMealPlans();
 
     // Get meal plan by ID
-    @GET("api/mealplans/{id}")
+    @GET("mealplans/{id}")
     Call<MealPlan> getMealPlanById(@Path("id") Long id);
 
     // Create a new meal plan
-    @POST("api/mealplans")
+    @POST("mealplans")
     Call<MealPlan> createMealPlan(@Body MealPlan mealPlan);
 
     // Update an existing meal plan
-    @PUT("api/mealplans/{id}")
+    @PUT("mealplans/{id}")
     Call<MealPlan> updateMealPlan(@Path("id") Long id, @Body MealPlan mealPlan);
 
     // Delete a meal plan by ID
-    @DELETE("api/mealplans/{id}")
+    @DELETE("mealplans/{id}")
     Call<Void> deleteMealPlan(@Path("id") Long id);
 }
 
