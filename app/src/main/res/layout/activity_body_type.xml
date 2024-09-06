@@ -24,38 +24,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.02" />
 
-    <LinearLayout
-        android:id="@+id/normal"
-        android:layout_width="350dp"
-        android:layout_height="150dp"
-        android:background="@drawable/custom_linear_layout"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.465">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="Normal"
-            android:textColor="@color/blue"
-            android:textSize="24dp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="130dp"
-            android:layout_weight="1"
-            android:src="@drawable/ideal" />
-
-    </LinearLayout>
-
     <TextView
         android:id="@+id/title"
         android:layout_width="300dp"
@@ -76,7 +44,7 @@
         android:id="@+id/skinny"
         android:layout_width="350dp"
         android:layout_height="150dp"
-        android:background="@drawable/custom_linear_layout"
+        android:background="@drawable/border_unselected"
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"
@@ -104,6 +72,70 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/normal"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:background="@drawable/border_unselected"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.465">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Normal"
+            android:textColor="@color/blue"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="130dp"
+            android:layout_weight="1"
+            android:src="@drawable/ideal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/heavy"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:background="@drawable/border_unselected"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.702">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Heavier"
+            android:textColor="@color/blue"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="130dp"
+            android:layout_weight="1"
+            android:src="@drawable/flabby_heavier" />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/nextButton"
         android:layout_width="100dp"
@@ -120,37 +152,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.848" />
-
-    <LinearLayout
-        android:id="@+id/heavy"
-        android:layout_width="350dp"
-        android:layout_height="150dp"
-        android:background="@drawable/custom_linear_layout"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.702">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="heavier"
-            android:textColor="@color/blue"
-            android:textSize="24dp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="130dp"
-            android:layout_weight="1"
-            android:src="@drawable/flabby_heavier" />
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

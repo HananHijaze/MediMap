@@ -21,9 +21,11 @@ public interface UserApi {
     @GET("users/{id}")
     Call<User> getUserById(@Path("id") Long id);
 
+
     // Get a user by email
     @GET("users/email")  // Updated to avoid conflict with getUserById
     Call<User> findByEmail(@Query("email") String email);
+
 
     // Create a new user
     @POST("users")
