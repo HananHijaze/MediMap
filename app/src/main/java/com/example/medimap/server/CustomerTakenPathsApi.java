@@ -14,22 +14,22 @@ import retrofit2.http.Path;
 public interface CustomerTakenPathsApi {
 
     // Get a list of all customer taken paths
-    @GET("api/customer-taken-paths")
+    @GET("customer-taken-paths")
     Call<List<CustomerTakenPaths>> getAllCustomerTakenPaths();
 
     // Get a customer taken path by ID
-    @GET("api/customer-taken-paths/{id}")
+    @GET("customer-taken-paths/{id}")
     Call<CustomerTakenPaths> getCustomerTakenPathById(@Path("id") Long id);
 
     // Create a new customer taken path
-    @POST("api/customer-taken-paths")
+    @POST("customer-taken-paths")
     Call<CustomerTakenPaths> createCustomerTakenPath(@Body CustomerTakenPaths customerTakenPaths);
 
     // Update an existing customer taken path
-    @PUT("api/customer-taken-paths/{id}")
+    @PUT("customer-taken-paths/{id}")
     Call<CustomerTakenPaths> updateCustomerTakenPath(@Path("id") Long id, @Body CustomerTakenPaths customerTakenPaths);
 
     // Delete a customer taken path by ID
-    @DELETE("api/customer-taken-paths/{id}")
+    @DELETE("customer-taken-paths/{id}")
     Call<Void> deleteCustomerTakenPath(@Path("id") Long id);
 }

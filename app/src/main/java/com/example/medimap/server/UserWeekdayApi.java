@@ -13,22 +13,22 @@ import retrofit2.http.Path;
 public interface UserWeekdayApi {
 
     // Get a list of all user weekdays
-    @GET("api/userweekdays")
+    @GET("userweekdays")
     Call<List<UserWeekday>> getAllUserWeekdays();
 
     // Get a user weekday by ID
-    @GET("api/userweekdays/{id}")
+    @GET("userweekdays/{id}")
     Call<UserWeekday> getUserWeekdayById(@Path("id") Long id);
 
     // Create a new user weekday
-    @POST("api/userweekdays")
+    @POST("userweekdays")
     Call<UserWeekday> createUserWeekday(@Body UserWeekday userWeekday);
 
     // Update an existing user weekday
-    @PUT("api/userweekdays/{id}")
+    @PUT("userweekdays/{id}")
     Call<UserWeekday> updateUserWeekday(@Path("id") Long id, @Body UserWeekday userWeekday);
 
     // Delete a user weekday by ID
-    @DELETE("api/userweekdays/{id}")
+    @DELETE("userweekdays/{id}")
     Call<Void> deleteUserWeekday(@Path("id") Long id);
 }

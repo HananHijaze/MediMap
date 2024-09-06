@@ -1,6 +1,5 @@
 package com.example.medimap.roomdb;
 
-
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -24,6 +23,7 @@ public interface UserDao {
     @Query("SELECT * FROM user_table WHERE id = :userId LIMIT 1")
     UserRoom getUserById(Long userId);
 
+    // Removed static keyword to allow Room to implement this method
     @Query("SELECT * FROM user_table WHERE email = :email LIMIT 1")
     UserRoom getUserByEmail(String email);
 
