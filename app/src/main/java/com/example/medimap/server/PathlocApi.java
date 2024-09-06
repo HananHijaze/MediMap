@@ -8,7 +8,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import retrofit2.http.Path;  // Correct import for @Path annotation
+import retrofit2.http.Path;
 
 public interface PathlocApi {
 

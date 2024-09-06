@@ -56,7 +56,7 @@ public class UserApiService {
 
     // Get a user by email
     public void getUserByEmail(String email, final UserCallback<User> callback) {
-        Call<User> call = userApi.getUserByEmail(email);
+        Call<User> call = userApi.findByEmail(email);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
