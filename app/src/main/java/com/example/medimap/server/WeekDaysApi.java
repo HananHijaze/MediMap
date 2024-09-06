@@ -14,22 +14,22 @@ import retrofit2.http.Path;
 public interface WeekDaysApi {
 
     // Get a list of all weekdays
-    @GET("api/weekdays")
+    @GET("weekdays")
     Call<List<WeekDays>> getAllWeekDays();
 
     // Get a weekday by ID
-    @GET("api/weekdays/{id}")
+    @GET("weekdays/{id}")
     Call<WeekDays> getWeekDayById(@Path("id") Long id);
 
     // Create a new weekday
-    @POST("api/weekdays")
+    @POST("weekdays")
     Call<WeekDays> createWeekDay(@Body WeekDays weekDays);
 
     // Update an existing weekday
-    @PUT("api/weekdays/{id}")
+    @PUT("weekdays/{id}")
     Call<WeekDays> updateWeekDay(@Path("id") Long id, @Body WeekDays weekDays);
 
     // Delete a weekday by ID
-    @DELETE("api/weekdays/{id}")
+    @DELETE("weekdays/{id}")
     Call<Void> deleteWeekDay(@Path("id") Long id);
 }
