@@ -50,11 +50,11 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
 
-        <!-- Meals Buttons -->
+        <!-- 2 Meals Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
+            android:background="@drawable/border_unselected"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
@@ -71,10 +71,11 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <!-- 3 Meals Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
+            android:background="@drawable/border_unselected"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
@@ -91,10 +92,11 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <!-- 4 Meals Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
+            android:background="@drawable/border_unselected"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
@@ -138,11 +140,11 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
 
-        <!-- Snacks Buttons -->
+        <!-- 0 Snacks Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
+            android:background="@drawable/border_unselected"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
@@ -159,11 +161,12 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <!-- 1 Snack Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/custom_linear_layout"
+            android:background="@drawable/border_unselected"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp">
@@ -179,10 +182,11 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <!-- 2 Snacks Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/custom_linear_layout"
+            android:background="@drawable/border_unselected"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
@@ -212,9 +216,8 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/snackButtonsLayout"
-        app:layout_constraintVertical_bias="0.094" />
+        app:layout_constraintVertical_bias="0.173" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
-        android:text="Pick the your preferred training days"
+        android:text="Pick your preferred training days"
         android:textAlignment="center"
         android:textColor="@color/blue"
         android:textSize="28sp"
@@ -61,6 +61,7 @@
         android:id="@+id/sunday"
         android:layout_width="79dp"
         android:layout_height="78dp"
+        android:background="@drawable/border_unselected"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,6 +85,7 @@
         android:id="@+id/monday"
         android:layout_width="79dp"
         android:layout_height="78dp"
+        android:background="@drawable/border_unselected"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -107,6 +109,7 @@
         android:id="@+id/tuesday"
         android:layout_width="79dp"
         android:layout_height="78dp"
+        android:background="@drawable/border_unselected"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -130,6 +133,7 @@
         android:id="@+id/wednesday"
         android:layout_width="79dp"
         android:layout_height="78dp"
+        android:background="@drawable/border_unselected"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -153,6 +157,7 @@
         android:id="@+id/thursday"
         android:layout_width="79dp"
         android:layout_height="78dp"
+        android:background="@drawable/border_unselected"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -176,6 +181,7 @@
         android:id="@+id/friday"
         android:layout_width="79dp"
         android:layout_height="78dp"
+        android:background="@drawable/border_unselected"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -198,6 +204,7 @@
         android:id="@+id/saturday"
         android:layout_width="79dp"
         android:layout_height="78dp"
+        android:background="@drawable/border_unselected"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -215,6 +222,5 @@
             android:textSize="25dp"
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
