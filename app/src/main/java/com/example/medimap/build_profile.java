@@ -37,7 +37,7 @@ public class build_profile extends AppCompatActivity {
         appDatabase = AppDatabaseRoom.getInstance(this);
 
         // Retrieve all user data from SharedPreferences and save to the database
-       // retrieveAndSaveUserDataToDatabase();
+       retrieveAndSaveUserDataToDatabase();
 
         // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
