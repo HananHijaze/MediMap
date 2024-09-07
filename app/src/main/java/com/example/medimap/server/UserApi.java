@@ -17,13 +17,12 @@ public interface UserApi {
     @GET("users")
     Call<List<User>> getAllUsers();
 
-    // Get a user by ID
+    // Get user by ID using @Path
     @GET("users/{id}")
     Call<User> getUserById(@Path("id") Long id);
 
-
-    // Get a user by email
-    @GET("users/email")  // Updated to avoid conflict with getUserById
+    // Get a user by email using @Path
+    @GET("users/email")
     Call<User> findByEmail(@Query("email") String email);
 
 

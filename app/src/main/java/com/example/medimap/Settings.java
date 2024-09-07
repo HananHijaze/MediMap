@@ -47,7 +47,7 @@
             String email = sharedPreferences.getString("email", "user1@example.com");  // Default to this if no email
 
             // Make the API call to get the user by email
-            Call<User> call = userApi.getUserById(1L);  // Use the retrieved email
+            Call<User> call = userApi.getUserById(1L);
 
 
             call.enqueue(new Callback<User>() {

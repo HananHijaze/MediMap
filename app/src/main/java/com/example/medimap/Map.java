@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,28 +16,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import com.example.medimap.server.Pathloc;
+import com.example.medimap.server.PathlocApi;
+import com.example.medimap.server.RetrofitClient;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-
-import com.example.medimap.server.Pathloc;
-import com.example.medimap.server.PathlocApi;
-
-import com.example.medimap.server.RetrofitClient;
 
 import java.util.List;
 
@@ -54,16 +49,11 @@ public class Map extends AppCompatActivity implements LocationListener {
     private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
     private MapView mapView;
-    private CardView locationCardView;
-    private TextView locationNameTextView;
-    private TextView locationDescriptionTextView;
-    private TextView locationDifficultyTextView;
-    private TextView locationRatingTextView;
-    private LocationManager locationManager;
     private FloatingActionButton fabMyLocation;
-    private Location userLocation;
-    private PathlocApi pathlocApi;
     private ImageButton addLocationButton;
+    private LocationManager locationManager;
+    private PathlocApi pathlocApi;
+    private Location userLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +62,7 @@ public class Map extends AppCompatActivity implements LocationListener {
 
         initializeUI();
         checkNetworkAndLocationAvailability();
+        fetchAndPinPathsFromServer();
     }
 
     private void initializeUI() {
@@ -81,20 +72,14 @@ public class Map extends AppCompatActivity implements LocationListener {
         IMapController mapController = mapView.getController();
         mapController.setZoom(15.0);
 
-        locationCardView = findViewById(R.id.locationCardView);
-        locationNameTextView = findViewById(R.id.locationNameTextView);
-        locationDescriptionTextView = findViewById(R.id.locationDescriptionTextView);
-        locationDifficultyTextView = findViewById(R.id.locationDifficultyTextView);
-        locationRatingTextView = findViewById(R.id.locationRatingTextView);
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         fabMyLocation = findViewById(R.id.fab_my_location);
         fabMyLocation.setOnClickListener(this::recenterMapOnUserLocation);
 
         addLocationButton = findViewById(R.id.addLocationButton);
-
         addLocationButton.setOnClickListener(v -> showAddLocationDialog());
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        pathlocApi = RetrofitClient.getRetrofitInstance().create(PathlocApi.class);
     }
 
     private void checkNetworkAndLocationAvailability() {
@@ -105,16 +90,6 @@ public class Map extends AppCompatActivity implements LocationListener {
         } else {
             Log.d(TAG, "No internet connection.");
             Toast.makeText(this, "No internet connection.", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void recenterMapOnUserLocation(View view) {
-        if (userLocation != null) {
-            GeoPoint userGeoPoint = new GeoPoint(userLocation.getLatitude(), userLocation.getLongitude());
-            mapView.getController().setCenter(userGeoPoint);
-            Toast.makeText(this, "Returning to your location", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "User location not available", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -132,7 +107,6 @@ public class Map extends AppCompatActivity implements LocationListener {
             showGPSDisabledDialog();
         } else {
             requestLocationUpdates();
-            fetchAndPinPathsFromServer(); // Fetch and pin paths when network is available
         }
     }
 
@@ -159,26 +133,17 @@ public class Map extends AppCompatActivity implements LocationListener {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        requestLocationUpdates();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        locationManager.removeUpdates(this);
-    }
-
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        userLocation = location; // Update the user location
-        fetchUserLocation(); // Pin user's location on the map
+    private void recenterMapOnUserLocation(View view) {
+        if (userLocation != null) {
+            GeoPoint userGeoPoint = new GeoPoint(userLocation.getLatitude(), userLocation.getLongitude());
+            mapView.getController().setCenter(userGeoPoint);
+            Toast.makeText(this, "Returning to your location", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "User location not available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void fetchAndPinPathsFromServer() {
-        pathlocApi = RetrofitClient.getRetrofitInstance().create(PathlocApi.class);
         Call<List<Pathloc>> call = pathlocApi.getAllPaths();
         call.enqueue(new Callback<List<Pathloc>>() {
             @Override
@@ -210,11 +175,7 @@ public class Map extends AppCompatActivity implements LocationListener {
         pathMarker.setTitle(path.getName());
 
         pathMarker.setOnMarkerClickListener((marker, mapView) -> {
-            locationNameTextView.setText(path.getName());
-            locationDescriptionTextView.setText(path.getDescription());
-            locationDifficultyTextView.setText("Difficulty: " + path.getDifficulty());
-            locationRatingTextView.setText("Rating: " + (path.getRating() != null ? path.getRating() : "N/A"));
-            locationCardView.setVisibility(View.VISIBLE);
+            Toast.makeText(Map.this, "Selected Path: " + path.getName(), Toast.LENGTH_SHORT).show();
             return true;
         });
 
@@ -222,28 +183,10 @@ public class Map extends AppCompatActivity implements LocationListener {
         mapView.invalidate();
     }
 
-    private void fetchUserLocation() {
-        try {
-            if (userLocation != null) {
-                GeoPoint userGeoPoint = new GeoPoint(userLocation.getLatitude(), userLocation.getLongitude());
-                Marker userMarker = new Marker(mapView);
-                userMarker.setPosition(userGeoPoint);
-                userMarker.setIcon(getResources().getDrawable(R.drawable.address));
-                userMarker.setTitle("Your Location");
-                mapView.getOverlays().add(userMarker);
-                mapView.getController().setCenter(userGeoPoint);
-                mapView.invalidate();
-            } else {
-                Toast.makeText(this, "Unable to determine your location. Ensure GPS is enabled.", Toast.LENGTH_LONG).show();
-            }
-        } catch (SecurityException e) {
-            Log.e(TAG, "Location permission not granted.", e);
-        }
-    }
-
     private void showAddLocationDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add New Location");
+
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_location, null);
         builder.setView(dialogView);
 
@@ -276,47 +219,30 @@ public class Map extends AppCompatActivity implements LocationListener {
     private void addNewLocation(String locationName, String difficulty) {
         if (userLocation != null) {
             GeoPoint userGeoPoint = new GeoPoint(userLocation.getLatitude(), userLocation.getLongitude());
-            Drawable customMarkerIcon = ContextCompat.getDrawable(this, R.drawable.ic_location);
-            int difficultyInt = convertDifficultyToInt(difficulty);
+            int difficultyLevel = convertDifficultyToInt(difficulty);
 
-            Marker newMarker = new Marker(mapView);
-            newMarker.setPosition(userGeoPoint);
-            newMarker.setIcon(customMarkerIcon);
-            newMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            newMarker.setTitle(locationName);
-            newMarker.setSubDescription("Difficulty: " + difficulty);
+            Pathloc newPathloc = new Pathloc(locationName, "User-added location", userLocation.getLatitude(), userLocation.getLongitude(), difficultyLevel);
 
-            newMarker.setOnMarkerClickListener((marker, mapView) -> {
-                displayLocationData(locationName, "Difficulty: " + difficulty, marker.getPosition());
-
-                Pathloc newPathloc = new Pathloc(locationName, "Location Added By User", userLocation.getLatitude(), userLocation.getLongitude(), difficultyInt);
-                pathlocApi.createPath(newPathloc).enqueue(new Callback<Pathloc>() {
-                    @Override
-                    public void onResponse(Call<Pathloc> call, Response<Pathloc> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(Map.this, "Path added successfully!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.d("Pathloc", "Failed to add path. Response code: " + response.code());
-                            try {
-                                Log.d("Pathloc", "Error: " + response.errorBody().string());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
+            pathlocApi.createPath(newPathloc).enqueue(new Callback<Pathloc>() {
+                @Override
+                public void onResponse(Call<Pathloc> call, Response<Pathloc> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(Map.this, "Location added successfully!", Toast.LENGTH_SHORT).show();
+                        pinPathOnMap(response.body());
+                    } else {
+                        Log.e(TAG, "Failed to add location. Code: " + response.code());
+                        Toast.makeText(Map.this, "Failed to add location", Toast.LENGTH_LONG).show();
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<Pathloc> call, Throwable t) {
-                        Toast.makeText(Map.this, "Failed to add location: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-                return true;
+                @Override
+                public void onFailure(Call<Pathloc> call, Throwable t) {
+                    Log.e(TAG, "Error occurred: " + t.getMessage(), t);
+                    Toast.makeText(Map.this, "Error adding location: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
             });
-
-            mapView.getOverlays().add(newMarker);
-            mapView.invalidate();
         } else {
-            Toast.makeText(this, "User location not available. Ensure GPS is enabled.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "User location not available.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -333,10 +259,21 @@ public class Map extends AppCompatActivity implements LocationListener {
         }
     }
 
-    private void displayLocationData(String locationName, String difficulty, GeoPoint position) {
-        locationNameTextView.setText(locationName);
-        locationDifficultyTextView.setText(difficulty);
-        locationDescriptionTextView.setText("Lat: " + position.getLatitude() + " Lon: " + position.getLongitude());
-        locationCardView.setVisibility(View.VISIBLE);
+    @Override
+    public void onLocationChanged(Location location) {
+        userLocation = location; // Update the user's location
+        Log.d(TAG, "User location updated: " + location.getLatitude() + ", " + location.getLongitude());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        requestLocationUpdates();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(this);
     }
 }
