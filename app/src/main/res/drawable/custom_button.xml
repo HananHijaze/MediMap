@@ -8,7 +8,7 @@
     </item>
     <item android:gravity="center">
         <bitmap
-            android:src="@drawable/waterbottle"
+            android:src="@drawable/waterbottle2"
             android:gravity="center"/>
     </item>
 </layer-list>
