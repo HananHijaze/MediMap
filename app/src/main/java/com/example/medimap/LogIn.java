@@ -1,6 +1,7 @@
 package com.example.medimap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -55,6 +56,12 @@ public class LogIn extends AppCompatActivity
 
         // Setup login button click listener
         login.setOnClickListener(view -> {
+            SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            String email1 = email.getText().toString(); // Replace with the actual email
+            editor.putString("email_key", email1);
+            editor.apply(); // Apply changes asynchronously
+
             if (NetworkUtils.isNetworkAvailable(LogIn.this)) {
                 performLogin(); // Call the server login function
             } else {
@@ -150,4 +157,5 @@ public class LogIn extends AppCompatActivity
             Toast.makeText(LogIn.this, "Incorrect email or password (local)", Toast.LENGTH_SHORT).show();
         }
     }
+
 }
