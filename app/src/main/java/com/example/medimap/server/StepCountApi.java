@@ -3,6 +3,7 @@ package com.example.medimap.server;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -24,4 +25,7 @@ public interface StepCountApi {
 
     @GET("stepcount")
     Call<List<StepCount>> getStepCountsByCustomerId(@Query("customerId") Long customerId);
+
+    @DELETE("stepcount/{id}")
+    Call<Void> deleteStepCount(@Path("id") Long id);
 }
