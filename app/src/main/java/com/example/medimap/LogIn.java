@@ -97,7 +97,7 @@ public class LogIn extends AppCompatActivity
         }
 
         // Call the API to get the user by email
-        Call<User> call = userApi.getUserByEmail(emailIn);
+        Call<User> call = userApi.findByEmail(emailIn);
 
         call.enqueue(new Callback<User>() {
             @Override

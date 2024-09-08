@@ -6,7 +6,8 @@
     android:background="@drawable/b2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DietType">
+    tools:context=".DietType"
+    >
 
     <ProgressBar
         android:id="@+id/circularProgressBar"
@@ -52,17 +53,19 @@
         app:layout_constraintTop_toBottomOf="@id/questionText">
 
         <!-- Vegetarian Diet Button -->
+
+        <!-- Vegan Diet Button -->
         <LinearLayout
-            android:id="@+id/button_vegetarian"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/border_unselected"
+            android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp">
 
             <Button
+                android:id="@+id/button_vegetarian"
                 android:layout_width="343dp"
                 android:layout_height="60dp"
                 android:background="@android:color/transparent"
@@ -72,18 +75,17 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Vegan Diet Button -->
         <LinearLayout
-            android:id="@+id/button_vegan"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/border_unselected"
+            android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp">
 
             <Button
+                android:id="@+id/button_vegan"
                 android:layout_width="345dp"
                 android:layout_height="59dp"
                 android:background="@android:color/transparent"
@@ -95,16 +97,16 @@
 
         <!-- Keto Diet Button -->
         <LinearLayout
-            android:id="@+id/button_keto"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/border_unselected"
+            android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp">
 
             <Button
+                android:id="@+id/button_keto"
                 android:layout_width="346dp"
                 android:layout_height="58dp"
                 android:background="@android:color/transparent"
@@ -116,16 +118,16 @@
 
         <!-- Gluten-Free Diet Button -->
         <LinearLayout
-            android:id="@+id/button_glutenfree"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/border_unselected"
+            android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp">
 
             <Button
+                android:id="@+id/button_glutenfree"
                 android:layout_width="345dp"
                 android:layout_height="60dp"
                 android:background="@android:color/transparent"
@@ -137,16 +139,16 @@
 
         <!-- Dairy-Free Diet Button -->
         <LinearLayout
-            android:id="@+id/button_dairyfree"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/border_unselected"
+            android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp">
 
             <Button
+                android:id="@+id/button_dairyfree"
                 android:layout_width="363dp"
                 android:layout_height="70dp"
                 android:background="@android:color/transparent"
@@ -158,16 +160,16 @@
 
         <!-- Pescatarian Diet Button -->
         <LinearLayout
-            android:id="@+id/button_pescatarian"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/border_unselected"
+            android:background="@drawable/custom_linear_layout"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp">
 
             <Button
+                android:id="@+id/button_pescatarian"
                 android:layout_width="350dp"
                 android:layout_height="59dp"
                 android:background="@android:color/transparent"

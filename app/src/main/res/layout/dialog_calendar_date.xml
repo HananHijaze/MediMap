@@ -3,6 +3,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
+    android:background="@color/white"
     android:padding="12dp">
 
     <LinearLayout
@@ -14,6 +15,7 @@
             android:id="@+id/yearSpinner"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:background="@color/white"
             android:layout_marginTop="8dp"
             android:spinnerMode="dropdown" />
 

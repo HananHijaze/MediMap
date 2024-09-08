@@ -13,6 +13,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="192dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_edit"
         android:gravity="center"
@@ -32,11 +33,12 @@
         android:id="@+id/water"
         android:layout_width="200dp"
         android:layout_height="300dp"
+        android:layout_marginTop="12dp"
         android:layout_weight="1"
         android:background="@drawable/custom_linear_layout"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/add"
+        app:layout_constraintBottom_toTopOf="@+id/addWaterBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,18 +46,19 @@
         app:layout_constraintVertical_bias="0.575">
 
         <ImageView
-            android:id="@+id/waterImage"
+            android:id="@+id/waterBottle"
             android:layout_width="150dp"
             android:layout_height="250dp"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            android:src="@drawable/waterbottle2"/>
 
         <TextView
-            android:id="@+id/mlCountText"
+            android:id="@+id/waterOutput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="300ml / 3000ml"
             android:textColor="@color/blue"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -73,7 +76,7 @@
 
 
     <Button
-        android:id="@+id/add"
+        android:id="@+id/addWaterBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -88,7 +91,8 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.689"
-        app:strokeColor="@color/blue" />
+        app:layout_constraintVertical_bias="0.679"
+        app:strokeColor="@color/blue"
+        app:strokeWidth="1dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

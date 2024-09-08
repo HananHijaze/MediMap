@@ -39,11 +39,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.136" />
 
+    <!-- Gain Muscle Layout -->
     <LinearLayout
         android:id="@+id/option_gain_muscle"
         android:layout_width="380dp"
         android:layout_height="120dp"
-        android:background="@drawable/custom_linear_layout"
+        android:background="@drawable/border_unselected"
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"
@@ -59,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Gain muscle"
+            android:text="Gain Muscle"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
@@ -69,14 +70,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/muscle_image" />
-
     </LinearLayout>
 
+    <!-- Lose Weight Layout -->
     <LinearLayout
         android:id="@+id/option_lose_weight"
         android:layout_width="380dp"
         android:layout_height="120dp"
-        android:background="@drawable/custom_linear_layout"
+        android:background="@drawable/border_unselected"
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"
@@ -102,14 +103,14 @@
             android:layout_height="150dp"
             android:layout_weight="1"
             android:src="@drawable/weightloss" />
-
     </LinearLayout>
 
+    <!-- Healthy Life Layout -->
     <LinearLayout
         android:id="@+id/option_healthy_life_style"
         android:layout_width="380dp"
         android:layout_height="120dp"
-        android:background="@drawable/custom_linear_layout"
+        android:background="@drawable/border_unselected"
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"
@@ -135,7 +136,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/healthylifestyle" />
-
     </LinearLayout>
 
     <Button
@@ -154,5 +154,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.768" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

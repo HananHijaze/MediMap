@@ -81,10 +81,10 @@ public class TrainingDays extends AppCompatActivity {
         dayCardView.setOnClickListener(v -> {
             if (selectedDays.contains(day)) {
                 selectedDays.remove(day); // Unselect the day if it's already selected
-                dayCardView.setCardBackgroundColor(getResources().getColor(android.R.color.white)); // Reset background color
+                dayCardView.setBackgroundResource(R.drawable.border_unselected); // Reset to unselected border
             } else {
                 selectedDays.add(day); // Select the day
-                dayCardView.setCardBackgroundColor(getResources().getColor(android.R.color.holo_blue_light)); // Change background color to indicate selection
+                dayCardView.setBackgroundResource(R.drawable.border_selected); // Change to selected border
             }
         });
     }
@@ -103,6 +103,7 @@ public class TrainingDays extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         Set<String> savedDays = sharedPreferences.getStringSet("trainingDays", new HashSet<>());
 
-       // Toast.makeText(this, "Training Days: " + savedDays.toString(), Toast.LENGTH_SHORT).show();
+        // Optional: Show selected days in a Toast
+        // Toast.makeText(this, "Training Days: " + savedDays.toString(), Toast.LENGTH_SHORT).show();
     }
 }

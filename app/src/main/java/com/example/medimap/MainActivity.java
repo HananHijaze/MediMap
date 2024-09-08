@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.RequiresApi;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             createShortcut();
         }
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent in = new Intent(MainActivity.this, LogIn.class);
+            Intent in = new Intent(MainActivity.this, Home.class);
             startActivity(in);
             finish(); // Optionally finish the MainActivity if you don't want to return to it
         }, 5000); ;
@@ -51,16 +52,31 @@ public class MainActivity extends AppCompatActivity {
         ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
 
         if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported()) {
-            ShortcutInfo shortcut = new ShortcutInfo.Builder(this, "shortcut_example")
-                    .setShortLabel(getString(R.string.shortcut_short_label))
-                    .setLongLabel(getString(R.string.shortcut_long_label))
-                    .setIcon(Icon.createWithResource(this, R.drawable.ic_shortcut))
-                    .setIntent(new Intent(Intent.ACTION_VIEW,
-                            null, this, Home.class))
-                    .build();
+            // Check if the shortcut already exists
+            boolean shortcutExists = false;
+            for (ShortcutInfo pinnedShortcut : shortcutManager.getPinnedShortcuts()) {
+                if (pinnedShortcut.getId().equals("shortcut_example")) {
+                    shortcutExists = true;
+                    break;
+                }
+            }
 
-            shortcutManager.requestPinShortcut(shortcut, null);
+            // If the shortcut does not exist, create and pin it
+            if (!shortcutExists) {
+                ShortcutInfo shortcut = new ShortcutInfo.Builder(this, "shortcut_example")
+                        .setShortLabel(getString(R.string.shortcut_short_label))
+                        .setLongLabel(getString(R.string.shortcut_long_label))
+                        .setIcon(Icon.createWithResource(this, R.drawable.ic_shortcut))
+                        .setIntent(new Intent(Intent.ACTION_VIEW, null, this, Home.class))
+                        .build();
+
+                shortcutManager.requestPinShortcut(shortcut, null);
+            } else {
+                // Shortcut already exists, do nothing or show a message
+               // Toast.makeText(this, "Shortcut already exists", Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
 
 }

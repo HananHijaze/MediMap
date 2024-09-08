@@ -161,14 +161,14 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/waterImage"
+                            android:id="@+id/waterbottle"
                             android:layout_width="150dp"
                             android:layout_height="200dp"
                             android:layout_marginTop="10dp"
                             android:scaleType="centerInside" />
 
                         <TextView
-                            android:id="@+id/textView8"
+                            android:id="@+id/waterOutput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="300ml"
@@ -178,13 +178,13 @@
                             android:textStyle="bold" />
 
                         <Button
-                            android:id="@+id/customButton"
+                            android:id="@+id/addWaterBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/white"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:drawableLeft="@drawable/ic_plus"
                             app:strokeColor="@color/blue"
+                            app:strokeWidth="1dp"
                             android:text="150ml"
                             android:textColor="@color/blue"
                             android:textSize="14sp"
@@ -253,10 +253,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:gravity="center"
-                        android:textStyle="bold"
                         android:text="Your Weekly Training Plan"
                         android:textColor="@color/blue"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
