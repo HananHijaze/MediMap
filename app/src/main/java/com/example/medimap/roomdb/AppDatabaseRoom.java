@@ -18,7 +18,7 @@ public abstract class AppDatabaseRoom extends RoomDatabase {
     public abstract HydrationRoomDao hydrationRoomDao();
     public abstract WeeklyMealPlanRoomDao weeklyMealPlanRoomDao();
     public abstract WeeklyTrainingPlanRoomDao weeklyTrainingPlanRoomDao();
-    public abstract StepCountDao stepCountDao();
+
 
     // Singleton implementation to get the database
     public static synchronized AppDatabaseRoom getInstance(Context context) {

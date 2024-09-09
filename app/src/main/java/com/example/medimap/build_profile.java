@@ -42,6 +42,7 @@ public class build_profile extends AppCompatActivity {
         // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent in = new Intent(this, Home.class);
+            in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(in);
             finish(); // Optionally finish this activity if you don't want to return to it
         }, 5000);
