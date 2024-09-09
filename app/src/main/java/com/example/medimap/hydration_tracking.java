@@ -31,10 +31,18 @@ import com.example.medimap.roomdb.HydrationRoomDao;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.server.HydrationApi;
+import com.example.medimap.server.RetrofitClient;
 import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import retrofit2.Retrofit;
@@ -44,6 +52,7 @@ public class hydration_tracking extends AppCompatActivity {
     //Page components
     private TextView waterOutput;
     private Button addWaterBtn;
+    private BarChart barChart;
     private GifDrawable waterGif;
 
     //Daos
@@ -57,11 +66,13 @@ public class hydration_tracking extends AppCompatActivity {
     //Servers
     private HydrationApi hydrationApi;
     private UserApi userApi;
+    private Retrofit retrofit;
 
     //variables
     private int currentWaterAmount = 0;
     private int waterGoal = 0;
     private int defaultWaterAmount = 0;
+    private ArrayList<BarEntry> barEntries;
 
     private SharedPreferences sharedPreferences;
 
@@ -76,15 +87,22 @@ public class hydration_tracking extends AppCompatActivity {
             return insets;
         });
 
+        System.out.println("CREATED HYDRATION TRACKING");
+        retrofit = RetrofitClient.getRetrofitInstance();
+        hydrationApi = retrofit.create(HydrationApi.class);
+        userApi = retrofit.create(UserApi.class);
+
         addWaterBtn = findViewById(R.id.addWaterBtn);
         addWaterBtn.setOnClickListener(v -> addWater());
 
         Button editWaterDefault;
         editWaterDefault = findViewById(R.id.editButton);
         editWaterDefault.setOnClickListener(v -> showEditAmountDialog());
+        barChart = findViewById(R.id.barChart);
+        this.barEntries = new ArrayList<>();
 
         ImageView waterImage;
-        waterImage = findViewById(R.id.waterBottle);
+        waterImage = findViewById(R.id.waterbottle);
 
 //        try {
 //            waterGif = new GifDrawable(getResources(), R.drawable.waterbottle2);
@@ -106,31 +124,64 @@ public class hydration_tracking extends AppCompatActivity {
 
     /**************************************** Load The Data ****************************************/
     private void loadData() {
+        loadBarChart();
+
         // Load previously saved water amount
         this.currentWaterAmount = getSavedWaterAmount();
         System.out.println("LOAD DATA: THIS IS THE CURRENT WATER AMOUNT: " + this.currentWaterAmount);
 
         // Load user room from local database
-        //userDao = AppDatabaseRoom.getInstance(this).userDao();
+        userDao = AppDatabaseRoom.getInstance(this).userDao();
 
         // Fetch the single user from local
-//      userRoom = userDao.getAllUsers().get(0);
-//      if(userRoom == null){
-//          System.out.println("user not found");
-//          Toast.makeText(this, "user not found", Toast.LENGTH_SHORT).show();
-//      }
-//        get default water amount and goal from user room
-//        this.defaultWaterAmount = userRoom.getWaterDefault();
-//        this.waterGoal = userRoom.getHydrationGoal();
+      userRoom = userDao.getAllUsers().get(0);
+      if(userRoom == null){
+          System.out.println("user not found");
+          Toast.makeText(this, "user not found", Toast.LENGTH_SHORT).show();
+      }
+        //get default water amount and goal from user room
+        this.defaultWaterAmount = userRoom.getWaterDefault();
+        this.waterGoal = userRoom.getHydrationGoal();
 
-        this.defaultWaterAmount = 150;/**********************/
-        this.waterGoal = 3000;
+//        this.defaultWaterAmount = 150;
+//        this.waterGoal = 3000;
 
         //fillWaterBottle();
         String addWaterTxt = this.defaultWaterAmount + "ml";
         addWaterBtn.setText(addWaterTxt);
         String waterOutputStr = this.currentWaterAmount + " ml / " + this.waterGoal + " ml";
         waterOutput.setText(waterOutputStr);
+    }
+
+    private void loadBarChart(){
+        // Sample data for hydration levels (in liters)
+        barEntries.add(new BarEntry(0, 1.5f)); // Monday: 1.5 liters
+        barEntries.add(new BarEntry(1, 2.0f)); // Tuesday: 2.0 liters
+        barEntries.add(new BarEntry(2, 1.2f)); // Wednesday: 1.2 liters
+        barEntries.add(new BarEntry(3, 2.5f)); // Thursday: 2.5 liters
+        barEntries.add(new BarEntry(4, 1.8f)); // Friday: 1.8 liters
+        barEntries.add(new BarEntry(5, 3.0f)); // Saturday: 3.0 liters
+        barEntries.add(new BarEntry(6, 2.2f)); // Sunday: 2.2 liters
+
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Hydration Level (Liters)");
+        barDataSet.setColor(getResources().getColor(R.color.blue));
+
+        BarData barData = new BarData(barDataSet);
+        barData.setBarWidth(0.9f); // Set the bar width
+
+//        // Set up X-axis labels for days of the week
+//        String[] daysOfWeek = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+//        XAxis xAxis = barChart.getXAxis();
+//        xAxis.setValueFormatter(new IndexAxisValueFormatter(daysOfWeek));
+//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//        xAxis.setGranularity(1f); // Ensures labels are not skipped
+//        xAxis.setGranularityEnabled(true);
+
+        barChart.setData(barData);
+        barChart.invalidate(); // Refresh the chart
+//        barChart.setFitBars(true); // Makes the bars fit the screen
+//        barChart.getDescription().setEnabled(false); // Disable description text
+//        barChart.animateY(1000); // Animation
     }
 
     private int getSavedWaterAmount(){
@@ -201,9 +252,15 @@ public class hydration_tracking extends AppCompatActivity {
                     input.setText("");
                 }
                 else {
-                    this.defaultWaterAmount = inputWaterAmount;/********** update in room*************/
-//                    userRoom.setWaterDefault(this.defaultWaterAmount);
-//                    userDao.updateUser(userRoom);
+                    /*************************************************/
+                    this.defaultWaterAmount = inputWaterAmount;
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("defaultWater", this.defaultWaterAmount);
+                    editor.apply();
+                    new Thread(()-> {
+                        userRoom.setWaterDefault(this.defaultWaterAmount);
+                        userDao.updateUser(userRoom);
+                    }).start();
                     String addWaterTxt = this.defaultWaterAmount + "ml";
                     addWaterBtn.setText(addWaterTxt);
                     Toast.makeText(this, "new default is: "+this.defaultWaterAmount+"ml", Toast.LENGTH_SHORT).show();
@@ -218,29 +275,36 @@ public class hydration_tracking extends AppCompatActivity {
     }
 
     /**************************************** Save the Data ****************************************/
-    private void scheduleDailyReset() {
-        // Get an instance of AlarmManager
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//    public void scheduleDailyReset() {
+//        Calendar currentDate = Calendar.getInstance();
+//        Calendar dueDate = Calendar.getInstance();
+//
+//        // Set the time to 00:00
+//        dueDate.set(Calendar.HOUR_OF_DAY, 0);
+//        dueDate.set(Calendar.MINUTE, 0);
+//        dueDate.set(Calendar.SECOND, 0);
+//
+//        // Check if the dueDate has already passed today, schedule for the next day
+//        if (dueDate.before(currentDate)) {
+//            dueDate.add(Calendar.HOUR_OF_DAY, 24);
+//        }
+//
+//        long timeDiff = dueDate.getTimeInMillis() - currentDate.getTimeInMillis();
+//
+//        // Schedule the work
+//        WorkRequest dailyWorkRequest =
+//                new PeriodicWorkRequest.Builder(ResetWorker.class, 24, TimeUnit.HOURS)
+//                        .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
+//                        .build();
+//
+//        WorkManager.getInstance(getApplicationContext()).enqueue(dailyWorkRequest);
+//    }
 
-        // Set the alarm to start at midnight
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
+    private void saveUserToServer(){
+        //update user in server
+    }
 
-        // Create an Intent to broadcast
-        Intent intent = new Intent(this, StepResetReceiver.class);
+    private void saveHydration(){
 
-        // Create a PendingIntent that will perform a broadcast
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        // Set the alarm to repeat daily at midnight
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY,
-                    pendingIntent);
-        }
     }
 }
