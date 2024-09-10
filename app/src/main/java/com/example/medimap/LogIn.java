@@ -156,6 +156,8 @@ public class LogIn extends AppCompatActivity
             Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
             return;
         }
+        System.out.println("LOGIN EMAIL INPUT: " + emailIn);
+        System.out.println("LOGIN PASSWORD INPUT: " + passwordIn);
 
         // Fetch user from the Room database
         UserRoom user = userDao.getUserByEmail(emailIn); // Corrected access to userDao instance
@@ -170,5 +172,4 @@ public class LogIn extends AppCompatActivity
             Toast.makeText(LogIn.this, "Incorrect email or password (local)", Toast.LENGTH_SHORT).show();
         }
     }
-
 }
