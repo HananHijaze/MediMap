@@ -19,6 +19,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.UserDao;
+import com.example.medimap.roomdb.UserRoom;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +49,38 @@ public class MainActivity extends AppCompatActivity {
                 .asGif()
                 .load(R.drawable.loading)
                 .into(imageView);
+
+
+        /*********************************** TESTER USER ***********************************/
+        // Create a new UserRoom object with the retrieved data
+        UserRoom newUser = new UserRoom(
+                "tester@test.com",
+                "test test",
+                "test123",
+                "Male",
+                170,
+                70,
+                "05/07/2004",
+                "Skinny",
+                "Gain Muscle",
+                6000,  // Step count goal (placeholder, modify as needed)
+                3000,   // Hydration goal in mL (placeholder, modify as needed)
+                "Home",
+                "Keto",
+                2,  // Meals per day
+                2, // Snacks per day
+                200          // Default water intake (placeholder, modify as needed)
+        );
+
+        //create user Dao
+        UserDao userDao = AppDatabaseRoom.getInstance(this).userDao();
+
+        //add hydrationRoom in room
+        new Thread(() -> {
+            userDao.insertUser(newUser);
+        }).start();
+
+        System.out.println("TESTING USER ADDED: " + newUser.toString());
     }
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     private void createShortcut() {
@@ -77,6 +112,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }

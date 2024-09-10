@@ -110,13 +110,13 @@ public class build_profile extends AppCompatActivity {
                 birthdate,
                 bodyType,
                 goal,
-                10000,  // Step count goal (placeholder, modify as needed)
+                6000,  // Step count goal (placeholder, modify as needed)
                 3000,   // Hydration goal in mL (placeholder, modify as needed)
                 workoutPlace,
                 dietType,
                 mealsPerDay,  // Meals per day
                 snacksPerDay, // Snacks per day
-                2000          // Default water intake (placeholder, modify as needed)
+                200          // Default water intake (placeholder, modify as needed)
         );
 
         // Insert the user data into the Room database asynchronously
