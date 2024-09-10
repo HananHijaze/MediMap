@@ -18,183 +18,167 @@
         android:max="100"
         android:progress="0"
         android:progressDrawable="@drawable/circular_progress_bar"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.02" />
 
     <TextView
         android:id="@+id/questionTextMeals"
-        android:layout_width="610dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="80dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="104dp"
         android:text="How many daily meals would you prefer?"
         android:textAlignment="center"
         android:textColor="@color/blue"
-        android:textSize="20sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/FrequencyButtonsLayout"
-        android:layout_width="626dp"
-        android:layout_height="680dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.506"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/questionTextMeals"
+        app:layout_constraintBottom_toTopOf="@id/nextButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.457">
-
-        <!-- Meals Options as LinearLayouts -->
-        <!-- 2 meals  Option -->
-        <LinearLayout
-            android:id="@+id/button_Two_Meals"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/border_unselected"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2 Meals"
-                android:textColor="@color/blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- 3 Meals Option -->
-
-        <!-- 4 MEALS Option -->
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:id="@+id/button_Three_Meals"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/border_unselected"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3 Meals"
-                android:textColor="@color/blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/button_Four_Meals"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/border_unselected"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="4 Meals"
-                android:textColor="@color/blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- 0 snacks Option -->
-
-        <TextView
-            android:id="@+id/questionTextSnacks"
+            android:id="@+id/FrequencyButtonsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="How many daily snacks would you prefer?"
-            android:textAlignment="center"
-            android:textColor="@color/blue"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mealButtonsLayout" />
+            android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/button_zero_snacks"
-            android:layout_width="587dp"
-            android:layout_height="70dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/border_unselected"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal">
+            <!-- Meals Options as LinearLayouts -->
+            <LinearLayout
+                android:id="@+id/button_Two_Meals"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@drawable/border_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 Meals"
+                    android:textColor="@color/blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/button_Three_Meals"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@drawable/border_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3 Meals"
+                    android:textColor="@color/blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_Four_Meals"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@drawable/border_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4 Meals"
+                    android:textColor="@color/blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Snack Options -->
             <TextView
+                android:id="@+id/questionTextSnacks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 Snacks"
+                android:text="How many daily snacks would you prefer?"
+                android:textAlignment="center"
                 android:textColor="@color/blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp" />
+
+            <LinearLayout
+                android:id="@+id/button_zero_snacks"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@drawable/border_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 Snacks"
+                    android:textColor="@color/blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_one_snack"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@drawable/border_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1 Snack"
+                    android:textColor="@color/blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_Two_Snacks"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@drawable/border_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 Snacks"
+                    android:textColor="@color/blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
-
-        <!-- 1 snack Option -->
-        <LinearLayout
-            android:id="@+id/button_one_snack"
-            android:layout_width="587dp"
-            android:layout_height="73dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/border_unselected"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1 Snack"
-                android:textColor="@color/blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- 2 Snacks Option -->
-        <LinearLayout
-            android:id="@+id/button_Two_Snacks"
-            android:layout_width="587dp"
-            android:layout_height="70dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/border_unselected"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2 Snacks"
-                android:textColor="@color/blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/nextButton"
@@ -206,8 +190,6 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/FrequencyButtonsLayout"
-        app:layout_constraintVertical_bias="0.51" />
+        app:layout_constraintVertical_bias="0.1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

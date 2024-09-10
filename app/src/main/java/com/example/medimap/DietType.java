@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 public class DietType extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 12;
+    private int totalPages = 11;
     private int currentPage;
     private String selectedDietType = "";
     private static final String PREFS_NAME = "UserSignUpData";
@@ -29,9 +29,9 @@ public class DietType extends AppCompatActivity {
         setupDietOption(findViewById(R.id.button_Vegetarian), "Vegetarian");
         setupDietOption(findViewById(R.id.button_Vegan), "Vegan");
         setupDietOption(findViewById(R.id.button_Keto), "Keto");
-        setupDietOption(findViewById(R.id.button_Gluten_free), "Gluten-Free");
-        setupDietOption(findViewById(R.id.button_Diary_Free), "Dairy-Free");
-        setupDietOption(findViewById(R.id.button_Pescatarian), "Pescatarian");
+        setupDietOption(findViewById(R.id.button_Paleo), "Paleo");
+        setupDietOption(findViewById(R.id.button_Balanced), "Balanced");
+        setupDietOption(findViewById(R.id.button_LowCarb), "Low Carb");
 
         Button nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(v -> {
@@ -62,9 +62,9 @@ public class DietType extends AppCompatActivity {
         findViewById(R.id.button_Vegetarian).setBackgroundResource(R.drawable.border_unselected);
         findViewById(R.id.button_Vegan).setBackgroundResource(R.drawable.border_unselected);
         findViewById(R.id.button_Keto).setBackgroundResource(R.drawable.border_unselected);
-        findViewById(R.id.button_Gluten_free).setBackgroundResource(R.drawable.border_unselected);
-        findViewById(R.id.button_Diary_Free).setBackgroundResource(R.drawable.border_unselected);
-        findViewById(R.id.button_Pescatarian).setBackgroundResource(R.drawable.border_unselected);
+        findViewById(R.id.button_Paleo).setBackgroundResource(R.drawable.border_unselected);
+        findViewById(R.id.button_Balanced).setBackgroundResource(R.drawable.border_unselected);
+        findViewById(R.id.button_LowCarb).setBackgroundResource(R.drawable.border_unselected);
     }
 
     private void saveDietType() {

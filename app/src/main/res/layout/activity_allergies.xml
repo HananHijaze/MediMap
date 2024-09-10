@@ -18,57 +18,53 @@
         android:max="100"
         android:progress="0"
         android:progressDrawable="@drawable/circular_progress_bar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.02" />
 
     <TextView
         android:id="@+id/questionText"
-        android:layout_width="336dp"
-        android:layout_height="50dp"
-        android:text="@string/do_you_have_any_allergies"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Do you have any allergies?"
         android:textAlignment="center"
         android:textColor="@color/blue"
-        android:textSize="28dp"
+        android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintTop_toBottomOf="@id/circularProgressBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.066" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
     <LinearLayout
         android:id="@+id/allergyButtonsLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/questionText"
+        app:layout_constraintBottom_toTopOf="@id/nextButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp">
 
-        <!-- Allergy Options as LinearLayouts -->
         <!-- Dairy Option -->
         <LinearLayout
             android:id="@+id/button_dairy"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:background="@drawable/border_unselected"
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_margin="16dp">
+            android:layout_margin="8dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dairy"
                 android:textColor="@color/blue"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -76,19 +72,19 @@
         <LinearLayout
             android:id="@+id/button_gluten"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:background="@drawable/border_unselected"
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_margin="16dp">
+            android:layout_margin="8dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gluten"
                 android:textColor="@color/blue"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -96,19 +92,19 @@
         <LinearLayout
             android:id="@+id/button_nuts"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:background="@drawable/border_unselected"
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_margin="16dp">
+            android:layout_margin="8dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nuts"
                 android:textColor="@color/blue"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -116,19 +112,19 @@
         <LinearLayout
             android:id="@+id/button_seafood"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:background="@drawable/border_unselected"
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_margin="16dp">
+            android:layout_margin="8dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Seafood"
                 android:textColor="@color/blue"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -136,19 +132,19 @@
         <LinearLayout
             android:id="@+id/button_soy"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:background="@drawable/border_unselected"
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_margin="16dp">
+            android:layout_margin="8dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Soy"
                 android:textColor="@color/blue"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -156,19 +152,39 @@
         <LinearLayout
             android:id="@+id/button_eggs"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:background="@drawable/border_unselected"
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_margin="16dp">
+            android:layout_margin="8dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Eggs"
                 android:textColor="@color/blue"
-                android:textSize="20sp"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- None Option -->
+        <LinearLayout
+            android:id="@+id/button_none"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/border_unselected"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_margin="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="None"
+                android:textColor="@color/blue"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>

@@ -69,4 +69,12 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="how_many_daily_snacks_would_you_prefer">How many daily snacks would you prefer?</string>
+    <string name="how_many_daily_meals_would_you_prefer">How many daily meals would you prefer?</string>
+    <string name="_2_meals">2 Meals</string>
+    <string name="_3_meals">3 Meals</string>
+    <string name="_4_meals">4 Meals</string>
+    <string name="_0_snacks">0 Snacks</string>
+    <string name="_1_snack">1 Snack</string>
+    <string name="_2_snacks">2 Snacks</string>
 </resources>

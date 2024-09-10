@@ -8,10 +8,11 @@ public class UserRoom {
 
     @PrimaryKey(autoGenerate = true)
     private Long id;
-
+    private String phoneNumber;
     private String email;
     private String name;
     private String password;
+    private String address;
     private String gender;
     private int height;
     private int weight;
@@ -27,12 +28,14 @@ public class UserRoom {
     private int waterDefault;
 
     // Constructor
-    public UserRoom( String email, String name, String password, String gender, int height, int weight,
+    public UserRoom( String email,String phoneNumber, String name, String password,String address, String gender, int height, int weight,
                 String birthDate, String bodyType, String goal, int stepCountGoal, int hydrationGoal,
                 String whereToWorkout, String dietType, int mealsPerDay, int snacksPerDay, int waterDefault) {
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.name = name;
         this.password = password;
+        this.address = address;
         this.gender = gender;
         this.height = height;
         this.weight = weight;
@@ -64,6 +67,14 @@ public class UserRoom {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPhoneNumber(){return phoneNumber;}
+
+    public void  setPhoneNumber (String phoneNumber){this.phoneNumber=phoneNumber;}
+
+    public String getAddress() {return address;}
+
+    public void  setAddress (String address){this.address=address;}
 
     public String getName() {
         return name;
