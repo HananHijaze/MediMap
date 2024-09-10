@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,12 +25,12 @@ import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.UserDao;
 
 import com.example.medimap.roomdb.UserRoom;
+import com.example.medimap.server.User;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    UserDao userDao;
-
-
-
+    private UserDao userDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         AppDatabaseRoom db = AppDatabaseRoom.getInstance(this);
-        userDao = db.userDao();
+        this.userDao = AppDatabaseRoom.getInstance(this).userDao();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             createShortcut();
@@ -57,37 +59,45 @@ public class MainActivity extends AppCompatActivity {
                 .into(imageView);
 
 
-        /*********************************** TESTER USER ***********************************/
+        /*********************************** ADDING TESTER USER ***********************************/
         // Create a new UserRoom object with the retrieved data
-        UserRoom newUser = new UserRoom(
-                "tester@test.com",
-                "test test",
-                "test123",
-                "Male",
-                170,
-                70,
-                "05/07/2004",
-                "Skinny",
-                "Gain Muscle",
-                6000,  // Step count goal (placeholder, modify as needed)
-                3000,   // Hydration goal in mL (placeholder, modify as needed)
-                "Home",
-                "Keto",
-                2,  // Meals per day
-                2, // Snacks per day
-                200          // Default water intake (placeholder, modify as needed)
-        );
-
-        //create user Dao
-        UserDao userDao = AppDatabaseRoom.getInstance(this).userDao();
-
-        //add hydrationRoom in room
-        new Thread(() -> {
-            userDao.insertUser(newUser);
-        }).start();
-
-        System.out.println("TESTING USER ADDED: " + newUser.toString());
+//        System.out.println("GETTING ALL USERS");
+//        List<UserRoom> usersList = this.userDao.getAllUsers();
+//        UserRoom userRoom = userDao.getUserByEmail("tester@test.com");
+//        System.out.println("CHECKING IF TESTING USER EXISTS");
+//        //check if user already exists
+//        if(userRoom != null){
+//            System.out.println("USER ALREADY EXISTS");
+//        }
+//        else {
+//            UserRoom newUser = new UserRoom(
+//                    "tester@test.com",
+//                    "test test",
+//                    "test123",
+//                    "Male",
+//                    170,
+//                    70,
+//                    "05/07/2004",
+//                    "Skinny",
+//                    "Gain Muscle",
+//                    6000,  // Step count goal (placeholder, modify as needed)
+//                    3000,   // Hydration goal in mL (placeholder, modify as needed)
+//                    "Home",
+//                    "Keto",
+//                    2,  // Meals per day
+//                    2, // Snacks per day
+//                    200          // Default water intake (placeholder, modify as needed)
+//            );
+//
+//            //add testing user in room
+//            new Thread(() -> {
+//                userDao.insertUser(newUser);
+//            }).start();
+//
+//            System.out.println("TESTING USER ADDED: " + newUser.toString());
+//        }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     private void createShortcut() {
         ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
