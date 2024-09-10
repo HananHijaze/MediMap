@@ -27,9 +27,8 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addWaterBtn"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.7"
         app:strokeColor="@color/blue" />
-
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
@@ -78,7 +77,7 @@
         android:id="@+id/addWaterBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginBottom="272dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_plus"
         android:text="150ml"
@@ -89,8 +88,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.679"
         app:strokeColor="@color/blue"
         app:strokeWidth="1dp" />
 
