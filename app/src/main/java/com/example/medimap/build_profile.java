@@ -112,10 +112,8 @@ public class build_profile extends AppCompatActivity {
         // Create a new UserRoom object with the retrieved data
         UserRoom newUser = new UserRoom(
                 email,
-                phone,
                 fullName,
                 password,
-                address,
                 gender,
                 height,
                 weight,
