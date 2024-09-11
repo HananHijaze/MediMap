@@ -186,7 +186,6 @@ public class Profile extends AppCompatActivity {
             }
         }).start();
     }
-    // Fetch and display the average water intake for a user
     private void fetchAndDisplayWaterGoalAverage(Long userId) {
         new Thread(() -> {
             // Fetch all hydration records for the user
@@ -196,21 +195,20 @@ public class Profile extends AppCompatActivity {
             if (hydrationRecords != null && !hydrationRecords.isEmpty()) {
                 runOnUiThread(() -> {
                     // Calculate the total water intake
-                    int totalWaterIntake = hydrationRecords.stream().mapToInt(HydrationRoom::getWaterIntake).sum();
+                    double totalWaterIntake = hydrationRecords.stream().mapToDouble(HydrationRoom::getDrank).sum();
 
                     // Calculate the average water intake
                     int numberOfEntries = hydrationRecords.size();
-                    double averageWaterIntake = (double) totalWaterIntake / numberOfEntries;
+                    double averageWaterIntake = totalWaterIntake / numberOfEntries;
 
                     // Update the ProgressBar with the total water intake
                     ProgressBar waterProgressBar = findViewById(R.id.hydrationbar);
                     waterProgressBar.setMax(firstUser.getHydrationGoal()); // Set max to user's hydration goal
                     waterProgressBar.setProgress((int) totalWaterIntake);  // Set progress to total water intake
-
-
                 });
             }
         }).start();
     }
+
 
 }
