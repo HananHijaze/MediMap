@@ -19,7 +19,7 @@
             android:layout_marginTop="8dp"
             android:spinnerMode="dropdown" />
 
-        <!-- First Row of Days -->
+        <!-- Rows for months, 3 months per row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,269 +27,279 @@
             android:gravity="center_horizontal"
             android:layout_marginTop="16dp">
 
-            <!-- Sunday CardView -->
+            <!-- January CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Jan"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                app:cardCornerRadius="100dp">
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Jan"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Monday CardView -->
+            <!-- February CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Feb"
-                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Feb"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Tuesday CardView -->
+            <!-- March CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Mar"
-                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Mar"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
-            <!-- Wednesday CardView -->
+        <!-- More rows for other months -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <!-- April to June -->
+            <!-- April CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Apr"
-                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Apr"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
-        </LinearLayout>
 
-        <!-- Second Row of Days -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
-
-            <!-- Thursday CardView -->
+            <!-- May CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/May"
-                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="May"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Friday CardView -->
+            <!-- June CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Jun"
-                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Jun"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </androidx.cardview.widget.CardView>
-
-            <!-- Saturday CardView -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/Jul"
-                app:cardCornerRadius="100dp"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Jul"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </androidx.cardview.widget.CardView>
-
-            <!-- Saturday CardView -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/Aug"
-                app:cardCornerRadius="100dp"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Aug"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-        <!-- Second Row of Days -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_horizontal">
 
-            <!-- Thursday CardView -->
+            <!-- July to September -->
+            <!-- July CardView -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/Sep"
-                app:cardCornerRadius="100dp"
+                android:id="@+id/Jul"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Jul"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- August CardView -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/Aug"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_margin="1dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Aug"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- September CardView -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/Sep"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_margin="1dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Sep"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
-            <!-- Friday CardView -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <!-- October to December -->
+            <!-- October CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Oct"
-                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Oct"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Saturday CardView -->
+            <!-- November CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Nov"
-                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Nov"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Saturday CardView -->
+            <!-- December CardView -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/Dec"
-                app:cardCornerRadius="100dp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_margin="1dp"
-                app:cardBackgroundColor="@color/blue"
-                >
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                android:background="@drawable/border_unselected">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Dec"
-                    android:textColor="@color/white"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
@@ -317,7 +327,7 @@
                 android:id="@+id/Save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="save"
+                android:text="Save"
                 android:textColor="@android:color/white"
                 android:backgroundTint="@color/blue"
                 android:layout_margin="5dp"/>
