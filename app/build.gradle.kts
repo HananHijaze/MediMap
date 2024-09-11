@@ -77,6 +77,8 @@ dependencies {
 //    androidTestImplementation(libs.ext.junit)
 //    androidTestImplementation(libs.espresso.core)
     ////////////////////////////////////////////////////
+    implementation ("org.tensorflow:tensorflow-lite:2.8.0")
+    implementation ("org.tensorflow:tensorflow-lite-select-tf-ops:2.8.0")
 
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")

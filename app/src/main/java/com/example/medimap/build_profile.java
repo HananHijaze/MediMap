@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,13 +15,22 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.UserRoom;
+import com.example.medimap.server.RetrofitClient;
+import com.example.medimap.server.User;
+import com.example.medimap.server.UserApi;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class build_profile extends AppCompatActivity {
 
     private static final String PREFS_NAME = "UserSignUpData"; // SharedPreferences file name
     private AppDatabaseRoom appDatabase; // Room database instance
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +48,7 @@ public class build_profile extends AppCompatActivity {
 
         // Retrieve all user data from SharedPreferences and save to the database
         retrieveAndSaveUserDataToDatabase();
-
+        createplan();
         // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent in = new Intent(this, Home.class);
@@ -122,5 +132,35 @@ public class build_profile extends AppCompatActivity {
         new Thread(() -> {
             appDatabase.userDao().insertUser(newUser);
         }).start();  // Room operations must be done on a background thread
+    }
+    public void createplan(){
+        UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
+
+        // Make the API call to get the user by email
+        Call<User> call = userApi.getUserById(1L);
+
+
+        call.enqueue(new Callback<User>() {
+
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    user = response.body();
+                    getplan(user);
+
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
+    }
+    public void getplan(User user){
+        CreatingPlan creatingPlan = CreatingPlan.getInstance();
+        creatingPlan.createPlan(this, user);
     }
 }
