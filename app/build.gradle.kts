@@ -76,12 +76,16 @@ dependencies {
 //    testImplementation(libs.junit)
 //    androidTestImplementation(libs.ext.junit)
 //    androidTestImplementation(libs.espresso.core)
-    ////////////////////////////////////////////////////
+
+    implementation ("org.tensorflow:tensorflow-lite:2.8.0")
+    implementation ("org.tensorflow:tensorflow-lite-select-tf-ops:2.8.0")
+
     implementation ("com.google.android.material:material:1.6.0")
 
     implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.23")
 
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
