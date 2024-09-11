@@ -66,6 +66,7 @@ public class Profile extends AppCompatActivity {
         logout.setOnClickListener(view -> {
             Intent in = new Intent(this, LogIn.class);
             in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            saveLoginStatus(false);
             startActivity(in);
             finish();
         });
@@ -88,7 +89,10 @@ public class Profile extends AppCompatActivity {
                     nameTextView.setText(firstUser.getName()); // Assume UserRoom has a getName() method
 
                     // Calculate and display BMI
-                    double bmi = calculateBMI(firstUser.getWeight(), firstUser.getHeight());
+                    int weight = firstUser.getWeight();
+                    int height=  firstUser.getHeight();
+                    double bmi = calculateBMI(weight, height);
+
                     bmiIndicator.setProgress((int) (bmi * 2)); // Display BMI on SeekBar
                     bmiLabel.setText("Your BMI: " + String.format("%.2f", bmi));
 
@@ -107,16 +111,18 @@ public class Profile extends AppCompatActivity {
         profileImageView.setOnClickListener(view -> openGallery());
     }
 
-    private double calculateBMI(double weight, double height) {
-        return weight / (height * height);
+    private double calculateBMI(double weight, double heightInCm) {
+        double heightInMeters = heightInCm / 100.0;  // Convert height to meters
+        return weight / (heightInMeters * heightInMeters);
     }
+
 
     private void openGallery() {
         // Intent to open the gallery
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(galleryIntent, PICK_IMAGE);
     }
-
+///changing profile pic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -135,4 +141,16 @@ public class Profile extends AppCompatActivity {
             }
         }
     }
+    // Save login status when the user logs in
+    public void saveLoginStatus(boolean isLoggedIn) {
+        SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isLoggedIn", isLoggedIn);
+        editor.apply(); // Apply changes
+    }
+
+
+
+
+
 }

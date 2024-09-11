@@ -25,9 +25,9 @@ public class RetrofitClient {
             // Create an OkHttpClient with a custom timeout configuration
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(logging)
-                    .connectTimeout(30, TimeUnit.SECONDS) // 30 seconds connection timeout
-                    .readTimeout(30, TimeUnit.SECONDS)    // 30 seconds read timeout
-                    .writeTimeout(30, TimeUnit.SECONDS)   // 30 seconds write timeout
+                    .connectTimeout(3, TimeUnit.SECONDS) // 3 seconds connection timeout
+                    .readTimeout(3, TimeUnit.SECONDS)    // 3 seconds read timeout
+                    .writeTimeout(3, TimeUnit.SECONDS)   // 3 seconds write timeout
                     .retryOnConnectionFailure(true)       // Retry on connection failure
                     .build();
 

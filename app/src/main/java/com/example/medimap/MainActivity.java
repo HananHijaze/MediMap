@@ -1,6 +1,7 @@
 package com.example.medimap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
@@ -142,15 +143,26 @@ public class MainActivity extends AppCompatActivity {
             // Delay the action by 5 seconds using a Handler
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 if (isEmpty) {
-                    Intent in = new Intent(MainActivity.this, LogIn.class);
+                    Intent in = new Intent(MainActivity.this, Signup.class);
                     startActivity(in);
                     finish(); // Optionally finish the MainActivity
-                } else {
+                } else if(isUserLoggedIn()==true) {
                     Intent in = new Intent(MainActivity.this, Home.class);
                     startActivity(in);
                     finish(); // Optionally finish the MainActivity
                 }
+             else if(isUserLoggedIn()==false) {
+                Intent in = new Intent(MainActivity.this, LogIn.class);
+                startActivity(in);
+                finish(); // Optionally finish the MainActivity
+            }
             }, 5000); // 5-second delay
         }
     }
+    // Check login status
+    public boolean isUserLoggedIn() {
+        SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
+        return sharedPreferences.getBoolean("isLoggedIn", false); // Default to false if not set
+    }
+
 }
