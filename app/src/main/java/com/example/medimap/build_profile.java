@@ -112,6 +112,8 @@ public class build_profile extends AppCompatActivity {
 
         // Insert the user data into the Room database asynchronously
         new Thread(() -> {
+            // Clear the user table before inserting new user data
+            appDatabase.userDao().deleteAllUsers();
             appDatabase.userDao().insertUser(newUser);
         }).start();  // Room operations must be done on a background thread
     }
