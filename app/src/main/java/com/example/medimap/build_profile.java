@@ -73,8 +73,8 @@ public class build_profile extends AppCompatActivity {
         String dietType = sharedPreferences.getString("dietType", "N/A");
         Set<String> allergies = sharedPreferences.getStringSet("allergies", null);
         long birthdateTimestamp = sharedPreferences.getLong("birthdate", -1);
-        String meals = sharedPreferences.getString("meals", "0");
-        String snacks = sharedPreferences.getString("snacks", "0");
+        int mealsPerDay = sharedPreferences.getInt("meals", 0); // Retrieve meals as integer
+        int snacksPerDay = sharedPreferences.getInt("snacks", 0); // Retrieve snacks as integer
         String workoutPlace = sharedPreferences.getString("workoutPlace", "N/A");
         String workoutTime = sharedPreferences.getString("workoutTime", "N/A");
         Set<String> trainingDays = sharedPreferences.getStringSet("trainingDays", null);
@@ -83,19 +83,9 @@ public class build_profile extends AppCompatActivity {
         // Convert birthdate timestamp to a formatted date
         String birthdate = "N/A";
         if (birthdateTimestamp != -1) {
-            java.util.Date date = new java.util.Date(birthdateTimestamp);
+            java.util.Date Bdate = new java.util.Date(birthdateTimestamp);
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
-            birthdate = sdf.format(date);
-        }
-
-        // Safely parse meals and snacks with fallback values
-        int mealsPerDay = 0;
-        int snacksPerDay = 0;
-        try {
-            mealsPerDay = Integer.parseInt(meals);
-            snacksPerDay = Integer.parseInt(snacks);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();  // Log and handle the exception
+            birthdate = sdf.format(Bdate);
         }
 
         // Create a new UserRoom object with the retrieved data
@@ -115,8 +105,8 @@ public class build_profile extends AppCompatActivity {
                 3000,   // Hydration goal in mL (placeholder, modify as needed)
                 workoutPlace,
                 dietType,
-                mealsPerDay,  // Meals per day
-                snacksPerDay, // Snacks per day
+                mealsPerDay,  // Meals per day (now as integer)
+                snacksPerDay, // Snacks per day (now as integer)
                 2000          // Default water intake (placeholder, modify as needed)
         );
 
