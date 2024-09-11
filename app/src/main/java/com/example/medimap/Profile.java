@@ -18,16 +18,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.google.android.material.button.MaterialButton;
-
+import com.example.medimap.roomdb.UserRoom;
 import java.io.IOException;
 
 public class Profile extends AppCompatActivity {
     private ImageButton settings;
     private ImageView profileImageView;
     private SeekBar bmiIndicator;
-    private TextView bmiLabel;
+    private TextView bmiLabel, nameTextView;
     private static final int PICK_IMAGE = 1;
+    private AppDatabaseRoom appDatabase; // Room database instance
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,15 @@ public class Profile extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        appDatabase = AppDatabaseRoom.getInstance(this);
 
+        // Initialize UI components
+        bmiIndicator = findViewById(R.id.bmi_indicator);
+        bmiLabel = findViewById(R.id.bmi_label);
+        nameTextView = findViewById(R.id.nameTextView);
+        profileImageView = findViewById(R.id.profileImage);
+
+        // Navigation buttons
         MaterialButton leftButton = findViewById(R.id.left);
         leftButton.setOnClickListener(view -> {
             Intent in = new Intent(this, Profile.class);
@@ -55,48 +65,64 @@ public class Profile extends AppCompatActivity {
         ImageButton logout = findViewById(R.id.logout);
         logout.setOnClickListener(view -> {
             Intent in = new Intent(this, LogIn.class);
+            in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            saveLoginStatus(false);
             startActivity(in);
             finish();
         });
-        //settings button
+
+        // Settings button
         settings = findViewById(R.id.settings);
         settings.setOnClickListener(view -> {
             Intent in = new Intent(this, Settings.class);
             startActivity(in);
         });
 
-        bmiIndicator = findViewById(R.id.bmi_indicator);
-        bmiLabel = findViewById(R.id.bmi_label);
+        // Fetch and display data for the first user
+        new Thread(() -> {
+            UserRoom firstUser = appDatabase.userDao().getFirstUser(); // Fetch first user from database
 
-        // Example BMI calculation
-        double weight = 82; // in kg
-        double height = 1.8; // in meters
-        double bmi = calculateBMI(weight, height);
+            if (firstUser != null) {
+                // Update UI on the main thread
+                runOnUiThread(() -> {
+                    // Update UI with user data
+                    nameTextView.setText(firstUser.getName()); // Assume UserRoom has a getName() method
 
-        bmiIndicator.setProgress((int) (bmi * 2));
-        bmiIndicator.setEnabled(false);
-        bmiLabel.setText("Your BMI: " + String.format("%.2f", bmi));
+                    // Calculate and display BMI
+                    int weight = firstUser.getWeight();
+                    int height=  firstUser.getHeight();
+                    double bmi = calculateBMI(weight, height);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
-        String useremail = sharedPreferences.getString("userEmail", null);
-        TextView name = findViewById(R.id.nameTextView);
-        name.setText(useremail);
+                    bmiIndicator.setProgress((int) (bmi * 2)); // Display BMI on SeekBar
+                    bmiLabel.setText("Your BMI: " + String.format("%.2f", bmi));
 
-        // Initialize the profileImageView and set click listener to change profile picture
-        profileImageView = findViewById(R.id.profileImage);
+                    // Set profile image if available
+                    /*if (firstUser.getProfileImageUri() != null) {
+                        profileImageView.setImageURI(Uri.parse(firstUser.getProfileImageUri()));
+                    } else {
+                        // Set a default image or leave it blank if no image is available
+                        profileImageView.setImageResource(R.drawable.default_profile_image); // Example default image
+                    }*/
+                });
+            }
+        }).start();
+
+        // Profile image click listener
         profileImageView.setOnClickListener(view -> openGallery());
     }
 
-    private double calculateBMI(double weight, double height) {
-        return weight / (height * height);
+    private double calculateBMI(double weight, double heightInCm) {
+        double heightInMeters = heightInCm / 100.0;  // Convert height to meters
+        return weight / (heightInMeters * heightInMeters);
     }
+
 
     private void openGallery() {
         // Intent to open the gallery
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(galleryIntent, PICK_IMAGE);
     }
-
+///changing profile pic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -115,4 +141,16 @@ public class Profile extends AppCompatActivity {
             }
         }
     }
+    // Save login status when the user logs in
+    public void saveLoginStatus(boolean isLoggedIn) {
+        SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isLoggedIn", isLoggedIn);
+        editor.apply(); // Apply changes
+    }
+
+
+
+
+
 }

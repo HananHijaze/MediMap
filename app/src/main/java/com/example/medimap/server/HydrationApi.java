@@ -2,6 +2,7 @@ package com.example.medimap.server;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -23,4 +24,7 @@ public interface HydrationApi {
 
     @GET("hydration")
     Call<List<Hydration>> getHydrationsByCustomerId(@Query("customerId") Long customerId);
+
+    @DELETE("hydration/{id}")
+    Call<Void> deleteHydration(@Path("id") Long id);
 }

@@ -1,6 +1,7 @@
 package com.example.medimap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
@@ -9,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -23,11 +25,13 @@ import com.bumptech.glide.Glide;
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.UserDao;
 
+import com.example.medimap.roomdb.UserRoom;
+import com.example.medimap.server.User;
+
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
-    UserDao userDao;
-
-
-
+    private UserDao userDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         AppDatabaseRoom db = AppDatabaseRoom.getInstance(this);
-        userDao = db.userDao();
+        this.userDao = AppDatabaseRoom.getInstance(this).userDao();
+        System.out.println("GOT USER DAO");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             createShortcut();
@@ -53,7 +59,39 @@ public class MainActivity extends AppCompatActivity {
                 .asGif()
                 .load(R.drawable.loading)
                 .into(imageView);
+
+        /*********************************** ADDING TESTER USER ***********************************/
+        // Create a new UserRoom object with the retrieved data
+        System.out.println("DELETING USERS");
+        new Thread(() -> userDao.deleteAllUsers()).start();
+        System.out.println("USERS DELETED!!!");
+        UserRoom newUser = new UserRoom(
+                "tester@test.com",
+                "test test",
+                "test123",
+                "Male",
+                170,
+                70,
+                "05/07/2004",
+                "Skinny",
+                "Gain Muscle",
+                6000,  // Step count goal (placeholder, modify as needed)
+                3000,   // Hydration goal in mL (placeholder, modify as needed)
+                "Home",
+                "Keto",
+                2,  // Meals per day
+                2, // Snacks per day
+                200          // Default water intake (placeholder, modify as needed)
+        );
+
+        //add testing user in room
+        new Thread(() -> {
+            userDao.insertUser(newUser);
+        }).start();
+
+        System.out.println("TESTING USER ADDED: " + newUser.toString());
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     private void createShortcut() {
         ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
@@ -84,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+    
     // AsyncTask to query the users in the background
     private class CheckUsersTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -98,15 +136,26 @@ public class MainActivity extends AppCompatActivity {
             // Delay the action by 5 seconds using a Handler
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 if (isEmpty) {
-                    Intent in = new Intent(MainActivity.this, LogIn.class);
+                    Intent in = new Intent(MainActivity.this, Signup.class);
                     startActivity(in);
                     finish(); // Optionally finish the MainActivity
-                } else {
+                } else if(isUserLoggedIn()==true) {
                     Intent in = new Intent(MainActivity.this, Home.class);
                     startActivity(in);
                     finish(); // Optionally finish the MainActivity
                 }
+             else if(isUserLoggedIn()==false) {
+                Intent in = new Intent(MainActivity.this, LogIn.class);
+                startActivity(in);
+                finish(); // Optionally finish the MainActivity
+            }
             }, 5000); // 5-second delay
         }
     }
+    // Check login status
+    public boolean isUserLoggedIn() {
+        SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
+        return sharedPreferences.getBoolean("isLoggedIn", false); // Default to false if not set
+    }
+
 }

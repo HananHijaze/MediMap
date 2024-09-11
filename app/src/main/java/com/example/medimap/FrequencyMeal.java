@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -34,38 +35,24 @@ public class FrequencyMeal extends AppCompatActivity {
             return insets;
         });
 
-        // Get the current page number passed from the previous activity
         currentPage = getIntent().getIntExtra("currentPage", 8);
-        // Initialize the circular progress bar
         circularProgressBar = findViewById(R.id.circularProgressBar);
-        updateProgressBar();  // Update progress bar based on the current page
+        updateProgressBar();
 
-        // Set up the meal selection listeners
-        Button button2Meals = findViewById(R.id.button_2_meals);
-        Button button3Meals = findViewById(R.id.button_3_meals);
-        Button button4Meals = findViewById(R.id.button_4_meals);
+        setupSelection(findViewById(R.id.button_Two_Meals), "2 Meals", true);
+        setupSelection(findViewById(R.id.button_Three_Meals), "3 Meals", true);
+        setupSelection(findViewById(R.id.button_Four_Meals), "4 Meals", true);
 
-        button2Meals.setOnClickListener(v -> selectedMeals = "2 Meals");
-        button3Meals.setOnClickListener(v -> selectedMeals = "3 Meals");
-        button4Meals.setOnClickListener(v -> selectedMeals = "4 Meals");
+        setupSelection(findViewById(R.id.button_zero_snacks), "0 Snacks", false);
+        setupSelection(findViewById(R.id.button_one_snack), "1 Snack", false);
+        setupSelection(findViewById(R.id.button_Two_Snacks), "2 Snacks", false);
 
-        // Set up the snack selection listeners
-        Button button0Snacks = findViewById(R.id.button_0_snacks);
-        Button button1Snack = findViewById(R.id.button_1_snack);
-        Button button2Snacks = findViewById(R.id.button_2_snacks);
-
-        button0Snacks.setOnClickListener(v -> selectedSnacks = "0 Snacks");
-        button1Snack.setOnClickListener(v -> selectedSnacks = "1 Snack");
-        button2Snacks.setOnClickListener(v -> selectedSnacks = "2 Snacks");
-
-        // Set up the "Next" button to navigate to the next activity
-        Button nextButton = findViewById(R.id.nextButton);
+       Button nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(v -> {
             if (!selectedMeals.isEmpty() && !selectedSnacks.isEmpty()) {
-                saveFrequency(); // Save the selected meal and snack frequency
-                retrieveAndShowFrequency(); // Retrieve and show the frequency for verification (optional)
+                saveFrequency();
+                retrieveAndShowFrequency();
                 Intent intent = new Intent(FrequencyMeal.this, WorkOutPlaces.class);
-                intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
                 startActivity(intent);
             } else {
                 Toast.makeText(FrequencyMeal.this, "Please select both meal and snack frequencies", Toast.LENGTH_SHORT).show();
@@ -73,28 +60,47 @@ public class FrequencyMeal extends AppCompatActivity {
         });
     }
 
-    // Function to update the progress bar based on the current page
+    private void setupSelection(LinearLayout layout, String type, boolean isMeal) {
+        layout.setOnClickListener(v -> {
+            if (isMeal) {
+                selectedMeals = type;
+                resetSelections(true);
+            } else {
+                selectedSnacks = type;
+                resetSelections(false);
+            }
+            layout.setBackgroundResource(R.drawable.border_selected);
+            Toast.makeText(FrequencyMeal.this, type + " selected", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void resetSelections(boolean isMeal) {
+        int[] mealIds = {R.id.button_Two_Meals, R.id.button_Three_Meals, R.id.button_Four_Meals};
+        int[] snackIds = {R.id.button_zero_snacks, R.id.button_one_snack, R.id.button_Two_Snacks};
+
+        for (int id : (isMeal ? mealIds : snackIds)) {
+            LinearLayout layout = findViewById(id);
+            layout.setBackgroundResource(R.drawable.border_unselected);
+        }
+    }
+
     private void updateProgressBar() {
-        int progress = (currentPage * 100) / totalPages;  // Calculate the percentage of progress
+        int progress = (currentPage * 100) / totalPages;
         circularProgressBar.setProgress(progress);
     }
 
-    // Function to save the meal and snack frequency in SharedPreferences
     private void saveFrequency() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putString("meals", selectedMeals); // Save the selected meal frequency
-        editor.putString("snacks", selectedSnacks); // Save the selected snack frequency
-        editor.apply(); // Apply the changes asynchronously
+        editor.putString("meals", selectedMeals);
+        editor.putString("snacks", selectedSnacks);
+        editor.apply();
     }
 
-    // Function to retrieve and show the saved frequency in a Toast for verification
     private void retrieveAndShowFrequency() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String savedMeals = sharedPreferences.getString("meals", "No meals selected");
         String savedSnacks = sharedPreferences.getString("snacks", "No snacks selected");
-
-        //Toast.makeText(this, "Meals: " + savedMeals + "\nSnacks: " + savedSnacks, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Meals: " + savedMeals + "\nSnacks: " + savedSnacks, Toast.LENGTH_LONG).show();
     }
 }

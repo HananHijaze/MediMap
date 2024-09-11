@@ -23,5 +23,8 @@ public interface HydrationRoomDao {
 
     @Query("SELECT * FROM hydration_table WHERE customerId = :customerId ORDER BY date DESC")
     List<HydrationRoom> getAllHydrationsForCustomer(Long customerId);
+
+    @Query("DELETE FROM hydration_table WHERE date = (SELECT MIN(date) FROM hydration_table)")
+    void deleteOldestHydration();
 }
 
