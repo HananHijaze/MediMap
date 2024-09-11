@@ -2,6 +2,9 @@ package com.example.medimap.roomdb;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import com.example.medimap.server.Hydration;
+
 import java.time.LocalDate;
 
 @Entity(tableName = "hydration_table")
@@ -21,6 +24,12 @@ public class HydrationRoom {
         this.customerId = customerId;
         this.drank = drank;
         this.date = date;
+    }
+
+    public HydrationRoom(Hydration hydration){
+        this.customerId = hydration.getCustomerId();
+        this.drank = hydration.getDrank();
+        this.date = hydration.getDate();
     }
 
     // Getters and Setters
