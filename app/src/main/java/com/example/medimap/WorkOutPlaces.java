@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 public class WorkOutPlaces extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 12;
+    private int totalPages = 11;
     private int currentPage;
     private String selectedWorkoutPlace = ""; // Variable to store the selected workout place
 
@@ -61,7 +61,7 @@ public class WorkOutPlaces extends AppCompatActivity {
             if (!selectedWorkoutPlace.isEmpty()) {
                 saveWorkoutPlace(); // Save the selected workout place
                 retrieveAndShowWorkoutPlace(); // Retrieve and show the workout place for verification
-                Intent intent = new Intent(WorkOutPlaces.this, WorkOutTime.class);
+                Intent intent = new Intent(WorkOutPlaces.this, TrainingDays.class);
                 intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
                 startActivity(intent);
             } else {

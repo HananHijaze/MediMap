@@ -114,7 +114,7 @@
 
         <!-- Gluten-free Option -->
         <LinearLayout
-            android:id="@+id/button_Gluten_free"
+            android:id="@+id/button_Paleo"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:background="@drawable/border_unselected"
@@ -126,7 +126,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gluten-Free"
+                android:text="Paleo"
                 android:textColor="@color/blue"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -134,7 +134,7 @@
 
         <!-- Diary-Free Option -->
         <LinearLayout
-            android:id="@+id/button_Diary_Free"
+            android:id="@+id/button_Balanced"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:background="@drawable/border_unselected"
@@ -146,7 +146,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Diary-Free"
+                android:text="Balanced"
                 android:textColor="@color/blue"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -154,7 +154,7 @@
 
         <!-- Pescatarian Option -->
         <LinearLayout
-            android:id="@+id/button_Pescatarian"
+            android:id="@+id/button_LowCarb"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:background="@drawable/border_unselected"
@@ -166,7 +166,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pescatarian"
+                android:text="Low Carb"
                 android:textColor="@color/blue"
                 android:textSize="20sp"
                 android:textStyle="bold" />
