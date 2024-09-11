@@ -1,11 +1,16 @@
 package com.example.medimap;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.HydrationRoom;
 import com.example.medimap.roomdb.HydrationRoomDao;
+import com.example.medimap.roomdb.StepCountRoom;
+import com.example.medimap.roomdb.StepCountRoomDao;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.server.HydrationApi;
+import com.example.medimap.server.StepCount;
+import com.example.medimap.server.StepCountApi;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.button.MaterialButton;
 
@@ -14,13 +19,20 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,25 +42,43 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements SensorEventListener {
     //Page components
     private TextView waterOutput;
     private Button addWaterBtn;
     private GifDrawable waterGif;
+    private SensorManager sensorManager;
+    private Sensor stepCounterSensor;
+    ProgressBar progressBar;
+    TextView textView;
+    int stepCount = 0;
+    int totalSteps = 0;
+    int previousTotalSteps = 0;
+    TextView percent;
+    AppDatabaseRoom db = AppDatabaseRoom.getInstance(this);
+
+
 
     //Daos
     private UserDao userDao;
     private HydrationRoomDao hydRoomDao;
+    private StepCountRoomDao stepCountRoomDao;
+
 
     //Rooms
     private UserRoom userRoom;
     private HydrationRoom hydRoom;
+    private StepCountRoom stepCountRoom;
 
     //Servers
     private HydrationApi hydrationApi;
     private UserApi userApi;
+    private StepCountApi stepCountApi;
 
     //variables
     private int currentWaterAmount = 0;
@@ -69,11 +99,22 @@ public class Home extends AppCompatActivity {
             return insets;
 
         });
-        // This is a LinearLayout that works like a button.
-        // It uses the "onCustomButtonClick" method as its click handler.
-        System.out.println("CREATED HOME");
+        //****************************************************
+        // Initialize Room database and UserDao
+        userDao = db.userDao();
+        stepCountRoomDao= db.stepsCountRoomDao();
+        stepCountRoomDao = db.stepsCountRoomDao();
+
+        initViews();
+        setupSensors();
+        resetSteps();
+        loadData();
+
+
+        //***************************************************
+
         addWaterBtn = findViewById(R.id.addWaterBtn);
-        addWaterBtn.setOnClickListener(v-> addWater());
+        addWaterBtn.setOnClickListener(v -> addWater());
 
 
         ImageView stepsImage = findViewById(R.id.stepsImage); //1.steps
@@ -88,13 +129,13 @@ public class Home extends AppCompatActivity {
         ImageView trainingImage = findViewById(R.id.trainingImage); //4.training plan
         LinearLayout training = findViewById(R.id.training);
 
-        ImageButton map =findViewById(R.id.imageButton2);
+        ImageButton map = findViewById(R.id.imageButton2);
 
 
         //1.steps implementation
         steps.isClickable();
         steps.setOnClickListener(view -> {
-            Intent in =new Intent(this,steps_tracking.class);
+            Intent in = new Intent(this, steps_tracking.class);
             startActivity(in);
         });
 
@@ -107,14 +148,14 @@ public class Home extends AppCompatActivity {
 
         water.isClickable();
         water.setOnClickListener(view -> {
-            Intent in =new Intent(this,hydration_tracking.class);
+            Intent in = new Intent(this, hydration_tracking.class);
             startActivity(in);
         });
 
         //3.meal implementation
         mealPlanButton.isClickable();
         mealPlanButton.setOnClickListener(view -> {
-            Intent in = new Intent(this,meal_plan.class);
+            Intent in = new Intent(this, meal_plan.class);
             startActivity(in);
         });
 
@@ -125,14 +166,14 @@ public class Home extends AppCompatActivity {
                 .into(trainingImage);
         trainingImage.isClickable();
         trainingImage.setOnClickListener(view -> {
-            Intent in =new Intent(this,TrainingPlan.class);
+            Intent in = new Intent(this, TrainingPlan.class);
             startActivity(in);
         });
 
 
         training.isClickable();
         training.setOnClickListener(view -> {
-            Intent in =new Intent(this,TrainingPlan.class);
+            Intent in = new Intent(this, TrainingPlan.class);
             startActivity(in);
         });
 
@@ -140,7 +181,7 @@ public class Home extends AppCompatActivity {
         //5.map implementation
         map.isClickable(); //map implementation
         map.setOnClickListener(view -> {
-            Intent in = new Intent(this,Map.class);
+            Intent in = new Intent(this, Map.class);
             startActivity(in);
         });
 
@@ -153,7 +194,7 @@ public class Home extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("userEmail", "Majd");
             editor.apply();
-            Intent in =new Intent(this,Profile.class);
+            Intent in = new Intent(this, Profile.class);
             startActivity(in);
 
         });
@@ -162,7 +203,7 @@ public class Home extends AppCompatActivity {
         MaterialButton center = findViewById(R.id.center);
         center.isCheckable();
         center.setOnClickListener(view -> {
-            Intent in =new Intent(this,Home.class);
+            Intent in = new Intent(this, Home.class);
             startActivity(in);
         });
 
@@ -187,21 +228,124 @@ public class Home extends AppCompatActivity {
         //get all Data
         loadWaterData();
 
-        //scheduleDailyReset();
 
+    }
+
+    /*****************************************Steps*****************************************/
+    private void initViews() {
+        progressBar = findViewById(R.id.progressBar);
+        textView = findViewById(R.id.textView);
+        percent = findViewById(R.id.percent);
+    }
+
+    private void setupSensors() {
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if (stepCounterSensor != null) {
+            sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        System.out.println("ON RESUME");
-        loadWaterData();
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            // Update the total steps
+            totalSteps = (int) event.values[0];
+
+            // Calculate the steps for today
+            stepCount = totalSteps - previousTotalSteps;
+
+            // Update the UI to reflect the new step count (progress bar or step count display)
+            updateProgressBar(stepCount);
+        }
     }
 
-    public void onCustomButtonClick(View view) {
-        // This is a LinearLayout that works like a button.
-        // It uses the "onCustomButtonClick" method as its click handler.
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
+
+    private void updateProgressBar(int stepCount) {
+        int maxSteps = 10000; // Maximum number of steps
+        int progress = (stepCount * 100) / maxSteps;
+
+        // Update the progress bar and text views
+        progressBar.setProgress(progress);
+        textView.setText(String.valueOf(stepCount)); // Show actual steps
+        percent.setText(progress + "%"); // Show percentage progress
+
+        // Store the stepCount in SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("stepPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("stepCount", stepCount);
+        editor.apply(); // Commit the changes asynchronously
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveData(); // Save steps data when the activity is paused
+        sensorManager.unregisterListener(this);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(stepCounterSensor==null){
+            Toast.makeText(this, "Sensor not found", Toast.LENGTH_SHORT).show();
+        }else{
+            sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    private void resetSteps() {
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Home.this, "Long tap to reset steps", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        textView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+//                // Save the current step count to Room before resetting
+//                saveStepCountToRoom();
+
+                previousTotalSteps = totalSteps;  // Reset previous total steps to the current total steps
+                totalSteps = 0;  // Reset total steps to 0
+                progressBar.setProgress(0);
+                textView.setText(String.valueOf(0));  // Set UI text to 0
+                percent.setText("0%");
+                saveData();  // Save the reset state
+                return true;
+            }
+        });
+    }
+
+
+
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+    private void saveData() {
+        // Save the previous total steps to SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("key1", String.valueOf(previousTotalSteps));
+        editor.apply(); // Apply changes to SharedPreferences
+    }
+
+    private void loadData() {
+        // Load the previously saved step count from SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        String savedNumber = sharedPreferences.getString("key1", "0");
+        previousTotalSteps = Integer.parseInt(savedNumber); // Convert the saved step count to an integer
+    }
+
 
     /**************************************** Water ****************************************/
     //load water data
@@ -223,7 +367,7 @@ public class Home extends AppCompatActivity {
 //        this.defaultWaterAmount = userRoom.getWaterDefault();
 //        this.waterGoal = userRoom.getHydrationGoal();
 
-        this.defaultWaterAmount = sharedPreferences.getInt("defaultWater", 150);/**********************/
+        this.defaultWaterAmount = 150;/**********************/
         this.waterGoal = 3000;
 
         //fillWaterBottle();
@@ -268,30 +412,30 @@ public class Home extends AppCompatActivity {
         }
     }
 
-    //save water data
-    private void scheduleDailyReset() {
-        // Get an instance of AlarmManager
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        // Set the alarm to start at midnight
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        // Create an Intent to broadcast
-        Intent intent = new Intent(this, StepResetReceiver.class);
-
-        // Create a PendingIntent that will perform a broadcast
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        // Set the alarm to repeat daily at midnight
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY,
-                    pendingIntent);
-        }
-    }
+//    //save water data
+//    private void scheduleDailyReset() {
+//        // Get an instance of AlarmManager
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//
+//        // Set the alarm to start at midnight
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        calendar.set(Calendar.HOUR_OF_DAY, 0);
+//        calendar.set(Calendar.MINUTE, 0);
+//        calendar.set(Calendar.SECOND, 0);
+//
+//        // Create an Intent to broadcast
+//        Intent intent = new Intent(this, StepResetReceiver.class);
+//
+//        // Create a PendingIntent that will perform a broadcast
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//
+//        // Set the alarm to repeat daily at midnight
+//        if (alarmManager != null) {
+//            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+//                    calendar.getTimeInMillis(),
+//                    AlarmManager.INTERVAL_DAY,
+//                    pendingIntent);
+//        }
+//    }
 }
