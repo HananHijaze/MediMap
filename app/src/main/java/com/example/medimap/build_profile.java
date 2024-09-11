@@ -52,6 +52,7 @@ public class build_profile extends AppCompatActivity {
         // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent in = new Intent(this, Home.class);
+            in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(in);
             finish(); // Optionally finish this activity if you don't want to return to it
         }, 5000);
@@ -119,13 +120,13 @@ public class build_profile extends AppCompatActivity {
                 birthdate,
                 bodyType,
                 goal,
-                10000,  // Step count goal (placeholder, modify as needed)
+                6000,  // Step count goal (placeholder, modify as needed)
                 3000,   // Hydration goal in mL (placeholder, modify as needed)
                 workoutPlace,
                 dietType,
                 mealsPerDay,  // Meals per day
                 snacksPerDay, // Snacks per day
-                2000          // Default water intake (placeholder, modify as needed)
+                200          // Default water intake (placeholder, modify as needed)
         );
 
         // Insert the user data into the Room database asynchronously

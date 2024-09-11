@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:id="@+id/main"
+    android:background="@android:color/white">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/dialogTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rate this Track"
+        android:textSize="28dp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp"
+        android:gravity="center"
+        android:textColor="@color/blue" />
+
+    <!-- Rating Bar to allow rating out of 5 stars -->
+
+    <!-- Submit and Cancel Buttons -->
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:isIndicator="false"
+        android:numStars="5"
+        android:paddingBottom="16dp"
+        android:rating="0"
+        android:stepSize="1.0"
+        android:progressTint="@color/colorPrimary"
+    android:progressBackgroundTint="@color/gray" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <!-- Cancel Button -->
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:backgroundTint="@color/blue"
+        android:textColor="@android:color/white"
+        android:layout_marginEnd="8dp" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:backgroundTint="@color/blue"
+            android:textColor="@android:color/white"
+            />
+    </LinearLayout>
+</LinearLayout>

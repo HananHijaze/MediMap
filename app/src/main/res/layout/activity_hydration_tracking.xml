@@ -8,11 +8,13 @@
     android:background="@drawable/b2"
     tools:context=".hydration_tracking">
 
+
     <Button
         android:id="@+id/editButton"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="204dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_edit"
         android:gravity="center"
@@ -24,59 +26,58 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add"
-        app:layout_constraintVertical_bias="0.042"
+        app:layout_constraintTop_toBottomOf="@+id/addWaterBtn"
+        app:layout_constraintVertical_bias="0.7"
         app:strokeColor="@color/blue" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/water"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.308" />
 
     <LinearLayout
         android:id="@+id/water"
         android:layout_width="200dp"
         android:layout_height="300dp"
+        android:layout_marginBottom="20dp"
         android:layout_weight="1"
         android:background="@drawable/custom_linear_layout"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/add"
+        app:layout_constraintBottom_toTopOf="@+id/addWaterBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView8"
-        app:layout_constraintVertical_bias="0.575">
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/waterImage"
+            android:id="@+id/waterbottle"
             android:layout_width="150dp"
             android:layout_height="250dp"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            android:src="@drawable/waterbottle2" />
 
         <TextView
-            android:id="@+id/mlCountText"
+            android:id="@+id/waterOutput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="300ml / 3000ml"
             android:textColor="@color/blue"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="401dp"
-        android:layout_height="170dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.073"
-        app:srcCompat="@drawable/hydration_graph" />
-
-
     <Button
-        android:id="@+id/add"
+        android:id="@+id/addWaterBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginBottom="272dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_plus"
         android:text="150ml"
@@ -87,8 +88,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.689"
-        app:strokeColor="@color/blue" />
+        app:strokeColor="@color/blue"
+        app:strokeWidth="1dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

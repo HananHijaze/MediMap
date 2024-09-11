@@ -33,7 +33,7 @@ import retrofit2.Response;
 public class Service {
     public static Service service;
 
-    public Service getInstance() {
+    public static Service getInstance() {
         if (service == null) {
             service = new Service();
             return service;
