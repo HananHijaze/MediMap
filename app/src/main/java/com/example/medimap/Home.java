@@ -71,6 +71,7 @@ public class Home extends AppCompatActivity {
         });
         // This is a LinearLayout that works like a button.
         // It uses the "onCustomButtonClick" method as its click handler.
+        System.out.println("CREATED HOME");
         addWaterBtn = findViewById(R.id.addWaterBtn);
         addWaterBtn.setOnClickListener(v-> addWater());
 
@@ -190,6 +191,13 @@ public class Home extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("ON RESUME");
+        loadWaterData();
+    }
+
     public void onCustomButtonClick(View view) {
         // This is a LinearLayout that works like a button.
         // It uses the "onCustomButtonClick" method as its click handler.
@@ -215,7 +223,7 @@ public class Home extends AppCompatActivity {
 //        this.defaultWaterAmount = userRoom.getWaterDefault();
 //        this.waterGoal = userRoom.getHydrationGoal();
 
-        this.defaultWaterAmount = 150;/**********************/
+        this.defaultWaterAmount = sharedPreferences.getInt("defaultWater", 150);/**********************/
         this.waterGoal = 3000;
 
         //fillWaterBottle();

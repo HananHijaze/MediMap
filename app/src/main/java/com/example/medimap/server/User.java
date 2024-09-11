@@ -1,5 +1,9 @@
 package com.example.medimap.server;
 
+import com.example.medimap.roomdb.Converters;
+import com.example.medimap.roomdb.UserRoom;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 public class User {
@@ -39,6 +43,27 @@ public class User {
         this.mealsperday = mealsperday;
         this.snackesperday = snackesperday;
         this.waterDefault = waterDefault;
+    }
+
+    public User(UserRoom userRoom){
+        this.id = userRoom.getId();
+        this.email = userRoom.getEmail();
+        this.name = userRoom.getName();
+        this.password = userRoom.getPassword();
+        this.gender = userRoom.getGender();
+        this.height = userRoom.getHeight();
+        this.weight = userRoom.getWeight();
+        LocalDate localDate = Converters.fromString(userRoom.getBirthDate());
+        this.birthDate = Converters.localDateToDate(localDate);
+        this.bodyType = userRoom.getBodyType();
+        this.goal = userRoom.getGoal();
+        this.stepcountgoal = userRoom.getStepCountGoal();
+        this.hydrationgoal = userRoom.getHydrationGoal();
+        this.wheretoworkout = userRoom.getWhereToWorkout();
+        this.dietType = userRoom.getDietType();
+        this.mealsperday = userRoom.getMealsPerDay();
+        this.snackesperday = userRoom.getMealsPerDay();
+        this.waterDefault = userRoom.getWaterDefault();
     }
 
     // Getters and Setters

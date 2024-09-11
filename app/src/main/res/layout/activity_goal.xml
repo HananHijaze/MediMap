@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Gain Muscle"
+            android:text="Gain muscle"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Weight Loss"
+            android:text="Weight loss"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
@@ -126,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Healthy Life"
+            android:text="Healthy lifestyle"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
