@@ -1,5 +1,3 @@
-
-
 package com.example.medimap;
 
 import android.content.SharedPreferences;
@@ -17,6 +15,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.StepCountDao;
+import com.example.medimap.roomdb.StepCountRoom;
+import com.example.medimap.roomdb.UserDao;
+import com.example.medimap.roomdb.UserRoom;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -29,6 +32,9 @@ public class steps_tracking extends AppCompatActivity {
     ProgressBar progressBar;
     TextView steps;
     com.github.mikephil.charting.charts.BarChart stepChart;
+    AppDatabaseRoom db = AppDatabaseRoom.getInstance(this);
+    private StepCountDao stepCountRoomDao = db.stepCountDao();
+    UserDao userDao = db.userDao();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +52,7 @@ public class steps_tracking extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         this.stepChart = findViewById(R.id.stepChart);
 
-        // Retrieve the stepCount from SharedPreferences
+        // Retrieve the stored step count from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("stepPrefs", MODE_PRIVATE);
         int stepCount = sharedPreferences.getInt("stepCount", 0); // Default to 0 if no value found
 
@@ -55,17 +61,37 @@ public class steps_tracking extends AppCompatActivity {
 
 // Update UI with step count
         updateProgressBar(stepCount);
-        BarChart barChart = findViewById(R.id.stepChart);
-        List<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(1f, 240f)); // Sample data
-        entries.add(new BarEntry(2f, 448f)); // Sample data
-        entries.add(new BarEntry(3f, 150f)); // Sample data
 
-        BarDataSet dataSet = new BarDataSet(entries, "Steps");
-        BarData barData = new BarData(dataSet);
-        barChart.setData(barData);
-        barChart.invalidate(); //
+
+        //
+        loadStepDataIntoChart();
     }
+    private void loadStepDataIntoChart() {
+        new Thread(() -> {
+            // Retrieve data from the database
+            Long userId = userDao.getAllUsers().get(0).getId();
+            List<StepCountRoom> stepData = stepCountRoomDao.getLast7DaysStepCount(userId);
+
+            // Prepare the entries for the bar chart
+            List<BarEntry> entries = new ArrayList<>();
+
+            for (int i = 0; i < stepData.size(); i++) {
+                StepCountRoom step = stepData.get(i);
+                // Assuming each entry corresponds to a day, for example:
+                entries.add(new BarEntry(i + 1, step.getSteps())); // Index as x-axis, step count as y-axis
+            }
+
+            // Post the data to the main thread to update the chart
+            runOnUiThread(() -> {
+                BarChart barChart = findViewById(R.id.stepChart);
+                BarDataSet dataSet = new BarDataSet(entries, "Steps");
+                BarData barData = new BarData(dataSet);
+                barChart.setData(barData);
+                barChart.invalidate();  // Refresh the chart with the new data
+            });
+        }).start();
+    }
+
 
 
     private void updateProgressBar(int stepCount) {
