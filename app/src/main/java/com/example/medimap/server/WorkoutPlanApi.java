@@ -31,5 +31,9 @@ public interface WorkoutPlanApi {
     // Delete a workout plan by ID
     @DELETE("api/workoutplans/{id}")
     Call<Void> deleteWorkoutPlan(@Path("id") Long id);
+
+    @GET("workout/latest/{customerID}")
+    Call<WorkoutPlan> getLatestWorkoutPlan(@Path("customerID") Long customerID);
+
 }
 
