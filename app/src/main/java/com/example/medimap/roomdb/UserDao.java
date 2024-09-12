@@ -35,6 +35,4 @@ public interface UserDao {
 
     @Query("SELECT * FROM user_table ORDER BY id ASC LIMIT 1")
     UserRoom getFirstUser();
-
-
 }
