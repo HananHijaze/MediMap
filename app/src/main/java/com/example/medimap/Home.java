@@ -45,7 +45,7 @@ import java.util.Locale;
 public class Home extends AppCompatActivity implements SensorEventListener {
 
     // Page components
-    private TextView waterOutput;
+    private TextView waterOutput,textView3;
     private Button addWaterBtn;
     private GifDrawable waterGif;
     private SensorManager sensorManager;
@@ -90,7 +90,18 @@ public class Home extends AppCompatActivity implements SensorEventListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        // Navigation buttons
+        MaterialButton leftButton = findViewById(R.id.left);
+        leftButton.setOnClickListener(view -> {
+            Intent in = new Intent(this, Profile.class);
+            startActivity(in);
+        });
 
+        MaterialButton center = findViewById(R.id.center);
+        center.setOnClickListener(view -> {
+            Intent in = new Intent(this, Home.class);
+            startActivity(in);
+        });
         // Initialize Room database
         AppDatabaseRoom db = AppDatabaseRoom.getInstance(this);  // Initialize database
 
@@ -118,6 +129,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         ImageView trainingImage = findViewById(R.id.trainingImage); // 4. Training plan
         LinearLayout training = findViewById(R.id.training);
         ImageButton map = findViewById(R.id.imageButton2); // 5. Map
+        textView3= findViewById(R.id.textView3);
 
         // 1. Steps implementation
         steps.isClickable();

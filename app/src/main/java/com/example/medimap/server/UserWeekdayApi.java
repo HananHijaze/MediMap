@@ -31,4 +31,8 @@ public interface UserWeekdayApi {
     // Delete a user weekday by ID
     @DELETE("userweekdays/{id}")
     Call<Void> deleteUserWeekday(@Path("id") Long id);
+
+
+    @GET("userWeekdays/user/{userId}")
+    Call<List<UserWeekday>> getUserWeekdaysByUserId(@Path("userId") Long userId);
 }
