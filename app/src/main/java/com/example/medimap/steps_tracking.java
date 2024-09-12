@@ -66,11 +66,12 @@ public class steps_tracking extends AppCompatActivity {
         //
         loadStepDataIntoChart();
     }
+
     private void loadStepDataIntoChart() {
         new Thread(() -> {
             // Retrieve data from the database
             Long userId = userDao.getAllUsers().get(0).getId();
-            List<StepCountRoom> stepData = stepCountRoomDao.getLast7DaysStepCount(userId);
+            List<StepCountRoom> stepData = stepCountRoomDao.getAllStepCounts(userId);
 
             // Prepare the entries for the bar chart
             List<BarEntry> entries = new ArrayList<>();

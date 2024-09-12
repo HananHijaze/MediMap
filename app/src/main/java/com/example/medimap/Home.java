@@ -101,8 +101,8 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         // Initialize UI components
         initViews();
         setupSensors();
-        resetSteps();
         loadData();
+        resetSteps();
 
         // Button listeners
         addWaterBtn = findViewById(R.id.addWaterBtn);
@@ -196,7 +196,6 @@ public class Home extends AppCompatActivity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
-
     private void updateProgressBar(int stepCount) {
         int maxSteps = 10000;  // Maximum number of steps
         int progress = (stepCount * 100) / maxSteps;
@@ -208,8 +207,38 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         SharedPreferences sharedPreferences = getSharedPreferences("stepPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("stepCount", stepCount);
+        editor.putInt("previousTotalSteps", previousTotalSteps); // Save the previous total steps
         editor.apply();
     }
+
+    private void resetSteps() {
+        textView.setOnClickListener(v ->
+                Toast.makeText(Home.this, "Long tap to reset steps", Toast.LENGTH_SHORT).show()
+        );
+
+        textView.setOnLongClickListener(v -> {
+            previousTotalSteps = totalSteps;  // Reset previous steps to current total
+            stepCount = 0;  // Reset current step count to 0
+            progressBar.setProgress(0);
+            textView.setText("0");
+            percent.setText("0%");
+            saveData();  // Save the reset state
+            return true;
+        });
+    }
+
+    private void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("stepPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("previousTotalSteps", previousTotalSteps); // Save previous total steps
+        editor.apply();
+    }
+
+    private void loadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("stepPrefs", MODE_PRIVATE);
+        previousTotalSteps = sharedPreferences.getInt("previousTotalSteps", 0); // Load previous total steps
+    }
+
 
     @Override
     protected void onPause() {
@@ -217,6 +246,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         saveData(); // Save steps data when the activity is paused
         sensorManager.unregisterListener(this);
     }
+
 
     @Override
     protected void onResume() {
@@ -228,32 +258,10 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         }
     }
 
-    private void resetSteps() {
-        textView.setOnClickListener(v -> Toast.makeText(Home.this, "Long tap to reset steps", Toast.LENGTH_SHORT).show());
 
-        textView.setOnLongClickListener(v -> {
-            previousTotalSteps = totalSteps;
-            totalSteps = 0;
-            progressBar.setProgress(0);
-            textView.setText("0");
-            percent.setText("0%");
-            saveData();
-            return true;
-        });
-    }
 
-    private void saveData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("key1", String.valueOf(previousTotalSteps));
-        editor.apply();
-    }
 
-    private void loadData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        String savedNumber = sharedPreferences.getString("key1", "0");
-        previousTotalSteps = Integer.parseInt(savedNumber);
-    }
+
 
     /**************************************** Water ****************************************/
     private void loadWaterData() {
