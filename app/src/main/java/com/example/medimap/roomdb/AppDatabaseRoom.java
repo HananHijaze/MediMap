@@ -13,7 +13,7 @@ public abstract class AppDatabaseRoom extends RoomDatabase {
     // Static instance of the AppDatabase class
     private static AppDatabaseRoom INSTANCE;
 
-    // DAOs
+    // DAOsss
     public abstract UserDao userDao();
     public abstract HydrationRoomDao hydrationRoomDao();
     public abstract WeeklyMealPlanRoomDao weeklyMealPlanRoomDao();
