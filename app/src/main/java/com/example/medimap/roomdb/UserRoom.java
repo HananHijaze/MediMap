@@ -3,7 +3,10 @@ package com.example.medimap.roomdb;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+
+import java.util.Date;
 import com.example.medimap.server.User;
+
 
 @Entity(tableName = "user_table")
 public class UserRoom {
