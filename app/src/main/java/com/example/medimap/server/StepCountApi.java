@@ -28,4 +28,8 @@ public interface StepCountApi {
 
     @DELETE("stepcount/{id}")
     Call<Void> deleteStepCount(@Path("id") Long id);
+
+    @GET("steps/last7days/{customerId}")
+    Call<List<StepCount>> getLast7DaysSteps(@Path("customerId") Long customerId);
+
 }
