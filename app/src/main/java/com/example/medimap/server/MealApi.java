@@ -10,6 +10,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface MealApi {
 
@@ -32,4 +33,10 @@ public interface MealApi {
     // Delete a meal by ID
     @DELETE("meals/{id}")
     Call<Void> deleteMeal(@Path("id") Long id);
+
+    @GET("api/meals/search")
+    Call<List<Meal>> getMealsByTypeAndCluster(
+            @Query("type") String type,
+            @Query("cluster") int cluster
+    );
 }
