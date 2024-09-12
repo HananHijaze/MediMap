@@ -32,5 +32,9 @@ public interface MealPlanApi {
     // Delete a meal plan by ID
     @DELETE("mealplans/{id}")
     Call<Void> deleteMealPlan(@Path("id") Long id);
+
+    @GET("latest/{customerID}")
+    Call<MealPlan> getLatestMealPlan(@Path("customerID") Long customerID);
+
 }
 
