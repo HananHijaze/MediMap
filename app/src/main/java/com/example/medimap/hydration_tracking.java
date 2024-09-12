@@ -109,6 +109,7 @@ public class hydration_tracking extends AppCompatActivity {
         //scheduleDailyReset();
     }
 
+    @Override
     public void onResume() {
         super.onResume();
         System.out.println("ON RESUME");
@@ -152,7 +153,6 @@ public class hydration_tracking extends AppCompatActivity {
 
 
 
-
         /******* TEST *******/
         new Thread(()-> {
             saveHydration();
@@ -183,9 +183,9 @@ public class hydration_tracking extends AppCompatActivity {
         this.userRoom = null;
         Thread fetchUserRoomTh = new Thread(() -> {
             //get all users
-            List<UserRoom> usersRoom = userDao.getAllUsers();
+            List<UserRoom> userRoomList = userDao.getAllUsers();
             //check if there is no users
-            if (usersRoom.isEmpty() || usersRoom == null) {
+            if (userRoomList.isEmpty() || userRoomList == null) {
                 System.out.println("NO USERS WERE FOUND");
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
@@ -196,7 +196,7 @@ public class hydration_tracking extends AppCompatActivity {
                 return;
             }
             //get user from list
-            userRoom = usersRoom.get(0);
+            userRoom = userRoomList.get(0);
             System.out.println("LOAD DATA: LOADED USER ROOM");
             System.out.println("USER ROOM NAME IS: " + userRoom.getName());
         });

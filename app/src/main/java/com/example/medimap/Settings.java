@@ -1,13 +1,17 @@
 package com.example.medimap;
 
+import static com.example.medimap.server.RetrofitClient.getRetrofitInstance;
+
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,17 +33,21 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class Settings extends AppCompatActivity {
 
-    private TextInputEditText emailput, nameput, genderput, heightput, weightput, birthdateput,
-            stepcountgoalput, hydrationgoalput, workoutlocationput, mealsperdayput, snacksperdayput, waterDefaultPut;
-    private Spinner bodytypeput, goalput, diettypeput, allergiesput;
+    private TextInputEditText heightput, weightput,
+            stepcountgoalput, workoutlocationput, waterDefaultPut;
+    private TextInputEditText emailput, nameput, genderput, birthdateput, hydrationgoalput;
+    private Spinner bodytypeput, goalput, diettypeput, allergiesput, mealsperdayput, snacksperdayput;
     private UserDao userDao;
     private UserRoom userRoom;
+    private UserApi userApi;
 
-    //Selecting training days
+    // Selecting training days
     private TextView selectTrainingDays;
     private UserWeekdayDao userWeekdayDao;
     private final String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -59,9 +67,8 @@ public class Settings extends AppCompatActivity {
             return insets;
         });
 
-//        // Initialize Room database and DAO
-//        AppDatabaseRoom database = AppDatabaseRoom.getInstance(this);
-//        userWeekdayDao = database.userWeekdayDao();
+        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
+        userApi = retrofit.create(UserApi.class);
 
         selectTrainingDays = findViewById(R.id.select_training_days);
         selectTrainingDays.setOnClickListener(v -> showDaysSelectionDialog());
@@ -76,7 +83,6 @@ public class Settings extends AppCompatActivity {
 
         // Load user data from the database
         loadUserData();
-
     }
 
     // Initialize UI components
@@ -90,13 +96,13 @@ public class Settings extends AppCompatActivity {
         stepcountgoalput = findViewById(R.id.stepcountgoal_edit_text);
         hydrationgoalput = findViewById(R.id.hydrationgoal_edit_text);
         workoutlocationput = findViewById(R.id.workoutlocation_edit_text);
-        mealsperdayput = findViewById(R.id.mealsperday_edit_text);
-        snacksperdayput = findViewById(R.id.snacksperday_edit_text);
         waterDefaultPut = findViewById(R.id.waterDefault_edit_text);
         bodytypeput = findViewById(R.id.bodytype_spinner);
         goalput = findViewById(R.id.goal_spinner);
         diettypeput = findViewById(R.id.diet_spinner);
         allergiesput = findViewById(R.id.allergies_spinner);
+        mealsperdayput = findViewById(R.id.mealsperday_spinner);
+        snacksperdayput = findViewById(R.id.snacksperday_spinner);
 
         // Initialize Update Button and set OnClickListener
         View updateButton = findViewById(R.id.updateButton);
@@ -132,6 +138,18 @@ public class Settings extends AppCompatActivity {
         allergiesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         allergiesput.setAdapter(allergiesAdapter);
         allergiesput.setOnItemSelectedListener(createOnItemSelectedListener());
+
+        // Meals per day Spinner (2, 3, 4)
+        ArrayAdapter<CharSequence> mealsAdapter = ArrayAdapter.createFromResource(this,
+                R.array.meals_per_day_array, android.R.layout.simple_spinner_item);
+        mealsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mealsperdayput.setAdapter(mealsAdapter);
+
+        // Snacks per day Spinner (0, 1, 2)
+        ArrayAdapter<CharSequence> snacksAdapter = ArrayAdapter.createFromResource(this,
+                R.array.snacks_per_day_array, android.R.layout.simple_spinner_item);
+        snacksAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        snacksperdayput.setAdapter(snacksAdapter);
     }
 
     // Helper method to create OnItemSelectedListener for spinners
@@ -139,9 +157,8 @@ public class Settings extends AppCompatActivity {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Prevent selection of the first item and indicate that it’s a prompt
                 if (position == 0) {
-                    ((TextView) parent.getChildAt(0)).setTextColor(Color.GRAY); // Optional: visually indicate it’s a prompt
+                    ((TextView) parent.getChildAt(0)).setTextColor(Color.GRAY);
                 }
             }
 
@@ -173,11 +190,9 @@ public class Settings extends AppCompatActivity {
         stepcountgoalput.setText(String.valueOf(userRoom.getStepCountGoal()));
         hydrationgoalput.setText(String.valueOf(userRoom.getHydrationGoal()));
         workoutlocationput.setText(userRoom.getWhereToWorkout());
-        mealsperdayput.setText(String.valueOf(userRoom.getMealsPerDay()));
-        snacksperdayput.setText(String.valueOf(userRoom.getSnacksPerDay()));
+        mealsperdayput.setSelection(getIndex(mealsperdayput, String.valueOf(userRoom.getMealsPerDay())));
+        snacksperdayput.setSelection(getIndex(snacksperdayput, String.valueOf(userRoom.getSnacksPerDay())));
         waterDefaultPut.setText(String.valueOf(userRoom.getWaterDefault()));
-
-        // Set spinner values based on user data
         setSpinnerSelection(bodytypeput, R.array.body_type_array, userRoom.getBodyType());
         setSpinnerSelection(goalput, R.array.goal_array, userRoom.getGoal());
         setSpinnerSelection(diettypeput, R.array.diet_type_array, userRoom.getDietType());
@@ -193,53 +208,92 @@ public class Settings extends AppCompatActivity {
         }
     }
 
-    // Method to save user data
-    private void saveUserData() {
-        if (!validateInputs()) {
-            return; // Stop if inputs are invalid
-        }
-
-        // Retrieve input data from UI elements after validation
-        String email = emailput.getText().toString();
-        String name = nameput.getText().toString();
-        String gender = genderput.getText().toString();
-        int height = parseIntSafely(heightput.getText().toString());
-        int weight = parseIntSafely(weightput.getText().toString());
-        String birthDate = birthdateput.getText().toString();
-        String bodyType = bodytypeput.getSelectedItem().toString();
-        String goal = goalput.getSelectedItem().toString();
-        int stepCountGoal = parseIntSafely(stepcountgoalput.getText().toString());
-        int hydrationGoal = parseIntSafely(hydrationgoalput.getText().toString());
-        String whereToWorkout = workoutlocationput.getText().toString();
-        String dietType = diettypeput.getSelectedItem().toString();
-        int mealsPerDay = parseIntSafely(mealsperdayput.getText().toString());
-        int snacksPerDay = parseIntSafely(snacksperdayput.getText().toString());
-        int waterDefault = parseIntSafely(waterDefaultPut.getText().toString());
-
-        // Create a new UserRoom object with the collected data
-        UserRoom newUser = new UserRoom(email, name, "", gender, height, weight, birthDate,
-                bodyType, goal, stepCountGoal, hydrationGoal, whereToWorkout, dietType,
-                mealsPerDay, snacksPerDay, waterDefault);
-
-        // Use AsyncTask to perform database operations on a background thread
-        AsyncTask.execute(() -> {
-            try {
-                if (userRoom == null) {
-                    // Insert new user if userRoom is null (indicating it's a new entry)
-                    userDao.insertUser(newUser);
-                } else {
-                    // Update existing user
-                    newUser.setId(userRoom.getId());
-                    userDao.updateUser(newUser);
-                }
-                runOnUiThread(() -> showMessage("User data saved successfully."));
-            } catch (Exception e) {
-                runOnUiThread(() -> showMessage("Failed to save user data. Please try again."));
-            }
-        });
+    private int getIndex(Spinner spinner, String value) {
+        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) spinner.getAdapter();
+        return adapter.getPosition(value);
     }
 
-    // Show dialog with checkboxes for selecting training days
+    // Method to save user data
+    private void saveUserData() {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            showNoInternetDialog(); // Show the custom dialog
+        } else {
+            if (!validateInputs() && !isServerReachable()) {
+                return; // Stop if inputs are invalid
+            }
+            String email = emailput.getText().toString();
+            String name = nameput.getText().toString();
+            String gender = genderput.getText().toString();
+            int height = parseIntSafely(heightput.getText().toString());
+            int weight = parseIntSafely(weightput.getText().toString());
+            String birthDate = birthdateput.getText().toString();
+            String bodyType = bodytypeput.getSelectedItem().toString();
+            String goal = goalput.getSelectedItem().toString();
+            int stepCountGoal = parseIntSafely(stepcountgoalput.getText().toString());
+            int hydrationGoal = parseIntSafely(hydrationgoalput.getText().toString());
+            String whereToWorkout = workoutlocationput.getText().toString();
+            int mealsPerDay = Integer.parseInt(mealsperdayput.getSelectedItem().toString());
+            int snacksPerDay = Integer.parseInt(snacksperdayput.getSelectedItem().toString());
+            int waterDefault = parseIntSafely(waterDefaultPut.getText().toString());
+
+            UserRoom newUser = new UserRoom(email, name, "", gender, height, weight, birthDate,
+                    bodyType, goal, stepCountGoal, hydrationGoal, whereToWorkout,
+                    bodyType, mealsPerDay, snacksPerDay, waterDefault);
+
+            AsyncTask.execute(() -> {
+                try {
+                    if (userRoom == null) {
+                        userDao.insertUser(newUser);
+                    } else {
+                        newUser.setId(userRoom.getId());
+                        userDao.updateUser(newUser);
+                    }
+                    runOnUiThread(() -> showMessage("User data saved successfully."));
+                } catch (Exception e) {
+                    runOnUiThread(() -> showMessage("Failed to save user data. Please try again."));
+                }
+            });
+        }
+    }
+
+    private boolean validateInputs() {
+        // Add validation logic here (similar to the one you already have)
+        return true; // All validations passed
+    }
+
+    private void showNoInternetDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_no_internet, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        Button btnOk = dialogView.findViewById(R.id.Save);
+        btnOk.setOnClickListener(v -> dialog.dismiss());
+    }
+
+    private boolean isServerReachable() {
+        try {
+            Call<Void> call = userApi.pingServer();
+            Response<Void> response = call.execute();
+            return response.isSuccessful();
+        } catch (Exception e) {
+            Log.e("Server Check", "Failed to reach server: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    private int parseIntSafely(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return 0; // Handle error case
+        }
+    }
+
+    private void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
     private void showDaysSelectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Training Days");
@@ -256,8 +310,18 @@ public class Settings extends AppCompatActivity {
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-        builder.create().show();
+        // Create the dialog
+        AlertDialog dialog = builder.create();
+
+        // Show the dialog first, so you can access the buttons
+        dialog.show();
+
+        // Change the button colors
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue)); // OK button color
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));  // Cancel button color
     }
+
+
 
     // Save selected days to the database
     private void saveSelectedDays() {
@@ -271,74 +335,6 @@ public class Settings extends AppCompatActivity {
             }
         }
 
-        // Save selected days to Room database
-        AsyncTask.execute(() -> {
-            try {
-                // Clear previous selections before saving new ones
-                userWeekdayDao.deleteAllUserWeekdays();
 
-                for (UserWeekdayRoom day : selectedWeekdays) {
-                    userWeekdayDao.insertUserWeekday(day);
-                }
-
-                runOnUiThread(() -> showMessage("Training days saved successfully."));
-            } catch (Exception e) {
-                runOnUiThread(() -> showMessage("Failed to save training days."));
-            }
-        });
-    }
-
-
-
-    // Validate user inputs before saving
-    private boolean validateInputs() {
-        if (emailput.getText().toString().isEmpty()) {
-            showMessage("Email is required.");
-            return false;
-        }
-        if (nameput.getText().toString().isEmpty()) {
-            showMessage("Name is required.");
-            return false;
-        }
-        if (genderput.getText().toString().isEmpty()) {
-            showMessage("Gender is required.");
-            return false;
-        }
-        if (isSpinnerPromptSelected(bodytypeput)) {
-            showMessage("Please select a valid body type.");
-            return false;
-        }
-        if (isSpinnerPromptSelected(goalput)) {
-            showMessage("Please select a valid goal.");
-            return false;
-        }
-        if (isSpinnerPromptSelected(diettypeput)) {
-            showMessage("Please select a valid diet type.");
-            return false;
-        }
-        if (isSpinnerPromptSelected(allergiesput)) {
-            showMessage("Please select a valid allergy option.");
-            return false;
-        }
-        return true; // All validations passed
-    }
-
-    // Helper method to safely parse integers, returning 0 if parsing fails
-    private int parseIntSafely(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return 0; // Return 0 or handle the error as needed
-        }
-    }
-
-    // Helper method to check if the first spinner item (prompt) is selected
-    private boolean isSpinnerPromptSelected(Spinner spinner) {
-        return spinner.getSelectedItemPosition() == 0;
-    }
-
-    // Display a message to the user
-    private void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

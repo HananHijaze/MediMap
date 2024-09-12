@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class height extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 12;
+    private int totalPages = 11;
     private int currentPage;
     private EditText heightInput;
 
@@ -51,6 +51,8 @@ public class height extends AppCompatActivity {
                 retrieveAndShowHeight(); // Retrieve and show the height for verification (for checking, you can delete it later)
                 Intent intent = new Intent(height.this, Weight.class);
                 intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
+                //System.out.println("wew");
+
                 startActivity(intent);
             } else {
                 Toast.makeText(height.this, "Please enter a valid height", Toast.LENGTH_SHORT).show(); // Show error if validation fails
@@ -75,6 +77,7 @@ public class height extends AppCompatActivity {
         int heightValue = Integer.parseInt(heightText); // Convert the height text to an integer
         if (heightValue < 50 || heightValue > 250) {  // Assuming height should be between 50 cm and 250 cm
             heightInput.setError("Please enter a height between 50 and 250 cm"); // Set an error message if out of range
+            //System.out.println("wew");
             return false; // Return false if the height is invalid
         }
 

@@ -174,6 +174,7 @@ public class LogIn extends AppCompatActivity {
         );
     }
 
+
     // Function to check login locally using Room database (Without internet)
     private void performLocalLogin() {
         String emailIn = email.getText().toString().trim();

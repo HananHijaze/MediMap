@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class Allergies extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 12;
+    private int totalPages = 11;
     private int currentPage;
     private Set<String> selectedAllergies = new HashSet<>();
     private static final String PREFS_NAME = "UserSignUpData"; // SharedPreferences file name
@@ -47,6 +47,7 @@ public class Allergies extends AppCompatActivity {
         setupAllergyOption(findViewById(R.id.button_seafood), "Seafood");
         setupAllergyOption(findViewById(R.id.button_soy), "Soy");
         setupAllergyOption(findViewById(R.id.button_eggs), "Eggs");
+        setupAllergyOption(findViewById(R.id.button_none), "None");
 
         Button nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(v -> {
@@ -68,7 +69,15 @@ public class Allergies extends AppCompatActivity {
     }
 
     private void setupAllergyOption(LinearLayout layout, String allergy) {
-        layout.setOnClickListener(v -> toggleAllergySelection(allergy, layout));
+        layout.setOnClickListener(v -> {
+            if ("None".equals(allergy)) {
+                selectedAllergies.clear();
+                selectedAllergies.add(allergy);
+                refreshAllergySelections();
+            } else {
+                toggleAllergySelection(allergy, layout);
+            }
+        });
         updateSelectionState(layout, allergy);
     }
 
@@ -77,8 +86,9 @@ public class Allergies extends AppCompatActivity {
             selectedAllergies.remove(allergy);
             layout.setBackgroundResource(R.drawable.border_unselected);
         } else {
+            selectedAllergies.remove("None");
             selectedAllergies.add(allergy);
-            layout.setBackgroundResource(R.drawable.border_selected);
+            refreshAllergySelections();
         }
     }
 
@@ -88,6 +98,16 @@ public class Allergies extends AppCompatActivity {
         } else {
             layout.setBackgroundResource(R.drawable.border_unselected);
         }
+    }
+
+    private void refreshAllergySelections() {
+        updateSelectionState(findViewById(R.id.button_dairy), "Dairy");
+        updateSelectionState(findViewById(R.id.button_gluten), "Gluten");
+        updateSelectionState(findViewById(R.id.button_nuts), "Nuts");
+        updateSelectionState(findViewById(R.id.button_seafood), "Seafood");
+        updateSelectionState(findViewById(R.id.button_soy), "Soy");
+        updateSelectionState(findViewById(R.id.button_eggs), "Eggs");
+        updateSelectionState(findViewById(R.id.button_none), "None");
     }
 
     private void saveAllergies() {
@@ -100,6 +120,6 @@ public class Allergies extends AppCompatActivity {
     private void retrieveAndShowAllergies() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         Set<String> savedAllergies = sharedPreferences.getStringSet("allergies", new HashSet<>());
-        // Toast.makeText(this, "Allergies: " + savedAllergies.toString(), Toast.LENGTH_SHORT).show();
+         Toast.makeText(this, "Allergies: " + savedAllergies.toString(), Toast.LENGTH_SHORT).show();
     }
 }

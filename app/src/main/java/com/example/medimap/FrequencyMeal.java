@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 public class FrequencyMeal extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 12;
+    private int totalPages = 11;
     private int currentPage;
     private String selectedMeals = "";
     private String selectedSnacks = "";
@@ -47,7 +47,7 @@ public class FrequencyMeal extends AppCompatActivity {
         setupSelection(findViewById(R.id.button_one_snack), "1 Snack", false);
         setupSelection(findViewById(R.id.button_Two_Snacks), "2 Snacks", false);
 
-       Button nextButton = findViewById(R.id.nextButton);
+        Button nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(v -> {
             if (!selectedMeals.isEmpty() && !selectedSnacks.isEmpty()) {
                 saveFrequency();
@@ -92,15 +92,36 @@ public class FrequencyMeal extends AppCompatActivity {
     private void saveFrequency() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("meals", selectedMeals);
-        editor.putString("snacks", selectedSnacks);
+
+        // Extract the number from the selectedMeals and selectedSnacks strings
+        int mealsNumber = extractNumber(selectedMeals);
+        int snacksNumber = extractNumber(selectedSnacks);
+
+        // Save the numbers as integers
+        editor.putInt("meals", mealsNumber);
+        editor.putInt("snacks", snacksNumber);
         editor.apply();
     }
 
     private void retrieveAndShowFrequency() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String savedMeals = sharedPreferences.getString("meals", "No meals selected");
-        String savedSnacks = sharedPreferences.getString("snacks", "No snacks selected");
+        int savedMeals = sharedPreferences.getInt("meals", 0); // Default to 0 if no meals selected
+        int savedSnacks = sharedPreferences.getInt("snacks", 0); // Default to 0 if no snacks selected
+
         Toast.makeText(this, "Meals: " + savedMeals + "\nSnacks: " + savedSnacks, Toast.LENGTH_LONG).show();
+    }
+
+    // Helper method to extract the number from the string using split
+    private int extractNumber(String str) {
+        // Split the string by space and get the first part (the number)
+        if (str != null && !str.isEmpty()) {
+            String[] parts = str.split(" ");
+            try {
+                return Integer.parseInt(parts[0]); // Return the number part
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0; // Default to 0 if parsing fails
     }
 }
