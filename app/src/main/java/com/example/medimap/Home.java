@@ -232,8 +232,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
 
         textView.setOnLongClickListener(v -> {
             saveStepCountToRoom();
-            previousTotalSteps = totalSteps;  // Reset previous steps to current total
-            stepCount = 0;  // Reset current step count to 0
+            previousTotalSteps = totalSteps;  // Reset previous steps to current total// Reset current step count to 0
             progressBar.setProgress(0);
             textView.setText("0");
             percent.setText("0%");
@@ -254,14 +253,22 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         previousTotalSteps = sharedPreferences.getInt("previousTotalSteps", 0); // Load previous total steps
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
         saveData(); // Save steps data when the activity is paused
-        sensorManager.unregisterListener(this);
+        // Unregister sensor listeners
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
+        }
+        // Save data or release resources here
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Release any additional resources
+    }
 
     @Override
     protected void onResume() {
@@ -279,7 +286,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
     private void saveStepCountToRoom() {
         // Run the database operation in a background thread
         new Thread(() -> {
-            userRoom = userDao.getFirstUser(); // Fetch the first user from the database
+            userRoom  = userDao.getFirstUser(); // Fetch the first user from the database
             if (userRoom != null) { // Ensure the user exists before proceeding
                 Long userId = userRoom.getId();
                 StepCountRoom stepCountRoom = new StepCountRoom(userId, stepCount, getCurrentDate());
