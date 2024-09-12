@@ -25,6 +25,8 @@ public interface UserApi {
     @GET("users/email")
     Call<User> findByEmail(@Query("email") String email);
 
+    @GET("/ping")
+    Call<Void> pingServer();
 
     // Create a new user
     @POST("users")

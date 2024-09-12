@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,13 +15,22 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.UserRoom;
+import com.example.medimap.server.RetrofitClient;
+import com.example.medimap.server.User;
+import com.example.medimap.server.UserApi;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class build_profile extends AppCompatActivity {
 
     private static final String PREFS_NAME = "UserSignUpData"; // SharedPreferences file name
     private AppDatabaseRoom appDatabase; // Room database instance
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +48,7 @@ public class build_profile extends AppCompatActivity {
 
         // Retrieve all user data from SharedPreferences and save to the database
         retrieveAndSaveUserDataToDatabase();
-
+        createplan();
         // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent in = new Intent(this, Home.class);
@@ -74,8 +84,8 @@ public class build_profile extends AppCompatActivity {
         String dietType = sharedPreferences.getString("dietType", "N/A");
         Set<String> allergies = sharedPreferences.getStringSet("allergies", null);
         long birthdateTimestamp = sharedPreferences.getLong("birthdate", -1);
-        String meals = sharedPreferences.getString("meals", "0");
-        String snacks = sharedPreferences.getString("snacks", "0");
+        int mealsPerDay = sharedPreferences.getInt("meals", 0); // Retrieve meals as integer
+        int snacksPerDay = sharedPreferences.getInt("snacks", 0); // Retrieve snacks as integer
         String workoutPlace = sharedPreferences.getString("workoutPlace", "N/A");
         String workoutTime = sharedPreferences.getString("workoutTime", "N/A");
         Set<String> trainingDays = sharedPreferences.getStringSet("trainingDays", null);
@@ -87,16 +97,6 @@ public class build_profile extends AppCompatActivity {
             java.util.Date date = new java.util.Date(birthdateTimestamp);
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
             birthdate = sdf.format(date);
-        }
-
-        // Safely parse meals and snacks with fallback values
-        int mealsPerDay = 0;
-        int snacksPerDay = 0;
-        try {
-            mealsPerDay = Integer.parseInt(meals);
-            snacksPerDay = Integer.parseInt(snacks);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();  // Log and handle the exception
         }
 
         // Create a new UserRoom object with the retrieved data
@@ -121,7 +121,39 @@ public class build_profile extends AppCompatActivity {
 
         // Insert the user data into the Room database asynchronously
         new Thread(() -> {
+            // Clear the user table before inserting new user data
+            appDatabase.userDao().deleteAllUsers();
             appDatabase.userDao().insertUser(newUser);
         }).start();  // Room operations must be done on a background thread
+    }
+    public void createplan(){
+        UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
+
+        // Make the API call to get the user by email
+        Call<User> call = userApi.getUserById(1L);
+
+
+        call.enqueue(new Callback<User>() {
+
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    user = response.body();
+                    getplan(user);
+
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
+    }
+    public void getplan(User user){
+        CreatingPlan creatingPlan = CreatingPlan.getInstance();
+        creatingPlan.createPlan(this, user);
     }
 }

@@ -1,6 +1,11 @@
 package com.example.medimap;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,7 +17,7 @@ import android.widget.Toast;
 
 public class DietType extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 12;
+    private int totalPages = 11;
     private int currentPage;
     private String selectedDietType = "";
     private static final String PREFS_NAME = "UserSignUpData";
@@ -20,7 +25,13 @@ public class DietType extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_diet_type);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         currentPage = getIntent().getIntExtra("currentPage", 1);
         circularProgressBar = findViewById(R.id.circularProgressBar);
@@ -29,9 +40,9 @@ public class DietType extends AppCompatActivity {
         setupDietOption(findViewById(R.id.button_Vegetarian), "Vegetarian");
         setupDietOption(findViewById(R.id.button_Vegan), "Vegan");
         setupDietOption(findViewById(R.id.button_Keto), "Keto");
-        setupDietOption(findViewById(R.id.button_Gluten_free), "Gluten-Free");
-        setupDietOption(findViewById(R.id.button_Diary_Free), "Dairy-Free");
-        setupDietOption(findViewById(R.id.button_Pescatarian), "Pescatarian");
+        setupDietOption(findViewById(R.id.button_Paleo), "Paleo");
+        setupDietOption(findViewById(R.id.button_Balanced), "Balanced");
+        setupDietOption(findViewById(R.id.button_LowCarb), "Low Carb");
 
         Button nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(v -> {
@@ -62,9 +73,9 @@ public class DietType extends AppCompatActivity {
         findViewById(R.id.button_Vegetarian).setBackgroundResource(R.drawable.border_unselected);
         findViewById(R.id.button_Vegan).setBackgroundResource(R.drawable.border_unselected);
         findViewById(R.id.button_Keto).setBackgroundResource(R.drawable.border_unselected);
-        findViewById(R.id.button_Gluten_free).setBackgroundResource(R.drawable.border_unselected);
-        findViewById(R.id.button_Diary_Free).setBackgroundResource(R.drawable.border_unselected);
-        findViewById(R.id.button_Pescatarian).setBackgroundResource(R.drawable.border_unselected);
+        findViewById(R.id.button_Paleo).setBackgroundResource(R.drawable.border_unselected);
+        findViewById(R.id.button_Balanced).setBackgroundResource(R.drawable.border_unselected);
+        findViewById(R.id.button_LowCarb).setBackgroundResource(R.drawable.border_unselected);
     }
 
     private void saveDietType() {

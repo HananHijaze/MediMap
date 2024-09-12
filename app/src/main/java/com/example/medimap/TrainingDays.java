@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class TrainingDays extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 12;
+    private int totalPages = 1;
     private int currentPage;
     private Set<String> selectedDays = new HashSet<>(); // Set to store selected days
 
@@ -39,7 +39,7 @@ public class TrainingDays extends AppCompatActivity {
         });
 
         // Get the current page number passed from the previous activity
-        currentPage = getIntent().getIntExtra("currentPage", 11);
+        currentPage = getIntent().getIntExtra("currentPage", 10);
 
         // Initialize the circular progress bar
         circularProgressBar = findViewById(R.id.circularProgressBar);

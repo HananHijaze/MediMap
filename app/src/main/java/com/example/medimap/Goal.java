@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class Goal extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 12;
+    private int totalPages = 11;
     private int currentPage;
     private String selectedGoal = ""; // Variable to store the selected goal
 
@@ -36,7 +36,7 @@ public class Goal extends AppCompatActivity {
         });
 
         // Get the current page number passed from the previous activity
-        currentPage = getIntent().getIntExtra("currentPage", totalPages); // Default to totalPages (12)
+        currentPage = getIntent().getIntExtra("currentPage", totalPages); // Default to totalPages (11)
 
         // Initialize the circular progress bar and update it to 100%
         circularProgressBar = findViewById(R.id.circularProgressBar);

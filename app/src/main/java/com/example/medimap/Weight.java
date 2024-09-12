@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class Weight extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 12;
+    private int totalPages = 11;
     private int currentPage;
     private EditText weightInput;
 
