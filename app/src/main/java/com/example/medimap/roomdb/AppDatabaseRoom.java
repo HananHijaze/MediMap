@@ -5,10 +5,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
-@Database(entities = {UserRoom.class, HydrationRoom.class, WeeklyMealPlanRoom.class, WeeklyTrainingPlanRoom.class, StepCountRoom.class}, version = 3)  // Increase the version number
+
+@Database(entities = {UserRoom.class, HydrationRoom.class, WeeklyMealPlanRoom.class, WeeklyTrainingPlanRoom.class, UsersAllergiesRoom.class, WeekDaysRoom.class, UserWeekdayRoom.class, AllergyRoom.class, StepCountRoom.class}, version = 4)
 @TypeConverters(Converters.class)  // Registering the Converters class
 public abstract class AppDatabaseRoom extends RoomDatabase {
-
     // Static instance of the AppDatabase class
     private static AppDatabaseRoom INSTANCE;
 
@@ -17,6 +17,10 @@ public abstract class AppDatabaseRoom extends RoomDatabase {
     public abstract HydrationRoomDao hydrationRoomDao();
     public abstract WeeklyMealPlanRoomDao weeklyMealPlanRoomDao();
     public abstract WeeklyTrainingPlanRoomDao weeklyTrainingPlanRoomDao();
+    public abstract AllergyDao allergyDao();
+    public abstract UsersAllergiesDao usersAllergiesRoomDao();
+    public abstract WeekDaysDao weekDaysRoomDao();
+    public abstract UserWeekdayDao userWeekdayRoomDao();
     public abstract StepCountDao stepCountDao();
 
     // Singleton implementation to get the database
