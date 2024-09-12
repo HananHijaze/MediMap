@@ -24,4 +24,11 @@ public interface StepCountDao {
 
     @Query("DELETE FROM step_count_table WHERE userId = :userId")
     void deleteAllStepsForUser(Long userId);
+
+    @Query("SELECT * FROM step_count_table WHERE userId = :userId ORDER BY date DESC")
+    List<StepCountRoom> getAllStepCounts(Long userId);
+
+
+
+
 }
