@@ -11,6 +11,7 @@ import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.server.HydrationApi;
 import com.example.medimap.server.StepCountApi;
+import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.button.MaterialButton;
 
@@ -40,6 +41,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Home extends AppCompatActivity implements SensorEventListener {
@@ -229,6 +231,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         );
 
         textView.setOnLongClickListener(v -> {
+            saveStepCountToRoom();
             previousTotalSteps = totalSteps;  // Reset previous steps to current total
             stepCount = 0;  // Reset current step count to 0
             progressBar.setProgress(0);
@@ -269,9 +272,21 @@ public class Home extends AppCompatActivity implements SensorEventListener {
             sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
-
-
-
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+    private void saveStepCountToRoom() {
+        // Run the database operation in a background thread
+        new Thread(() -> {
+            userRoom = userDao.getFirstUser(); // Fetch the first user from the database
+            if (userRoom != null) { // Ensure the user exists before proceeding
+                Long userId = userRoom.getId();
+                StepCountRoom stepCountRoom = new StepCountRoom(userId, stepCount, getCurrentDate());
+                stepCountRoomDao.insertStepCount(stepCountRoom); // Insert step count into the Room database
+            }
+        }).start();
+    }
 
 
 
