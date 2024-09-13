@@ -1,6 +1,7 @@
 package com.example.medimap.server;
 
 
+import java.util.Date;
 import java.time.LocalDate;
 
 public class WorkoutPlan {
@@ -8,18 +9,16 @@ public class WorkoutPlan {
     private Long id; // Primary Key
     private Long customerID; // Foreign Key referencing User.id
     private Long workoutID; // Foreign Key referencing Workout.workoutID
-    private LocalDate weekStartDate;
-    private LocalDate weekEndDate;
+    private Date creationdate;
     private String workoutDay; // e.g., Mon, Tue, etc.
 
     // Constructors
     public WorkoutPlan() {}
 
-    public WorkoutPlan(Long customerID, Long workoutID, LocalDate weekStartDate, LocalDate weekEndDate, String workoutDay) {
+    public WorkoutPlan(Long customerID, Long workoutID,Date creationdate, String workoutDay) {
         this.customerID = customerID;
         this.workoutID = workoutID;
-        this.weekStartDate = weekStartDate;
-        this.weekEndDate = weekEndDate;
+        this.creationdate=creationdate;
         this.workoutDay = workoutDay;
     }
 
@@ -48,22 +47,13 @@ public class WorkoutPlan {
         this.workoutID = workoutID;
     }
 
-    public LocalDate getWeekStartDate() {
-        return weekStartDate;
+    public Date getCreationdate() {
+        return creationdate;
     }
 
-    public void setWeekStartDate(LocalDate weekStartDate) {
-        this.weekStartDate = weekStartDate;
+    public void setWeekCreationdate(Date creationdate) {
+        this.creationdate = creationdate;
     }
-
-    public LocalDate getWeekEndDate() {
-        return weekEndDate;
-    }
-
-    public void setWeekEndDate(LocalDate weekEndDate) {
-        this.weekEndDate = weekEndDate;
-    }
-
     public String getWorkoutDay() {
         return workoutDay;
     }

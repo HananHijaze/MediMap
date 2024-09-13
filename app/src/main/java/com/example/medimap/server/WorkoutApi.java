@@ -10,6 +10,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface WorkoutApi {
 
@@ -32,5 +33,10 @@ public interface WorkoutApi {
     // Delete a workout by ID
     @DELETE("workouts/{id}")
     Call<Void> deleteWorkout(@Path("id") Long id);
+
+    @GET("api/workouts/search")
+    Call<List<Workout>> getWorkoutsByType(
+            @Query("workouttype") String workouttype
+    );
 }
 
