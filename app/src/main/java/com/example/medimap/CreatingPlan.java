@@ -3,6 +3,10 @@ package com.example.medimap;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.medimap.server.Meal;
+import com.example.medimap.server.MealApi;
+import com.example.medimap.server.MealPlan;
+import com.example.medimap.server.MealPlanApi;
 import com.example.medimap.server.RetrofitClient;
 import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
@@ -17,6 +21,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -71,23 +76,6 @@ public class CreatingPlan {
         getworkoutplan(user, workoutPlanIndex);
         getmealplan(user, breakfastIndex, lunchIndex, dinnerIndex, snackIndex);
     }
-
-    public int getBreakfast() {
-        return 0;
-    }
-
-    public int getLunch() {
-        return 0;
-    }
-
-    public int getDinner() {
-        return 0;
-    }
-
-    public int getSnack() {
-        return 0;
-    }
-
 
     public static int argMax(float[] probabilities) {
         int maxIndex = 0;
@@ -238,6 +226,156 @@ public class CreatingPlan {
     /*****************************************MEAL PLAN*************************************************/
 
     private void getmealplan(User user, int breakfastIndex, int lunchIndex, int dinnerIndex, int snackIndex) {
-        // Add the code for fetching and processing meals here
+        int mealsnum=user.getMealsperday();
+        int snacksnum=user.getSnackesperday();
+
+        Random random = new Random();
+
+        if (snacksnum>0&&snackIndex==0){
+            snackIndex= random.nextInt(3) + 1;
+        }
+        if(breakfastIndex==0||lunchIndex==0){
+            breakfastIndex = random.nextInt(3) + 1;
+            lunchIndex= random.nextInt(3) + 1;
+        }
+        if(mealsnum>2&&dinnerIndex==0){
+            dinnerIndex= random.nextInt(3) + 1;
+        }
+        breakfastIndex--;
+        lunchIndex--;
+        dinnerIndex--;
+        snackIndex--;
+
+        getSnack(user,snackIndex,snacksnum);
+
+        getBreakfast(user,breakfastIndex,1);
+
+        if(mealsnum==4){
+            getLunch(user,lunchIndex,2);
+        }else {
+            getLunch(user, lunchIndex, 1);
+        }
+
+        if(mealsnum>=3){
+            getDinner(user,dinnerIndex,1);
+        }
+
+
+
+    }
+
+    public void getBreakfast(User user, int breakfastIndex, int breakfastNumber) {
+        MealApi mealsApi = RetrofitClient.getRetrofitInstance().create(MealApi.class);
+        Call<List<Meal>> call = mealsApi.getMealsByTypeAndCluster("Breakfast", breakfastIndex);
+
+        call.enqueue(new Callback<List<Meal>>() {
+            @Override
+            public void onResponse(Call<List<Meal>> call, Response<List<Meal>> response) {
+                if (response.isSuccessful()) {
+                    List<Meal> meals = response.body();
+                    for (int j = 1; j <= 7; j++) {
+                        for (int i = 0; i < breakfastNumber; i++) {
+                            MealPlan mp = new MealPlan(user.getId(), getRandomMealByDietType(meals, user.getDietType()), new Date(), j, "Breakfast");
+                            Service.getInstance().addMealPlan(mp);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Meal>> call, Throwable t) {
+                // Handle failure
+            }
+        });
+    }
+
+
+    public void getLunch(User user, int lunchIndex, int lunchNumber) {
+        MealApi mealsApi = RetrofitClient.getRetrofitInstance().create(MealApi.class);
+        Call<List<Meal>> call = mealsApi.getMealsByTypeAndCluster("Lunch", lunchIndex);
+
+        call.enqueue(new Callback<List<Meal>>() {
+            @Override
+            public void onResponse(Call<List<Meal>> call, Response<List<Meal>> response) {
+                if (response.isSuccessful()) {
+                    List<Meal> meals = response.body();
+                    for (int j = 1; j <= 7; j++) {
+                        for (int i = 0; i < lunchNumber; i++) {
+                            MealPlan mp = new MealPlan(user.getId(), getRandomMealByDietType(meals, user.getDietType()), new Date(), j, "Lunch");
+                            Service.getInstance().addMealPlan(mp);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Meal>> call, Throwable t) {
+                // Handle failure
+            }
+        });
+    }
+
+
+    public void getDinner(User user, int dinnerIndex, int dinnerNumber) {
+        MealApi mealsApi = RetrofitClient.getRetrofitInstance().create(MealApi.class);
+        Call<List<Meal>> call = mealsApi.getMealsByTypeAndCluster("Dinner", dinnerIndex);
+
+        call.enqueue(new Callback<List<Meal>>() {
+            @Override
+            public void onResponse(Call<List<Meal>> call, Response<List<Meal>> response) {
+                if (response.isSuccessful()) {
+                    List<Meal> meals = response.body();
+                    for (int j = 1; j <=7; j++) {
+                        for (int i = 0; i < dinnerNumber; i++) {
+                            MealPlan mp = new MealPlan(user.getId(), getRandomMealByDietType(meals, user.getDietType()), new Date(), j, "Dinner");
+                            Service.getInstance().addMealPlan(mp);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Meal>> call, Throwable t) {
+                // Handle failure
+            }
+        });
+    }
+
+
+    public void getSnack(User user, int snackIndex,int snacknumber) {
+
+        MealApi mealsApi = RetrofitClient.getRetrofitInstance().create(MealApi.class);
+        Call<List<Meal>> call = mealsApi.getMealsByTypeAndCluster("Snack", snackIndex);
+
+        call.enqueue(new Callback<List<Meal>>() {
+            @Override
+            public void onResponse(Call<List<Meal>> call, Response<List<Meal>> response) {
+                if (response.isSuccessful()) {
+                    List<Meal> meals = response.body();
+                    for (int j = 1; j <=7; j++) {
+                        for (int i = 0; i < snacknumber; i++) {
+                            MealPlan mp =new MealPlan(user.getId(),getRandomMealByDietType(meals,user.getDietType()),new Date(),j,"Snack");
+                            Service.getInstance().addMealPlan(mp);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Meal>> call, Throwable t) {
+            }
+        });
+    }
+
+    public Long getRandomMealByDietType(List<Meal> meals, String dietType) {
+        List<Meal> filteredMeals = meals.stream()
+                .filter(meal -> dietType.equals(meal.getDiet_type()))
+                .collect(Collectors.toList());
+
+        if (!filteredMeals.isEmpty()) {
+            // Return a random meal from the filtered list
+            Random random = new Random();
+            return filteredMeals.get(random.nextInt(filteredMeals.size())).getMealID();
+        } else {
+            // If no meals match the diet type, return a random meal from the entire list
+            Random random = new Random();
+            return meals.get(random.nextInt(meals.size())).getMealID();
+        }
     }
 }
