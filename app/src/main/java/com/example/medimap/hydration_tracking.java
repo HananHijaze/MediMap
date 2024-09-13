@@ -1,6 +1,7 @@
 package com.example.medimap;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -37,8 +39,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class hydration_tracking extends AppCompatActivity {
@@ -96,6 +102,7 @@ public class hydration_tracking extends AppCompatActivity {
         editWaterDefault = findViewById(R.id.editButton);
         editWaterDefault.setOnClickListener(v -> showEditAmountDialog());
 
+
         //barChart
         barChart = findViewById(R.id.barChart);
         this.barEntries = new ArrayList<>();
@@ -117,6 +124,7 @@ public class hydration_tracking extends AppCompatActivity {
     }
 
     /**************************************** Load The Data ****************************************/
+
     private void loadData() {
         // Load previously saved water amount
         this.currentWaterAmount = getSavedWaterAmount();
@@ -140,18 +148,51 @@ public class hydration_tracking extends AppCompatActivity {
         System.out.println("USER ID and NAME ARE: "+ this.user.getId() +" " + this.user.getName());
         System.out.println(this.user.toString());
 
-        //get default water amount and goal from user room
-        this.defaultWaterAmount = userRoom.getWaterDefault();
-        this.waterGoal = userRoom.getHydrationGoal();
-        System.out.println("WATER GOAL IS: " + this.waterGoal);
-        System.out.println("WATER GOAL IS: " + this.defaultWaterAmount);
+        //check internet and server connection
+        boolean connected = CheckConnection();
+
+        if(connected){
+            // Call the API to get the user by email saved in room
+            String email = this.userRoom.getEmail();
+            Call<User> call = userApi.findByEmail(email);
+
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        User user = response.body();
+
+                        UserRoom usRoom = getThisUserRoom();
+                        // Save the user to the Room database after deleting all existing users
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            userDao.deleteAllUsers();  // Delete existing users
+                            userDao.insertUser(usRoom);  // Insert new user
+                        });
+                    } else {
+                        System.out.println("USER NOT FOUND IN SERVER");
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                    // Handle failure (e.g., network issues, server not responding)
+                    Toast.makeText(hydration_tracking.this, "Failed to load user: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            //get default water amount and goal from user room
+            this.defaultWaterAmount = userRoom.getWaterDefault();
+            this.waterGoal = userRoom.getHydrationGoal();
+            System.out.println("WATER GOAL IS: " + this.waterGoal);
+            System.out.println("WATER DEFAULT IS: " + this.defaultWaterAmount);
+
+        }
 
         String addWaterTxt = this.defaultWaterAmount + "ml";
         this.addWaterBtn.setText(addWaterTxt);
         String waterOutputStr = (int) this.currentWaterAmount + " ml / " + this.waterGoal + " ml";
         this.waterOutput.setText(waterOutputStr);
-
-
 
         /******* TEST *******/
         new Thread(()-> {
@@ -162,7 +203,7 @@ public class hydration_tracking extends AppCompatActivity {
         hydrationRoomDao.deleteOldestHydration();
         System.out.println("DELETE OLDEST NO ERROR!!!!!");
         new Thread(()-> {
-            List<HydrationRoom> hydList = hydrationRoomDao.getAllHydrationsForCustomer(1L);
+            List<HydrationRoom> hydList = hydrationRoomDao.getAllHydrationsForCustomer(this.userRoom.getId());
             if(hydList == null){
                 System.out.println("HYDRATION LIST IS NULL!!!!");
                 return;
@@ -177,6 +218,16 @@ public class hydration_tracking extends AppCompatActivity {
 
         //load barChart
         //loadBarChart();
+    }
+
+    private UserRoom getThisUserRoom(){
+        return this.userRoom;
+    }
+
+    private boolean CheckConnection(){
+        if(!NetworkUtils.isNetworkAvailable(this))
+            return false;
+        return NetworkUtils.isServerReachable();
     }
 
     private void fetchUserRoomTh() {
