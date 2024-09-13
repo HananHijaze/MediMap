@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
                 170,
                 70,
                 "05/07/2004",
-                "Skinny",
-                "Gain Muscle",
+                "Normal",
+                "Weight loss",
                 6000,  // Step count goal
                 3000,  // Hydration goal in mL
                 "Home",

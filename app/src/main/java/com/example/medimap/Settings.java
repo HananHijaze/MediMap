@@ -40,9 +40,9 @@ import retrofit2.Retrofit;
 public class Settings extends AppCompatActivity {
 
     private TextInputEditText heightput, weightput,
-            stepcountgoalput, workoutlocationput, waterDefaultPut;
+            stepcountgoalput, waterDefaultPut;
     private TextInputEditText emailput, nameput, genderput, birthdateput, hydrationgoalput;
-    private Spinner bodytypeput, goalput, diettypeput, allergiesput, mealsperdayput, snacksperdayput;
+    private Spinner bodytypeput, goalput, diettypeput, allergiesput, mealsperdayput, snacksperdayput,workoutlocationput;
     private UserDao userDao;
     private UserRoom userRoom;
     private UserApi userApi;
@@ -95,7 +95,7 @@ public class Settings extends AppCompatActivity {
         birthdateput = findViewById(R.id.birthDate_edit_text);
         stepcountgoalput = findViewById(R.id.stepcountgoal_edit_text);
         hydrationgoalput = findViewById(R.id.hydrationgoal_edit_text);
-        workoutlocationput = findViewById(R.id.workoutlocation_edit_text);
+        workoutlocationput = findViewById(R.id.workoutlocation);
         waterDefaultPut = findViewById(R.id.waterDefault_edit_text);
         bodytypeput = findViewById(R.id.bodytype_spinner);
         goalput = findViewById(R.id.goal_spinner);
@@ -109,8 +109,15 @@ public class Settings extends AppCompatActivity {
         updateButton.setOnClickListener(v -> saveUserData());
     }
 
-    // Method to set up Spinners and prevent the first item from being selected
+    // Method to set up Spinners
     private void setUpSpinners() {
+        // Workout Location Spinner
+        ArrayAdapter<CharSequence> workoutLocationAdapter = ArrayAdapter.createFromResource(this,
+                R.array.workout_location_array, android.R.layout.simple_spinner_item);
+        workoutLocationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        workoutlocationput.setAdapter(workoutLocationAdapter);
+        workoutlocationput.setOnItemSelectedListener(createOnItemSelectedListener());
+
         // Body Type Spinner
         ArrayAdapter<CharSequence> bodyTypeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.body_type_array, android.R.layout.simple_spinner_item);
@@ -157,9 +164,9 @@ public class Settings extends AppCompatActivity {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    ((TextView) parent.getChildAt(0)).setTextColor(Color.GRAY);
-                }
+//                if (position == 0) {
+//                    ((TextView) parent.getChildAt(0)).setTextColor(Color.GRAY);
+//                }
             }
 
             @Override
@@ -189,7 +196,8 @@ public class Settings extends AppCompatActivity {
         birthdateput.setText(userRoom.getBirthDate());
         stepcountgoalput.setText(String.valueOf(userRoom.getStepCountGoal()));
         hydrationgoalput.setText(String.valueOf(userRoom.getHydrationGoal()));
-        workoutlocationput.setText(userRoom.getWhereToWorkout());
+// Set the selected item in Spinner using its index in the adapter
+        workoutlocationput.setSelection(getIndex(workoutlocationput, userRoom.getWhereToWorkout()));
         mealsperdayput.setSelection(getIndex(mealsperdayput, String.valueOf(userRoom.getMealsPerDay())));
         snacksperdayput.setSelection(getIndex(snacksperdayput, String.valueOf(userRoom.getSnacksPerDay())));
         waterDefaultPut.setText(String.valueOf(userRoom.getWaterDefault()));
@@ -227,18 +235,19 @@ public class Settings extends AppCompatActivity {
             int height = parseIntSafely(heightput.getText().toString());
             int weight = parseIntSafely(weightput.getText().toString());
             String birthDate = birthdateput.getText().toString();
-            String bodyType = bodytypeput.getSelectedItem().toString();
-            String goal = goalput.getSelectedItem().toString();
+            String bodyType = bodytypeput.getSelectedItem().toString();  // Get selected item from spinner
+            String goal = goalput.getSelectedItem().toString();  // Get selected item from spinner
             int stepCountGoal = parseIntSafely(stepcountgoalput.getText().toString());
             int hydrationGoal = parseIntSafely(hydrationgoalput.getText().toString());
-            String whereToWorkout = workoutlocationput.getText().toString();
+            String whereToWorkout = workoutlocationput.getSelectedItem().toString();  // Get selected item from spinner
             int mealsPerDay = Integer.parseInt(mealsperdayput.getSelectedItem().toString());
+            String dietType = diettypeput.getSelectedItem().toString();
             int snacksPerDay = Integer.parseInt(snacksperdayput.getSelectedItem().toString());
             int waterDefault = parseIntSafely(waterDefaultPut.getText().toString());
 
             UserRoom newUser = new UserRoom(email, name, "", gender, height, weight, birthDate,
                     bodyType, goal, stepCountGoal, hydrationGoal, whereToWorkout,
-                    bodyType, mealsPerDay, snacksPerDay, waterDefault);
+                    dietType, mealsPerDay, snacksPerDay, waterDefault);
 
             AsyncTask.execute(() -> {
                 try {
@@ -257,28 +266,28 @@ public class Settings extends AppCompatActivity {
     }
     private boolean validateInputs() {
         // Validate Body Type Spinner
-        if (isSpinnerPromptSelected(bodytypeput)) {
-            showMessage("Please select a valid body type.");
-            return false;
-        }
+       // if (isSpinnerPromptSelected(bodytypeput)) {
+         //   showMessage("Please select a valid body type.");
+          //  return false;
+      //  }
 
         // Validate Goal Spinner
-        if (isSpinnerPromptSelected(goalput)) {
-            showMessage("Please select a valid goal.");
-            return false;
-        }
+      //  if (isSpinnerPromptSelected(goalput)) {
+       //     showMessage("Please select a valid goal.");
+       //     return false;
+      //  }
 
         // Validate Diet Type Spinner
-        if (isSpinnerPromptSelected(diettypeput)) {
-            showMessage("Please select a valid diet type.");
-            return false;
-        }
+       // if (isSpinnerPromptSelected(diettypeput)) {
+       //     showMessage("Please select a valid diet type.");
+      //      return false;
+     //   }
 
         // Validate Allergies Spinner
-        if (isSpinnerPromptSelected(allergiesput)) {
-            showMessage("Please select a valid allergy option.");
-            return false;
-        }
+       // if (isSpinnerPromptSelected(allergiesput)) {
+       //     showMessage("Please select a valid allergy option.");
+      //      return false;
+     //    }
 
         // Validate Height
         String heightInput = heightput.getText().toString();
@@ -438,9 +447,9 @@ public class Settings extends AppCompatActivity {
             }
         }
     }
-    private boolean isSpinnerPromptSelected(Spinner spinner) {
+    //private boolean isSpinnerPromptSelected(Spinner spinner) {
         // Check if the first item (position 0) is selected
-        return spinner.getSelectedItemPosition() == 0;
-    }
+       // return spinner.getSelectedItemPosition() == 0;
+    //}
 
 }

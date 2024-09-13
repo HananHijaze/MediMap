@@ -13,7 +13,6 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="116dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_edit"
         android:gravity="center"
@@ -21,12 +20,12 @@
         android:textColor="@color/blue"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/calendarView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.904"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendarView"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/questionText"
+        app:layout_constraintVertical_bias="0.561"
         app:strokeColor="@color/blue" />
 
     <ProgressBar
@@ -49,7 +48,7 @@
         android:id="@+id/nextButton"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginBottom="72dp"
         android:backgroundTint="@color/blue"
         android:gravity="center"
         android:text="Next"
@@ -57,7 +56,7 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
     <CalendarView
@@ -65,15 +64,15 @@
         android:layout_width="376dp"
         android:layout_height="336dp"
         android:background="@drawable/rounded_corners"
+        android:focusedMonthDateColor="@color/blue"
         android:theme="@style/CalenderViewCustom"
         android:weekDayTextAppearance="@style/BoldWeekDayTextAppearance"
-        android:focusedMonthDateColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.485"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.38" />
+        app:layout_constraintVertical_bias="0.472" />
 
     <TextView
         android:id="@+id/questionText"
