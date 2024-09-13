@@ -36,6 +36,7 @@ public class LogIn extends AppCompatActivity {
     Button login;
     UserDao userDao;
     private UserApi userApi;
+    boolean serverReachable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +73,33 @@ public class LogIn extends AppCompatActivity {
 
             // Run the server reachability check and local login in a background thread
             Executors.newSingleThreadExecutor().execute(() -> {
-                boolean serverReachable = isServerReachable();
                 runOnUiThread(() -> {
                     if (NetworkUtils.isNetworkAvailable(LogIn.this)) {
-                        if (serverReachable) {
-                            performLogin(); // Call the server login function
-                        } else {
-                            performLocalLogin(); // Fallback to local login function
-                        }
+                        Call<Void> call = userApi.pingServer();
+                        call.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    // If the server responds successfully, server is reachable
+                                  //  Toast.makeText(getApplicationContext(), "Server is reachable", Toast.LENGTH_SHORT).show();
+                                    performLogin(); // Call the server login function
+                                    Log.d("Server Check", "Server is reachable");
+                                } else {
+                                    // If the server responds but with an error
+                                  //  Toast.makeText(getApplicationContext(), "Server responded, but with an error", Toast.LENGTH_SHORT).show();
+                                    performLocalLogin(); // Fallback to local login function
+                                    Log.e("Server Check", "Server responded with error: " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                // Handle failure to reach the server
+                                //Toast.makeText(getApplicationContext(), "Failed to reach server", Toast.LENGTH_SHORT).show();
+                                performLocalLogin(); // Fallback to local login function
+                                Log.e("Server Check", "Failed to reach server: " + t.getMessage(), t);
+                            }
+                        });
                     } else {
                         performLocalLogin(); // No network available, call local login
                     }
@@ -201,20 +221,5 @@ public class LogIn extends AppCompatActivity {
                 }
             });
         });
-    }
-
-    // Function to check if the server is reachable
-    private boolean isServerReachable() {
-        try {
-            // Call a lightweight endpoint to check server availability
-            Call<Void> call = userApi.pingServer();
-            Response<Void> response = call.execute();
-
-            // If the server responds successfully, return true
-            return response.isSuccessful();
-        } catch (Exception e) {
-            Log.e("Server Check", "Failed to reach server: " + e.getMessage(), e);
-            return false;
-        }
     }
 }
