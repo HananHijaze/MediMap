@@ -186,7 +186,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:drawableStart="@drawable/water"
-                    android:inputType="number" />
+                    android:inputType="number"
+                    android:clickable="false"
+                    android:focusable="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Workout Location -->

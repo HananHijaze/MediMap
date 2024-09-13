@@ -255,11 +255,114 @@ public class Settings extends AppCompatActivity {
             });
         }
     }
-
     private boolean validateInputs() {
-        // Add validation logic here (similar to the one you already have)
+        // Validate Body Type Spinner
+        if (isSpinnerPromptSelected(bodytypeput)) {
+            showMessage("Please select a valid body type.");
+            return false;
+        }
+
+        // Validate Goal Spinner
+        if (isSpinnerPromptSelected(goalput)) {
+            showMessage("Please select a valid goal.");
+            return false;
+        }
+
+        // Validate Diet Type Spinner
+        if (isSpinnerPromptSelected(diettypeput)) {
+            showMessage("Please select a valid diet type.");
+            return false;
+        }
+
+        // Validate Allergies Spinner
+        if (isSpinnerPromptSelected(allergiesput)) {
+            showMessage("Please select a valid allergy option.");
+            return false;
+        }
+
+        // Validate Height
+        String heightInput = heightput.getText().toString();
+        if (heightInput.isEmpty()) {
+            showMessage("Please enter your height.");
+            return false;
+        }
+
+        try {
+            int height = Integer.parseInt(heightInput);  // Parse the string to an integer
+
+            // Check if height is within a reasonable range (e.g., 50cm to 300cm)
+            if (height < 50 || height > 300) {
+                showMessage("Please enter a valid height between 50 and 300 cm.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showMessage("Please enter a valid number for height.");
+            return false;
+        }
+
+        // Validate Weight
+        String weightInput = weightput.getText().toString();
+        if (weightInput.isEmpty()) {
+            showMessage("Please enter your weight.");
+            return false;
+        }
+
+        try {
+            int weight = Integer.parseInt(weightInput);
+
+            // Check if weight is within a reasonable range (e.g., 30kg to 300kg)
+            if (weight < 30 || weight > 300) {
+                showMessage("Please enter a valid weight between 30 and 300 kg.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showMessage("Please enter a valid number for weight.");
+            return false;
+        }
+
+        // Validate Step Count Goal
+        String stepCountGoalInput = stepcountgoalput.getText().toString();
+        if (stepCountGoalInput.isEmpty()) {
+            showMessage("Please enter your step count goal.");
+            return false;
+        }
+
+        try {
+            int stepCountGoal = Integer.parseInt(stepCountGoalInput);
+
+            // Check if step count goal is within a reasonable range (e.g., 1000 to 100000 steps)
+            if (stepCountGoal < 1000 || stepCountGoal > 100000) {
+                showMessage("Please enter a valid step count goal between 1000 and 100000.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showMessage("Please enter a valid number for the step count goal.");
+            return false;
+        }
+
+        // Validate Water Default
+        String waterDefaultInput = waterDefaultPut.getText().toString();
+        if (waterDefaultInput.isEmpty()) {
+            showMessage("Please enter your default water intake.");
+            return false;
+        }
+
+        try {
+            int waterDefault = Integer.parseInt(waterDefaultInput);
+
+            // Check if water default is within a reasonable range (e.g., 500ml to 5000ml)
+            if (waterDefault < 100 || waterDefault >1500) {
+                showMessage("Please enter a valid water intake between 500 and 5000 ml.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showMessage("Please enter a valid number for the water intake.");
+            return false;
+        }
+
         return true; // All validations passed
     }
+
 
     private void showNoInternetDialog() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_no_internet, null);
@@ -334,7 +437,10 @@ public class Settings extends AppCompatActivity {
                 selectedWeekdays.add(new UserWeekdayRoom(userId, (long) i));
             }
         }
-
-
     }
+    private boolean isSpinnerPromptSelected(Spinner spinner) {
+        // Check if the first item (position 0) is selected
+        return spinner.getSelectedItemPosition() == 0;
+    }
+
 }
