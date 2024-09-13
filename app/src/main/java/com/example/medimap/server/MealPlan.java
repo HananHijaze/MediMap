@@ -8,13 +8,13 @@ public class MealPlan {
     private Long customerID; // Foreign Key referencing User.id
     private Long mealID; // Foreign Key referencing Meal.mealID
     private Date creationdate;
-    private String mealDay; // e.g., Sun, Mon, etc.
+    private int mealDay; // e.g., Sun, Mon, etc.
     private String mealTime; // e.g., breakfast, lunch, etc.
 
     // Constructors
     public MealPlan() {}
 
-    public MealPlan(Long customerID, Long mealID,Date creationdate, String mealDay, String mealTime) {
+    public MealPlan(Long customerID, Long mealID,Date creationdate, int mealDay, String mealTime) {
         this.customerID = customerID;
         this.mealID = mealID;
         this.creationdate=creationdate;
@@ -54,11 +54,11 @@ public class MealPlan {
         this.creationdate = creationdate;
     }
 
-    public String getMealDay() {
+    public int getMealDay() {
         return mealDay;
     }
 
-    public void setMealDay(String mealDay) {
+    public void setMealDay(int mealDay) {
         this.mealDay = mealDay;
     }
 
