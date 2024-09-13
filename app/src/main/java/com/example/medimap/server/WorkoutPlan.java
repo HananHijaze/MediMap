@@ -10,12 +10,12 @@ public class WorkoutPlan {
     private Long customerID; // Foreign Key referencing User.id
     private Long workoutID; // Foreign Key referencing Workout.workoutID
     private Date creationdate;
-    private String workoutDay; // e.g., Mon, Tue, etc.
+    private int workoutDay; // e.g., Mon, Tue, etc.
 
     // Constructors
     public WorkoutPlan() {}
 
-    public WorkoutPlan(Long customerID, Long workoutID,Date creationdate, String workoutDay) {
+    public WorkoutPlan(Long customerID, Long workoutID,Date creationdate, int workoutDay) {
         this.customerID = customerID;
         this.workoutID = workoutID;
         this.creationdate=creationdate;
@@ -54,11 +54,12 @@ public class WorkoutPlan {
     public void setWeekCreationdate(Date creationdate) {
         this.creationdate = creationdate;
     }
-    public String getWorkoutDay() {
+
+    public int getWorkoutDay() {
         return workoutDay;
     }
 
-    public void setWorkoutDay(String workoutDay) {
+    public void setWorkoutDay(int workoutDay) {
         this.workoutDay = workoutDay;
     }
 }
