@@ -28,4 +28,8 @@ public interface UsersAllergiesDao {
 
     @Query("DELETE FROM users_allergies_table")
     void deleteAllUsersAllergies();
+
+    @Query("SELECT * FROM users_allergies_table WHERE userId = :userId")
+    List<UsersAllergiesRoom> getAllUsersAllergiesByUserId(Long userId);
+
 }

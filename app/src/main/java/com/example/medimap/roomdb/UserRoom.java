@@ -3,10 +3,9 @@ package com.example.medimap.roomdb;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-
-import java.util.Date;
 import com.example.medimap.server.User;
 
+import java.util.Date;
 
 @Entity(tableName = "user_table")
 public class UserRoom {
@@ -30,7 +29,6 @@ public class UserRoom {
     private int snacksPerDay;
     private int waterDefault;
 
-
     // Constructor
     public UserRoom( String email, String name, String password, String gender, int height, int weight,
                 String birthDate, String bodyType, String goal, int stepCountGoal, int hydrationGoal,
@@ -50,7 +48,7 @@ public class UserRoom {
         this.dietType = dietType;
         this.mealsPerDay = mealsPerDay;
         this.snacksPerDay = snacksPerDay;
-        this.waterDefault = waterDefault;
+        this.waterDefault  = waterDefault;
     }
 
     public UserRoom(User user){
@@ -89,7 +87,6 @@ public class UserRoom {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     public String getName() {
         return name;

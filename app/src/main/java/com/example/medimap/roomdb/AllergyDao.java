@@ -14,6 +14,9 @@ public interface AllergyDao {
     @Insert
     void insertAllergy(AllergyRoom allergy);
 
+    @Insert
+    void insertAllergies(List<AllergyRoom> allergies);
+
     @Update
     void updateAllergy(AllergyRoom allergy);
 

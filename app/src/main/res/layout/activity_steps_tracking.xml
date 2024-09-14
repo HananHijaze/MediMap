@@ -1,99 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/b2"
-    tools:context=".steps_tracking">
+    android:background="@drawable/b2">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="389dp">
+    <!-- Title -->
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Today's Steps"
+        android:textAlignment="center"
+        android:textColor="@color/blue"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
-        <TextView
-            android:id="@+id/questionText"
-            android:layout_width="332dp"
-            android:layout_height="49dp"
-            android:layout_above="@+id/progressBar"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="43dp"
-            android:layout_marginBottom="15dp"
-            android:text="Today's Steps"
-            android:textAlignment="center"
-            android:textColor="@color/blue"
-            android:textSize="28dp"
-            android:textStyle="bold" />
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="272dp"
+        android:layout_height="256dp"
+        android:background="@drawable/circular_shape_steps"
+        android:progressDrawable="@drawable/circular_progress_bar_steps"
+        app:layout_constraintTop_toBottomOf="@+id/questionText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="272dp"
-            android:layout_height="256dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/circular_shape_steps"
-            android:progressDrawable="@drawable/circular_progress_bar_steps" />
+    <!-- Steps Text -->
+    <TextView
+        android:id="@+id/steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Steps"
+        android:textColor="@color/blue"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@+id/progressBar"
+        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/steps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Steps"
-            android:textColor="@color/blue"
-            android:textSize="25sp"
-            android:textStyle="bold" />
+    <!-- Goal Text -->
+    <TextView
+        android:id="@+id/goal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Goal: 6000"
+        android:textColor="@color/blue"
+        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
-        <TextView
-            android:id="@+id/goal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="140dp"
-            android:layout_marginTop="210dp"
-            android:text="Goal: 6000"
-            android:textColor="@color/blue"
-            android:textSize="25sp" />
+    <!-- Edit Goal Button -->
+    <Button
+        android:id="@+id/editGoal"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/ic_edit"
+        android:text="Edit"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:strokeColor="@color/blue"
+        app:layout_constraintTop_toBottomOf="@+id/goal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
 
-        <Button
-            android:id="@+id/editGoal"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginLeft="160dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="786dp"
-            android:backgroundTint="@color/white"
-            android:drawableLeft="@drawable/ic_edit"
-            android:gravity="center"
-            android:text="Edit"
-            android:textColor="@color/blue"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_bias="0.042"
-            app:strokeColor="@color/blue" />
-
-
-    </RelativeLayout>
-
+    <!-- Step Chart -->
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/stepChart"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_below="@+id/goal"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="-4dp"
-        android:layout_marginTop="242dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="156dp" />
+        app:layout_constraintTop_toBottomOf="@+id/editGoal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

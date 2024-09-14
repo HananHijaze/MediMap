@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "weekdays_table")
 public class WeekDaysRoom {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     private Long id;
 
     private String dayName;
@@ -16,6 +16,14 @@ public class WeekDaysRoom {
 
     // Parameterized constructor
     public WeekDaysRoom(String dayName) {
+        this.dayName = dayName;
+    }
+
+    //full constructor
+
+
+    public WeekDaysRoom(Long id, String dayName) {
+        this.id = id;
         this.dayName = dayName;
     }
 
