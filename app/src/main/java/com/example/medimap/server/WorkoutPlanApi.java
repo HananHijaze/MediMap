@@ -9,6 +9,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface WorkoutPlanApi {
 
@@ -34,6 +35,13 @@ public interface WorkoutPlanApi {
 
     @GET("workoutplans/latest/{customerID}")
     Call<WorkoutPlan> getLatestWorkoutPlan(@Path("customerID") Long customerID);
+
+    @GET("workoutplans/latest")
+    Call<List<WorkoutPlan>> getDatedTrainingPlans(
+            @Query("customerId") Long customerId,
+            @Query("inputDate") String inputDate // Pass date as String in the expected format
+    );
+
 
 }
 
