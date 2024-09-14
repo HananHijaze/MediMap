@@ -45,9 +45,10 @@ public class DietType extends AppCompatActivity {
         infoIconBalanced = findViewById(R.id.infoIconBalanced);
         infoIconLowCarb = findViewById(R.id.infoIconLowCarb);
 
-        // Set OnClickListener for each diet type info icon
+        currentPage = getIntent().getIntExtra("currentPage", 6);
+
         setDietTypeInfoListeners();
-        currentPage = getIntent().getIntExtra("currentPage", 1);
+
         circularProgressBar = findViewById(R.id.circularProgressBar);
         updateProgressBar();
 
@@ -63,6 +64,7 @@ public class DietType extends AppCompatActivity {
             if (!selectedDietType.isEmpty()) {
                 saveDietType();
                 Intent intent = new Intent(DietType.this, Allergies.class);
+                intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
                 startActivity(intent);
             } else {
                 Toast.makeText(DietType.this, "Please select your diet type", Toast.LENGTH_SHORT).show();
