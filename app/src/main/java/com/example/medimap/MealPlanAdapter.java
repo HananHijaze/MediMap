@@ -50,7 +50,6 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         public MealPlanViewHolder(@NonNull View itemView) {
             super(itemView);
             mealName = itemView.findViewById(R.id.mealname);
-            dietType = itemView.findViewById(R.id.mealdiettype);
             calories = itemView.findViewById(R.id.mealcalories);
             carbs = itemView.findViewById(R.id.mealcarbs);
             fats = itemView.findViewById(R.id.mealfats);
@@ -60,7 +59,6 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         // This method will be called after meal is retrieved
         public void bindMealData(MealRoom meal) {
             mealName.setText(meal.getMealName());
-            dietType.setText(meal.getDietType());
             calories.setText(String.valueOf(meal.getCalories()));
             carbs.setText(String.valueOf(meal.getCarbs()));
             fats.setText(String.valueOf(meal.getFats()));

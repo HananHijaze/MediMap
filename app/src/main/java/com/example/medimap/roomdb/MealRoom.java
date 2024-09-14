@@ -11,14 +11,14 @@ public class MealRoom {
 
     private String dietType;
     private int calories;
-    private int carbs;
-    private int fats;
+    private Double carbs;
+    private Double fats;
     private String mealName;
-    private int protein;
+    private Double protein;
     private String mealType;
 
     // Constructors
-    public MealRoom(Long id, String dietType, int calories, int carbs, int fats, String mealName, int protein, String mealType) {
+    public MealRoom(Long id, String dietType, int calories, Double carbs, Double fats, String mealName, Double protein, String mealType) {
         this.id = id;
         this.dietType = dietType;
         this.calories = calories;
@@ -54,19 +54,19 @@ public class MealRoom {
         this.calories = calories;
     }
 
-    public int getCarbs() {
+    public Double getCarbs() {
         return carbs;
     }
 
-    public void setCarbs(int carbs) {
+    public void setCarbs(Double carbs) {
         this.carbs = carbs;
     }
 
-    public int getFats() {
+    public Double getFats() {
         return fats;
     }
 
-    public void setFats(int fats) {
+    public void setFats(Double fats) {
         this.fats = fats;
     }
 
@@ -78,11 +78,11 @@ public class MealRoom {
         this.mealName = mealName;
     }
 
-    public int getProtein() {
+    public Double getProtein() {
         return protein;
     }
 
-    public void setProtein(int protein) {
+    public void setProtein(Double protein) {
         this.protein = protein;
     }
 

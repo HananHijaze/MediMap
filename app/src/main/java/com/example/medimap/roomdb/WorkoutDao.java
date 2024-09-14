@@ -18,4 +18,10 @@ public interface WorkoutDao {
 
     @Query("SELECT * FROM workout_table WHERE workoutID = :id LIMIT 1")
     WorkoutRoom getWorkoutById(Long id);
+
+
+    @Query("DELETE FROM workout_table")
+    void deletallWorkouts();
+
+
 }

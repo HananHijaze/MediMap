@@ -41,8 +41,9 @@ public interface MealPlanApi {
     @GET("mealplans/latest")
     Call<List<MealPlan>> getDatedMealPlans(
             @Query("customerId") Long customerId,
-            @Query("inputDate") Date inputDate  // Date as a string in ISO format
+            @Query("inputDate") String inputDate // Pass date as String in the expected format
     );
+
 
 }
 

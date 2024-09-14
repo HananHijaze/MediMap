@@ -22,9 +22,13 @@ public interface WeeklyTrainingPlanRoomDao {
     void deleteWorkoutPlan(Long workoutPlanId);
 
     @Query("SELECT * FROM workout_plan_table WHERE customerID = :customerId")
-    List<WeeklyTrainingPlanRoom> getWorkoutPlansForWeek(Long customerId, String weekStartDate);
+    List<WeeklyTrainingPlanRoom> getWorkoutPlansForWeek(Long customerId);
 
     @Query("SELECT * FROM workout_plan_table WHERE customerID = :customerId")
     List<WeeklyTrainingPlanRoom> getAllWorkoutPlansForCustomer(Long customerId);
+
+    @Query("DELETE FROM workout_plan_table")
+    void deleteAllWorkoutPlans();
+
 }
 

@@ -31,7 +31,6 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
         Meal meal = meals.get(position);
         holder.nameTextView.setText(meal.getName());
         holder.typeTextView.setText(meal.getType());
-        holder.dietTypeTextView.setText(meal.getDiet_type());
         holder.caloriesTextView.setText("Calories: " + meal.getCalories());
         holder.carbsTextView.setText("Carbs: " + meal.getCarbs());
         holder.fatsTextView.setText("Fats: " + meal.getFats());
@@ -48,13 +47,12 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
 
         public MealViewHolder(View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.meal_name);
-            typeTextView = itemView.findViewById(R.id.meal_type);
-            dietTypeTextView = itemView.findViewById(R.id.meal_diet_type);
-            caloriesTextView = itemView.findViewById(R.id.meal_calories);
-            carbsTextView = itemView.findViewById(R.id.meal_carbs);
-            fatsTextView = itemView.findViewById(R.id.meal_fats);
-            proteinTextView = itemView.findViewById(R.id.meal_protein);
+            nameTextView = itemView.findViewById(R.id.mealname);
+            typeTextView = itemView.findViewById(R.id.mealtype);
+            caloriesTextView = itemView.findViewById(R.id.mealcalories);
+            carbsTextView = itemView.findViewById(R.id.mealcarbs);
+            fatsTextView = itemView.findViewById(R.id.mealfats);
+            proteinTextView = itemView.findViewById(R.id.mealprotein);
         }
     }
 }

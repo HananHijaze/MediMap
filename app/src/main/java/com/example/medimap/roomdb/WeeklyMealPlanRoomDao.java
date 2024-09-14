@@ -25,4 +25,9 @@ public interface WeeklyMealPlanRoomDao {
 
     @Query("SELECT * FROM meal_plan_table WHERE customerID = :customerId ")
     List<WeeklyMealPlanRoom> getAllMealPlansForCustomer(Long customerId);
+
+    @Query("Delete FROM meal_plan_table")
+    void deleteAllMealPlans();
+
+
 }

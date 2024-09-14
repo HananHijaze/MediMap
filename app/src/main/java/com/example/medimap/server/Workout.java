@@ -10,17 +10,19 @@ public class Workout {
     private Integer repetitions;
     private Integer sets;
     private String location; // e.g., home, gym
+    private String workoutType;
 
     // Constructors
     public Workout() {}
 
-    public Workout(String name, String description, Integer duration, Integer repetitions, Integer sets, String location) {
+    public Workout(String name, String description, Integer duration, Integer repetitions, Integer sets, String location, String workoutType) {
         this.name = name;
         this.description = description;
         this.duration = duration;
         this.repetitions = repetitions;
         this.sets = sets;
         this.location = location;
+        this.workoutType = workoutType;
     }
 
     // Getters and Setters
@@ -78,5 +80,13 @@ public class Workout {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public void setWorkoutType(String workoutType) {
+        this.workoutType = workoutType;
+    }
+
+    public String getWorkoutType() {
+        return workoutType;
     }
 }
