@@ -21,11 +21,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.medimap.roomdb.AllergyDao;
+import com.example.medimap.roomdb.AllergyRoom;
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.roomdb.UserWeekdayDao;
 import com.example.medimap.roomdb.UserWeekdayRoom;
+import com.example.medimap.roomdb.UsersAllergiesDao;
+import com.example.medimap.roomdb.UsersAllergiesRoom;
 import com.example.medimap.server.RetrofitClient;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.textfield.TextInputEditText;
@@ -50,6 +54,8 @@ public class Settings extends AppCompatActivity {
     // Selecting training days
     private TextView selectTrainingDays;
     private UserWeekdayDao userWeekdayDao;
+    private UsersAllergiesDao usersAllergiesDao;
+    private AllergyDao allergyDao;
     private final String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
     private boolean[] selectedDays = new boolean[daysOfWeek.length];
     private List<UserWeekdayRoom> selectedWeekdays = new ArrayList<>();
@@ -66,7 +72,14 @@ public class Settings extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        AppDatabaseRoom database = AppDatabaseRoom.getInstance(this);
 
+        usersAllergiesDao = database.usersAllergiesRoomDao();
+        allergyDao = database.allergyDao();
+
+
+        // Load user's allergies and populate the spinner
+       // loadUserAllergiesFromDatabase(userRoom.getId());
         Retrofit retrofit = RetrofitClient.getRetrofitInstance();
         userApi = retrofit.create(UserApi.class);
 
@@ -74,7 +87,6 @@ public class Settings extends AppCompatActivity {
         selectTrainingDays.setOnClickListener(v -> showDaysSelectionDialog());
 
         // Initialize Room database and UserDao
-        AppDatabaseRoom database = AppDatabaseRoom.getInstance(this);
         userDao = database.userDao();
 
         // Initialize UI components and set up spinners
@@ -181,7 +193,11 @@ public class Settings extends AppCompatActivity {
         AsyncTask.execute(() -> {
             userRoom = userDao.getFirstUser(); // Fetch the first user
             if (userRoom != null) {
-                runOnUiThread(this::updateUIWithUserDetails);
+                runOnUiThread(() -> {
+                    updateUIWithUserDetails();
+                    // Load allergies after userRoom has been initialized
+                    loadUserAllergiesFromDatabase(userRoom.getId());  // Move this here
+                });
             }
         });
     }
@@ -446,10 +462,46 @@ public class Settings extends AppCompatActivity {
                 selectedWeekdays.add(new UserWeekdayRoom(userId, (long) i));
             }
         }
+
+
     }
     //private boolean isSpinnerPromptSelected(Spinner spinner) {
         // Check if the first item (position 0) is selected
        // return spinner.getSelectedItemPosition() == 0;
     //}
+    private void loadUserAllergiesFromDatabase(Long userId) {
+        AsyncTask.execute(() -> {
+            // Fetch the user's allergies from UsersAllergiesRoom table
+            List<UsersAllergiesRoom> usersAllergiesList = usersAllergiesDao.getAllUsersAllergiesByUserId(userId);
+
+            // Fetch the allergy names based on the allergyId from AllergyRoom table
+            List<String> allergyNames = new ArrayList<>();
+            for (UsersAllergiesRoom userAllergy : usersAllergiesList) {
+                AllergyRoom allergyRoom = allergyDao.getAllergyById(userAllergy.getAllergyId());
+                if (allergyRoom != null) {
+                    // Use the correct getter method for the allergy name
+                    allergyNames.add(allergyRoom.getName());
+                }
+            }
+
+            // Run the UI update on the main thread
+            runOnUiThread(() -> populateAllergiesSpinner(allergyNames));
+        });
+    }
+
+
+    // Method to populate allergies spinner
+    private void populateAllergiesSpinner(List<String> allergyNames) {
+        // Convert List<String> to ArrayAdapter
+        ArrayAdapter<String> allergiesAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, allergyNames);
+
+        // Specify the layout to use when the list of choices appears
+        allergiesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        Spinner allergiesSpinner = findViewById(R.id.allergies_spinner);
+        allergiesSpinner.setAdapter(allergiesAdapter);
+    }
 
 }

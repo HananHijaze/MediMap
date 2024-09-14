@@ -36,6 +36,7 @@ public class Profile extends AppCompatActivity {
     private TextView bmiLabel, nameTextView;
     private static final int PICK_IMAGE = 1;
     private AppDatabaseRoom appDatabase;
+    private String gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +107,7 @@ public class Profile extends AppCompatActivity {
                 runOnUiThread(() -> {
                     // Update UI with user data
                     nameTextView.setText(firstUser.getName());
-
+                    gender=firstUser.getGender();
                     // Calculate and display BMI
                     int weight = firstUser.getWeight();
                     int height = firstUser.getHeight();
@@ -222,16 +223,11 @@ public class Profile extends AppCompatActivity {
 
     // Set the profile picture based on stored gender
     private void setProfilePicture() {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserSignUpData", MODE_PRIVATE);
-        String gender = sharedPreferences.getString("gender", null);
-
-        // Log gender value for debugging
-        Log.d("ProfilePicture", "Retrieved gender: " + gender);
 
         if (gender != null) {
-            if (gender.equalsIgnoreCase("Male")) {
+            if (gender.equalsIgnoreCase("male")) {
                 profileImageView.setImageResource(R.drawable.mmale);
-            } else if (gender.equalsIgnoreCase("Female")) {
+            } else if (gender.equalsIgnoreCase("female")) {
                 profileImageView.setImageResource(R.drawable.ffemale);
             }
         } else {

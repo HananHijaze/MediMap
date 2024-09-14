@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "allergy_table")
 public class AllergyRoom {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     private Long id;
 
     private String name;

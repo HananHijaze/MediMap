@@ -24,26 +24,26 @@
 
     <!-- 1.Body type -->
     <string-array name="body_type_array">
-        <item>Skinny</item>
-        <item>Normal</item>
-        <item>Heavier</item>
+        <item>skinny</item>
+        <item>normal</item>
+        <item>heavier</item>
     </string-array>
 
     <!-- 2.Goal -->
     <string-array name="goal_array">
-        <item>Gain muscle</item>
-        <item>Weight loss</item>
-        <item>Healthy lifestyle</item>
+        <item>gain muscle</item>
+        <item>lose weight</item>
+        <item>healthy life</item>
     </string-array>
 
     <!-- 3.Diet type -->
     <string-array name="diet_type_array">
-        <item>Vegetarian</item>
-        <item>Vegan</item>
-        <item>Keto</item>
-        <item>Paleo</item>
-        <item>Balanced</item>
-        <item>Low Carb</item>
+        <item>vegetarian</item>
+        <item>vegan</item>
+        <item>keto</item>
+        <item>paleo</item>
+        <item>balanced</item>
+        <item>low carb</item>
     </string-array>
 
     <!-- 4.Allergies -->
@@ -113,8 +113,8 @@
     <string name="meals_per_day">Meals per day</string>
 
     <string-array name="workout_location_array">
-        <item>Gym</item>
-        <item>Home</item>
+        <item>gym</item>
+        <item>home</item>
     </string-array>
 
     <!-- Snacks Per Day -->

@@ -6,7 +6,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@Database(entities = {UserRoom.class, HydrationRoom.class, WeeklyMealPlanRoom.class, WeeklyTrainingPlanRoom.class, UsersAllergiesRoom.class, WeekDaysRoom.class, UserWeekdayRoom.class, AllergyRoom.class, StepCountRoom.class}, version = 5)
+@Database(entities = {UserRoom.class, HydrationRoom.class, WeeklyMealPlanRoom.class, WeeklyTrainingPlanRoom.class, UsersAllergiesRoom.class, WeekDaysRoom.class, UserWeekdayRoom.class, AllergyRoom.class, StepCountRoom.class}, version = 6)
 @TypeConverters(Converters.class)  // Registering the Converters class
 public abstract class AppDatabaseRoom extends RoomDatabase {
     // Static instance of the AppDatabase class
