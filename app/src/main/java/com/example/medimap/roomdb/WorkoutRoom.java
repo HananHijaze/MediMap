@@ -1,31 +1,41 @@
-package com.example.medimap.server;
+package com.example.medimap.roomdb;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-public class Workout {
+@Entity(tableName = "workout_table")
+public class WorkoutRoom {
 
-    private Long workoutID;
+    @PrimaryKey(autoGenerate = true)
+    private Long workoutID; // Primary Key
+
     private String name;
+
     private String description;
+
     private Integer duration; // Duration in minutes
+
     private Integer repetitions;
+
     private Integer sets;
+
     private String location; // e.g., home, gym
-    private String workoutType;
+
+    private String workouttype;
 
     // Constructors
-    public Workout() {}
+    public WorkoutRoom() {}
 
-    public Workout(String name, String description, Integer duration, Integer repetitions, Integer sets, String location, String workoutType) {
+    public WorkoutRoom(String name, String description, Integer duration, Integer repetitions, Integer sets, String location, String workouttype) {
         this.name = name;
         this.description = description;
         this.duration = duration;
         this.repetitions = repetitions;
         this.sets = sets;
         this.location = location;
-        this.workoutType = workoutType;
+        this.workouttype = workouttype;
     }
 
-    // Getters and Setters
     public Long getWorkoutID() {
         return workoutID;
     }
@@ -82,11 +92,11 @@ public class Workout {
         this.location = location;
     }
 
-    public void setWorkoutType(String workoutType) {
-        this.workoutType = workoutType;
+    public String getWorkouttype() {
+        return workouttype;
     }
 
-    public String getWorkoutType() {
-        return workoutType;
+    public void setWorkouttype(String workouttype) {
+        this.workouttype = workouttype;
     }
 }

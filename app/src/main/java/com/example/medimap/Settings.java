@@ -21,16 +21,23 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.medimap.roomdb.AllergyDao;
+import com.example.medimap.roomdb.AllergyRoom;
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.roomdb.UserWeekdayDao;
 import com.example.medimap.roomdb.UserWeekdayRoom;
+import com.example.medimap.roomdb.UsersAllergiesDao;
+import com.example.medimap.roomdb.UsersAllergiesRoom;
+import com.example.medimap.roomdb.WeekDaysDao;
+import com.example.medimap.roomdb.WeekDaysRoom;
 import com.example.medimap.server.RetrofitClient;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,10 +53,12 @@ public class Settings extends AppCompatActivity {
     private UserDao userDao;
     private UserRoom userRoom;
     private UserApi userApi;
+    private UserWeekdayDao userWeekdayDao;
 
     // Selecting training days
     private TextView selectTrainingDays;
-    private UserWeekdayDao userWeekdayDao;
+    private UsersAllergiesDao usersAllergiesDao;
+    private AllergyDao allergyDao;
     private final String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
     private boolean[] selectedDays = new boolean[daysOfWeek.length];
     private List<UserWeekdayRoom> selectedWeekdays = new ArrayList<>();
@@ -66,7 +75,14 @@ public class Settings extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        AppDatabaseRoom database = AppDatabaseRoom.getInstance(this);
 
+        usersAllergiesDao = database.usersAllergiesRoomDao();
+        allergyDao = database.allergyDao();
+
+
+        // Load user's allergies and populate the spinner
+       // loadUserAllergiesFromDatabase(userRoom.getId());
         Retrofit retrofit = RetrofitClient.getRetrofitInstance();
         userApi = retrofit.create(UserApi.class);
 
@@ -74,15 +90,18 @@ public class Settings extends AppCompatActivity {
         selectTrainingDays.setOnClickListener(v -> showDaysSelectionDialog());
 
         // Initialize Room database and UserDao
-        AppDatabaseRoom database = AppDatabaseRoom.getInstance(this);
         userDao = database.userDao();
-
+        userWeekdayDao = database.userWeekdayRoomDao();
         // Initialize UI components and set up spinners
         initializeUIComponents();
         setUpSpinners();
 
         // Load user data from the database
         loadUserData();
+
+        // Load selected days for the user
+        loadSelectedDays();
+
     }
 
     // Initialize UI components
@@ -181,7 +200,11 @@ public class Settings extends AppCompatActivity {
         AsyncTask.execute(() -> {
             userRoom = userDao.getFirstUser(); // Fetch the first user
             if (userRoom != null) {
-                runOnUiThread(this::updateUIWithUserDetails);
+                runOnUiThread(() -> {
+                    updateUIWithUserDetails();
+                    // Load allergies after userRoom has been initialized
+                    loadUserAllergiesFromDatabase(userRoom.getId());  // Move this here
+                });
             }
         });
     }
@@ -406,50 +429,124 @@ public class Settings extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    // Show the multi-choice dialog with the user's selected days pre-checked
     private void showDaysSelectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Training Days");
 
-        // MultiChoice dialog with actual selectable days, skipping the first placeholder
+        // MultiChoice dialog with selectable days
         builder.setMultiChoiceItems(daysOfWeek, selectedDays, (dialog, which, isChecked) -> {
             // Toggle the selected state
             selectedDays[which] = isChecked;
         });
 
         builder.setPositiveButton("OK", (dialog, which) -> {
-            saveSelectedDays();
+            saveSelectedDays(); // Save the selected days when user confirms
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-        // Create the dialog
+        // Create and show the dialog
         AlertDialog dialog = builder.create();
-
-        // Show the dialog first, so you can access the buttons
         dialog.show();
 
-        // Change the button colors
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue)); // OK button color
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));  // Cancel button color
+        // Change the button colors (Optional)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
     }
-
 
 
     // Save selected days to the database
     private void saveSelectedDays() {
         selectedWeekdays.clear();
 
+        // Assuming userId is obtained from userRoom (for example)
+        Long userId = userRoom.getId();
+
         for (int i = 0; i < selectedDays.length; i++) {
             if (selectedDays[i]) {
-                // Map the selected day to its index as the weekday ID
-                long userId = 0;
-                selectedWeekdays.add(new UserWeekdayRoom(userId, (long) i));
+                // Map the selected day to its index as the weekday ID, adjusting by adding 1
+                selectedWeekdays.add(new UserWeekdayRoom(userId, (long) (i + 1))); // i+1 to match the weekday ID in the database
             }
         }
+
+        // Save the selected weekdays to the database
+        AsyncTask.execute(() -> {
+            // Clear existing selections for the user
+            userWeekdayDao.deleteAllUserWeekdays();
+
+            // Insert the new selections
+            for (UserWeekdayRoom userWeekday : selectedWeekdays) {
+                userWeekdayDao.insertUserWeekday(userWeekday);
+            }
+
+            // Log or show a message if necessary
+            Log.d("Settings", "Selected days saved.");
+        });
     }
+
     //private boolean isSpinnerPromptSelected(Spinner spinner) {
         // Check if the first item (position 0) is selected
        // return spinner.getSelectedItemPosition() == 0;
     //}
+    private void loadUserAllergiesFromDatabase(Long userId) {
+        AsyncTask.execute(() -> {
+            // Fetch the user's allergies from UsersAllergiesRoom table
+            List<UsersAllergiesRoom> usersAllergiesList = usersAllergiesDao.getAllUsersAllergiesByUserId(userId);
+
+            // Fetch the allergy names based on the allergyId from AllergyRoom table
+            List<String> allergyNames = new ArrayList<>();
+            for (UsersAllergiesRoom userAllergy : usersAllergiesList) {
+                AllergyRoom allergyRoom = allergyDao.getAllergyById(userAllergy.getAllergyId());
+                if (allergyRoom != null) {
+                    // Use the correct getter method for the allergy name
+                    allergyNames.add(allergyRoom.getName());
+                }
+            }
+
+            // Run the UI update on the main thread
+            runOnUiThread(() -> populateAllergiesSpinner(allergyNames));
+        });
+    }
+
+
+    // Method to populate allergies spinner
+    private void populateAllergiesSpinner(List<String> allergyNames) {
+        // Convert List<String> to ArrayAdapter
+        ArrayAdapter<String> allergiesAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, allergyNames);
+
+        // Specify the layout to use when the list of choices appears
+        allergiesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        Spinner allergiesSpinner = findViewById(R.id.allergies_spinner);
+        allergiesSpinner.setAdapter(allergiesAdapter);
+    }
+    // Load selected days from the database and update selectedDays[] array
+    private void loadSelectedDays() {
+        AsyncTask.execute(() -> {
+            Long userId = userRoom.getId();  // Assuming you have the user ID
+
+            // Get the user's selected weekdays
+            List<UserWeekdayRoom> userSelectedDays = userWeekdayDao.getAllUserWeekdaysForUser(userId);
+
+            // Reset selectedDays array (make sure all positions are reset, including 0)
+            Arrays.fill(selectedDays, false);
+
+            // Mark the days that the user has previously selected, including day 0 (Sunday)
+            for (UserWeekdayRoom userWeekday : userSelectedDays) {
+                Long weekdayId = userWeekday.getWeekdayId();
+                if (weekdayId != null && weekdayId >= 1 && weekdayId <= 7) {
+                    // Subtract 1 from the weekdayId to get the correct index in the selectedDays array
+                    selectedDays[weekdayId.intValue() - 1] = true; // Set the day as selected
+                }
+            }
+
+            // Now, you can show the dialog with the selected days marked
+          //  runOnUiThread(() -> showDaysSelectionDialog());
+        });
+    }
+
 
 }

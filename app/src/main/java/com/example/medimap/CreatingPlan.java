@@ -3,6 +3,11 @@ package com.example.medimap;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.MealDao;
+import com.example.medimap.roomdb.WeeklyMealPlanRoomDao;
+import com.example.medimap.roomdb.WeeklyTrainingPlanRoomDao;
+import com.example.medimap.roomdb.WorkoutDao;
 import com.example.medimap.server.Meal;
 import com.example.medimap.server.MealApi;
 import com.example.medimap.server.MealPlan;
@@ -21,6 +26,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -31,6 +38,7 @@ public class CreatingPlan {
     private static CreatingPlan creatingPlan;
     private List<UserWeekday> days;
     private List<Workout> workoutList;
+    private AppDatabaseRoom roomdb;
 
     private CreatingPlan() {
     }
@@ -43,6 +51,23 @@ public class CreatingPlan {
     }
 
     public void createPlan(Context context, User user) {
+        // Initialize database and DAOs outside the background thread
+        roomdb = AppDatabaseRoom.getInstance(context);
+        WeeklyTrainingPlanRoomDao workoutPlanDao = roomdb.weeklyTrainingPlanRoomDao();
+        WeeklyMealPlanRoomDao mealPlanDao = roomdb.weeklyMealPlanRoomDao();
+        MealDao mealDao = roomdb.mealDao();
+        WorkoutDao workoutDao = roomdb.workoutDao();
+
+        // Perform database operations inside a background thread
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            // Delete all entries in the background thread
+            workoutPlanDao.deleteAllWorkoutPlans();
+            mealPlanDao.deleteAllMealPlans();
+            mealDao.deleteAllMealPlans();
+            workoutDao.deletallWorkouts();
+        });
+
         // Encode the User into an encodedUser
         encodedUser encodedUser = UserDataEncoder.encodeValues(user);
 
@@ -87,7 +112,7 @@ public class CreatingPlan {
         return maxIndex;
     }
 
-    /*********************************WORKOUT PLAN************************************************/
+    /************WORKOUT PLAN*****************/
 
     private void getworkoutplan(User user, int workoutPlanIndex) {
         String workoutPlan = getWorkoutPlanType(workoutPlanIndex);
@@ -223,7 +248,7 @@ public class CreatingPlan {
             }
         });
     }
-    /*****************************************MEAL PLAN*************************************************/
+    /**************MEAL PLAN****************/
 
     private void getmealplan(User user, int breakfastIndex, int lunchIndex, int dinnerIndex, int snackIndex) {
         int mealsnum=user.getMealsperday();

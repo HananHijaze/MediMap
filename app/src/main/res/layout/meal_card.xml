@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/mealname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Meal Name"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/mealtype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Type" />
+
+        <TextView
+            android:id="@+id/mealdiettype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Diet Type"/>
+
+        <TextView
+            android:id="@+id/mealcalories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calories"/>
+
+        <TextView
+            android:id="@+id/mealcarbs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Carbs"/>
+
+        <TextView
+            android:id="@+id/mealfats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fats"/>
+
+        <TextView
+            android:id="@+id/mealprotein"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Protein"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

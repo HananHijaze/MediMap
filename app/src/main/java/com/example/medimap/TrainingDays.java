@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class TrainingDays extends AppCompatActivity {
     private ProgressBar circularProgressBar;
-    private int totalPages = 1;
+    private int totalPages = 11;
     private int currentPage;
     private Set<String> selectedDays = new HashSet<>(); // Set to store selected days
 
@@ -104,6 +104,6 @@ public class TrainingDays extends AppCompatActivity {
         Set<String> savedDays = sharedPreferences.getStringSet("trainingDays", new HashSet<>());
 
         // Optional: Show selected days in a Toast
-        // Toast.makeText(this, "Training Days: " + savedDays.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Training Days: " + savedDays.toString(), Toast.LENGTH_SHORT).show();
     }
 }

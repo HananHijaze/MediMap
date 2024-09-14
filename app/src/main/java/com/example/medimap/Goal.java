@@ -49,17 +49,17 @@ public class Goal extends AppCompatActivity {
 
         // Set up goal selection listeners
         gainMuscleLayout.setOnClickListener(v -> {
-            selectedGoal = "Gain Muscle"; // Set the selected goal to "Gain Muscle"
+            selectedGoal = "gain muscle"; // Set the selected goal to "Gain Muscle"
             toggleSelection(gainMuscleLayout, loseWeightLayout, healthyLifeLayout);
         });
 
         loseWeightLayout.setOnClickListener(v -> {
-            selectedGoal = "Weight Loss"; // Set the selected goal to "Weight Loss"
+            selectedGoal = "lose weight"; // Set the selected goal to "Weight Loss"
             toggleSelection(loseWeightLayout, gainMuscleLayout, healthyLifeLayout);
         });
 
         healthyLifeLayout.setOnClickListener(v -> {
-            selectedGoal = "Healthy Life"; // Set the selected goal to "Healthy Life"
+            selectedGoal = "healthy life"; // Set the selected goal to "Healthy Life"
             toggleSelection(healthyLifeLayout, gainMuscleLayout, loseWeightLayout);
         });
 
@@ -70,6 +70,8 @@ public class Goal extends AppCompatActivity {
                 saveGoal(); // Save the selected goal
                 retrieveAndShowGoal(); // Retrieve and show the goal for verification (optional)
                 Intent intent = new Intent(Goal.this, build_profile.class); // Replace with actual next activity
+               // intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
+
                 startActivity(intent);
                 finish(); // Optionally finish this activity so the user cannot go back to it
             } else {

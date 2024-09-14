@@ -250,8 +250,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/spinner_border"
-                android:prompt="@string/allergies_prompt" />
+                android:background="@drawable/spinner_border" />
 
             <!-- Meals Per Day -->
             <TextView

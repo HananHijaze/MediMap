@@ -1,7 +1,9 @@
 package com.example.medimap;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -16,13 +18,22 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.HydrationRoom;
+import com.example.medimap.roomdb.HydrationRoomDao;
+import com.example.medimap.roomdb.StepCountDao;
+import com.example.medimap.roomdb.StepCountRoom;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
+import com.example.medimap.server.Hydration;
+import com.example.medimap.server.HydrationApi;
 import com.example.medimap.server.RetrofitClient;
+import com.example.medimap.server.StepCount;
+import com.example.medimap.server.StepCountApi;
 import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 
 import retrofit2.Call;
@@ -36,6 +47,7 @@ public class LogIn extends AppCompatActivity {
     Button login;
     UserDao userDao;
     private UserApi userApi;
+    boolean serverReachable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +84,33 @@ public class LogIn extends AppCompatActivity {
 
             // Run the server reachability check and local login in a background thread
             Executors.newSingleThreadExecutor().execute(() -> {
-                boolean serverReachable = isServerReachable();
                 runOnUiThread(() -> {
                     if (NetworkUtils.isNetworkAvailable(LogIn.this)) {
-                        if (serverReachable) {
-                            performLogin(); // Call the server login function
-                        } else {
-                            performLocalLogin(); // Fallback to local login function
-                        }
+                        Call<Void> call = userApi.pingServer();
+                        call.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    // If the server responds successfully, server is reachable
+                                  //  Toast.makeText(getApplicationContext(), "Server is reachable", Toast.LENGTH_SHORT).show();
+                                    performLogin(); // Call the server login function
+                                    Log.d("Server Check", "Server is reachable");
+                                } else {
+                                    // If the server responds but with an error
+                                  //  Toast.makeText(getApplicationContext(), "Server responded, but with an error", Toast.LENGTH_SHORT).show();
+                                    performLocalLogin(); // Fallback to local login function
+                                    Log.e("Server Check", "Server responded with error: " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                // Handle failure to reach the server
+                                //Toast.makeText(getApplicationContext(), "Failed to reach server", Toast.LENGTH_SHORT).show();
+                                performLocalLogin(); // Fallback to local login function
+                                Log.e("Server Check", "Failed to reach server: " + t.getMessage(), t);
+                            }
+                        });
                     } else {
                         performLocalLogin(); // No network available, call local login
                     }
@@ -129,6 +160,8 @@ public class LogIn extends AppCompatActivity {
                             userDao.deleteAllUsers();  // Delete existing users
                             userDao.insertUser(userRoom);  // Insert new user
                         });
+                        syncHydrationData(LogIn.this,userRoom.getId());
+                        syncStepCountData(LogIn.this,userRoom.getId());
 
                     } else {
                         Toast.makeText(LogIn.this, "Incorrect email or password (server)", Toast.LENGTH_SHORT).show();
@@ -198,23 +231,103 @@ public class LogIn extends AppCompatActivity {
                     startActivity(in);
                 } else {
                     Toast.makeText(LogIn.this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
+
                 }
             });
         });
     }
+    //filling hydration data from the server to the room
+    // In your Activity or ViewModel
+    public void syncHydrationData(Context context, Long customerId) {
+        // Create an instance of HydrationApi (assuming Retrofit setup is already done)
+        HydrationApi hydrationApi = RetrofitClient.getRetrofitInstance().create(HydrationApi.class);
 
-    // Function to check if the server is reachable
-    private boolean isServerReachable() {
-        try {
-            // Call a lightweight endpoint to check server availability
-            Call<Void> call = userApi.pingServer();
-            Response<Void> response = call.execute();
+        // Fetch the last 7 days hydration data
+        Call<List<Hydration>> call = hydrationApi.getLast7DaysHydration(customerId);
 
-            // If the server responds successfully, return true
-            return response.isSuccessful();
-        } catch (Exception e) {
-            Log.e("Server Check", "Failed to reach server: " + e.getMessage(), e);
-            return false;
-        }
+        call.enqueue(new Callback<List<Hydration>>() {
+            @Override
+            public void onResponse(Call<List<Hydration>> call, Response<List<Hydration>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Hydration> hydrationList = response.body();
+
+                    // Insert the data into Room Database
+                    AsyncTask.execute(() -> {
+                        // Initialize Room Database and DAO
+                        AppDatabaseRoom db = AppDatabaseRoom.getInstance(context);
+                        HydrationRoomDao hydrationRoomDao = db.hydrationRoomDao();
+
+                        // First, delete all the existing hydration records
+                        hydrationRoomDao.deleteAllHydrations();
+
+                        // Convert the server hydration data to Room entities and insert them
+                        for (Hydration hydration : hydrationList) {
+                            HydrationRoom hydrationRoom = new HydrationRoom(hydration);
+                            hydrationRoomDao.insertHydration(hydrationRoom);
+                        }
+
+                        // Log success or update UI as needed
+                        Log.d("Hydration Sync", "Hydration data synced successfully.");
+                    });
+                } else {
+                    Log.e("Hydration Sync", "Failed to sync hydration data from server.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Hydration>> call, Throwable t) {
+                Log.e("Hydration Sync", "API call failed: " + t.getMessage());
+            }
+        });
     }
+    //filling steps data from the server to the room
+    // In your Activity or ViewModel
+    public void syncStepCountData(Context context, Long userId) {
+        // Create an instance of StepCountApi (assuming Retrofit setup is already done)
+        StepCountApi stepCountApi = RetrofitClient.getRetrofitInstance().create(StepCountApi.class);
+
+        // Fetch the last 7 days step count data
+        Call<List<StepCount>> call = stepCountApi.getLast7DaysSteps(userId);
+
+        call.enqueue(new Callback<List<StepCount>>() {
+            @Override
+            public void onResponse(Call<List<StepCount>> call, Response<List<StepCount>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<StepCount> stepCountList = response.body();
+
+                    // Insert the data into Room Database
+                    AsyncTask.execute(() -> {
+                        // Initialize Room Database and DAO
+                        AppDatabaseRoom db = AppDatabaseRoom.getInstance(context);
+                        StepCountDao stepCountDao = db.stepCountDao();
+
+                        // First, delete all the existing step count records for the user
+                        stepCountDao.deleteAllStepsForUser(userId);
+
+                        // Convert the server step count data to Room entities and insert them
+                        for (StepCount stepCount : stepCountList) {
+                            StepCountRoom stepCountRoom = new StepCountRoom(
+                                    stepCount.getCustomerId(),
+                                    stepCount.getSteps(),
+                                    stepCount.getDate().toString() // Convert LocalDate to String
+                            );
+                            stepCountDao.insertStepCount(stepCountRoom);
+                        }
+
+                        // Log success or update UI as needed
+                        Log.d("StepCount Sync", "Step count data synced successfully.");
+                    });
+                } else {
+                    Log.e("StepCount Sync", "Failed to sync step count data from server.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<StepCount>> call, Throwable t) {
+                Log.e("StepCount Sync", "API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+
 }

@@ -3,6 +3,7 @@ package com.example.medimap.roomdb;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity(tableName = "workout_plan_table")
 public class WeeklyTrainingPlanRoom {
@@ -14,18 +15,15 @@ public class WeeklyTrainingPlanRoom {
 
     private Long workoutID; // Foreign Key referencing Workout.workoutID
 
-    private LocalDate weekStartDate;
+    private Date createdate;
 
-    private LocalDate weekEndDate;
-
-    private String workoutDay; // e.g., Mon, Tue, etc.
+    private int workoutDay; // e.g., Mon, Tue, etc.
 
     // Constructors
-    public WeeklyTrainingPlanRoom(Long customerID, Long workoutID, LocalDate weekStartDate, LocalDate weekEndDate, String workoutDay) {
+    public WeeklyTrainingPlanRoom(Long customerID, Long workoutID, Date createdate,int workoutDay) {
         this.customerID = customerID;
         this.workoutID = workoutID;
-        this.weekStartDate = weekStartDate;
-        this.weekEndDate = weekEndDate;
+        this.createdate = createdate;
         this.workoutDay = workoutDay;
     }
 
@@ -54,27 +52,19 @@ public class WeeklyTrainingPlanRoom {
         this.workoutID = workoutID;
     }
 
-    public LocalDate getWeekStartDate() {
-        return weekStartDate;
+    public Date getCreatedate() {
+        return createdate;
     }
 
-    public void setWeekStartDate(LocalDate weekStartDate) {
-        this.weekStartDate = weekStartDate;
+    public void setCreatedate(Date createdate) {
+        this.createdate = createdate;
     }
 
-    public LocalDate getWeekEndDate() {
-        return weekEndDate;
-    }
-
-    public void setWeekEndDate(LocalDate weekEndDate) {
-        this.weekEndDate = weekEndDate;
-    }
-
-    public String getWorkoutDay() {
+    public int getWorkoutDay() {
         return workoutDay;
     }
 
-    public void setWorkoutDay(String workoutDay) {
+    public void setWorkoutDay(int workoutDay) {
         this.workoutDay = workoutDay;
     }
 }

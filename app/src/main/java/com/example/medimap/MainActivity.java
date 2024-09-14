@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,13 +21,21 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.medimap.roomdb.AllergyDao;
+import com.example.medimap.roomdb.AllergyRoom;
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
+import com.example.medimap.roomdb.WeekDaysDao;
+import com.example.medimap.roomdb.WeekDaysRoom;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private UserDao userDao;
-
+    private AllergyDao allergyDao;
+    private WeekDaysDao weekDaysDao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +48,29 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        AppDatabaseRoom db = AppDatabaseRoom.getInstance(this);
+        allergyDao = db.allergyDao();
+        weekDaysDao = db.weekDaysRoomDao();
+        insertDefaultAllergiesIfNotPresent();
+        insertDefaultWeekDaysIfNotPresent();
+
+
+        // Show loading animation after a delay using a background thread
+        ImageView imageView = findViewById(R.id.imageView7);
+
+// Create a new thread to delay the GIF loading
+
+        new Thread(() -> {
+            // No delay; GIF will start loading immediately
+            runOnUiThread(() -> {
+                Glide.with(this)
+                        .asGif()
+                        .load(R.drawable.loading)
+                        .into(imageView);
+            });
+        }).start();
 
         // Initialize Room database and UserDao
-        AppDatabaseRoom db = AppDatabaseRoom.getInstance(this);
         this.userDao = db.userDao();
 
         // Create a shortcut if supported
@@ -63,32 +92,13 @@ public class MainActivity extends AppCompatActivity {
             }, 5000); // 5-second delay
         }).start(); // Start the thread
 
-        // Show loading animation after a delay using a background thread
-        ImageView imageView = findViewById(R.id.imageView7);
 
-// Create a new thread to delay the GIF loading
-        new Thread(() -> {
-            try {
-                // Simulate some work in the background (e.g., 2 seconds delay)
-                Thread.sleep(2000); // Delay for 2 seconds
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Now load the GIF on the UI thread
-            runOnUiThread(() -> {
-                Glide.with(this)
-                        .asGif()
-                        .load(R.drawable.loading)
-                        .into(imageView);
-            });
-        }).start();
 
         /*********************************** ADDING TESTER USER ***********************************/
         // Remove all existing users in the background
         new Thread(() -> {
             userDao.deleteAllUsers();
-            UserRoom newUser = createTestUser(); // Create a new test user
+            UserRoom newUser = createTestUser();// Create a new test user
             userDao.insertUser(newUser); // Insert the test user
             Log.d("MainActivity", "Test user added: " + newUser.toString());
         }).start();
@@ -104,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     // Helper method to create a test user
     private UserRoom createTestUser() {
         return new UserRoom(
+
                 "tester@test.com",
                 "test test",
                 "test123",
@@ -120,7 +131,9 @@ public class MainActivity extends AppCompatActivity {
                 2,  // Meals per day
                 2,  // Snacks per day
                 200  // Default water intake
+
         );
+
     }
     // Check if the user is logged in
     public boolean isUserLoggedIn() {
@@ -156,4 +169,47 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    //initialize allergie room table
+    public void insertDefaultAllergiesIfNotPresent() {
+        AsyncTask.execute(() -> {
+            // Check if there are already allergies in the table
+            if (allergyDao.getAllAllergies().isEmpty()) {
+                // Insert default allergies with manually set IDs
+                List<AllergyRoom> defaultAllergies = new ArrayList<>();
+                defaultAllergies.add(new AllergyRoom(1L, "Dairy"));
+                defaultAllergies.add(new AllergyRoom(2L, "Gluten"));
+                defaultAllergies.add(new AllergyRoom(3L, "Nuts"));
+                defaultAllergies.add(new AllergyRoom(4L, "Seafood"));
+                defaultAllergies.add(new AllergyRoom(5L, "Soy"));
+                defaultAllergies.add(new AllergyRoom(6L, "Eggs"));
+                defaultAllergies.add(new AllergyRoom(7L, "None"));
+
+                // Insert all into the database
+               allergyDao.insertAllergies(defaultAllergies);
+            }
+        });
+    }
+
+
+    //initialize days room table
+    public void insertDefaultWeekDaysIfNotPresent() {
+        AsyncTask.execute(() -> {
+            // Check if there are already weekdays in the table
+            if (weekDaysDao.getAllWeekDays().isEmpty()) {
+                // Insert default weekdays with manually set IDs
+                List<WeekDaysRoom> defaultWeekDays = new ArrayList<>();
+                defaultWeekDays.add(new WeekDaysRoom(1L, "Sunday"));
+                defaultWeekDays.add(new WeekDaysRoom(2L, "Monday"));
+                defaultWeekDays.add(new WeekDaysRoom(3L, "Tuesday"));
+                defaultWeekDays.add(new WeekDaysRoom(4L, "Wednesday"));
+                defaultWeekDays.add(new WeekDaysRoom(5L, "Thursday"));
+                defaultWeekDays.add(new WeekDaysRoom(6L, "Friday"));
+                defaultWeekDays.add(new WeekDaysRoom(7L, "Saturday"));
+
+                // Insert all into the database
+                weekDaysDao.insertAllWeekDays(defaultWeekDays);
+            }
+        });
+    }
+
 }
