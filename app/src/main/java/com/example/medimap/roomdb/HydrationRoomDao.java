@@ -26,5 +26,8 @@ public interface HydrationRoomDao {
 
     @Query("DELETE FROM hydration_table WHERE date = (SELECT MIN(date) FROM hydration_table)")
     void deleteOldestHydration();
+
+    @Query("SELECT * FROM hydration_table ORDER BY date DESC LIMIT 1")
+    HydrationRoom getLatestNewestHydration();
 }
 

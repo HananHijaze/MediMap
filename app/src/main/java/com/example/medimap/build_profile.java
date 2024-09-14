@@ -117,7 +117,7 @@ public class build_profile extends AppCompatActivity {
                 dietType,
                 mealsPerDay,  // Meals per day
                 snacksPerDay, // Snacks per day
-                200          // Default water intake (placeholder, modify as needed)
+                150          // Default water intake (placeholder, modify as needed)
         );
 
         // Insert the user data into the Room database asynchronously
