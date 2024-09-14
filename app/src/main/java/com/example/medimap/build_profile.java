@@ -20,6 +20,7 @@ import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import retrofit2.Call;
@@ -127,6 +128,9 @@ public class build_profile extends AppCompatActivity {
         }).start();  // Room operations must be done on a background thread
     }
     public void createplan(){
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String email = sharedPreferences.getString("email", "N/A");
+
         UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
 
         // Make the API call to get the user by email

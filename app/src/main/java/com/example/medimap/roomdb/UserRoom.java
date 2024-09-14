@@ -48,7 +48,7 @@ public class UserRoom {
         this.dietType = dietType;
         this.mealsPerDay = mealsPerDay;
         this.snacksPerDay = snacksPerDay;
-        this.waterDefault = waterDefault;
+        this.waterDefault  = waterDefault;
     }
 
     public UserRoom(User user){

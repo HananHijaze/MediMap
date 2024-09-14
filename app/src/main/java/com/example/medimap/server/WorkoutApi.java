@@ -34,7 +34,7 @@ public interface WorkoutApi {
     @DELETE("workouts/{id}")
     Call<Void> deleteWorkout(@Path("id") Long id);
 
-    @GET("api/workouts/search")
+    @GET("workouts/search")
     Call<List<Workout>> getWorkoutsByType(
             @Query("workouttype") String workouttype
     );

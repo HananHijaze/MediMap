@@ -27,4 +27,8 @@ public interface HydrationApi {
 
     @DELETE("hydration/{id}")
     Call<Void> deleteHydration(@Path("id") Long id);
+
+    @GET("hydration/last7days/{customerId}")
+    Call<List<Hydration>> getLast7DaysHydration(@Path("customerId") Long customerId);
+
 }

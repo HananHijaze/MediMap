@@ -10,19 +10,19 @@ public class Meal {
     private Double carbs;
     private Double fats;
     private String type; // e.g., breakfast, lunch, dinner, snack
-    private Boolean vegan; // true for vegan, false otherwise
+    private String Diet_type;//vegetarian, vegan, keto, gluten-free, dairy-free,pescatarian
 
     // Constructors
     public Meal() {}
 
-    public Meal(String name, Integer calories, Double protein, Double carbs, Double fats, String type, Boolean vegan) {
+    public Meal(String name, Integer calories, Double protein, Double carbs, Double fats, String type, String diet_type) {
         this.name = name;
         this.calories = calories;
         this.protein = protein;
         this.carbs = carbs;
         this.fats = fats;
         this.type = type;
-        this.vegan = vegan;
+        this.Diet_type= diet_type;
     }
 
     // Getters and Setters
@@ -82,11 +82,11 @@ public class Meal {
         this.type = type;
     }
 
-    public Boolean getVegan() {
-        return vegan;
+    public String getDiet_type() {
+        return Diet_type;
     }
 
-    public void setVegan(Boolean vegan) {
-        this.vegan = vegan;
+    public void setDiet_type(String diet_type) {
+        this.Diet_type = diet_type;
     }
 }
