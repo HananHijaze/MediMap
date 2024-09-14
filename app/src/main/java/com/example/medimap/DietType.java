@@ -45,10 +45,10 @@ public class DietType extends AppCompatActivity {
         infoIconBalanced = findViewById(R.id.infoIconBalanced);
         infoIconLowCarb = findViewById(R.id.infoIconLowCarb);
 
-        // Set OnClickListener for each diet type info icon
-        setDietTypeInfoListeners();
-        currentPage = getIntent().getIntExtra("currentPage", 1);
         currentPage = getIntent().getIntExtra("currentPage", 6);
+
+        setDietTypeInfoListeners();
+
         circularProgressBar = findViewById(R.id.circularProgressBar);
         updateProgressBar();
 
