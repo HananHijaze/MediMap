@@ -1,7 +1,9 @@
 package com.example.medimap;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -16,13 +18,22 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.HydrationRoom;
+import com.example.medimap.roomdb.HydrationRoomDao;
+import com.example.medimap.roomdb.StepCountDao;
+import com.example.medimap.roomdb.StepCountRoom;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
+import com.example.medimap.server.Hydration;
+import com.example.medimap.server.HydrationApi;
 import com.example.medimap.server.RetrofitClient;
+import com.example.medimap.server.StepCount;
+import com.example.medimap.server.StepCountApi;
 import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 
 import retrofit2.Call;
@@ -149,6 +160,8 @@ public class LogIn extends AppCompatActivity {
                             userDao.deleteAllUsers();  // Delete existing users
                             userDao.insertUser(userRoom);  // Insert new user
                         });
+                        syncHydrationData(LogIn.this,userRoom.getId());
+                        syncStepCountData(LogIn.this,userRoom.getId());
 
                     } else {
                         Toast.makeText(LogIn.this, "Incorrect email or password (server)", Toast.LENGTH_SHORT).show();
@@ -223,4 +236,98 @@ public class LogIn extends AppCompatActivity {
             });
         });
     }
+    //filling hydration data from the server to the room
+    // In your Activity or ViewModel
+    public void syncHydrationData(Context context, Long customerId) {
+        // Create an instance of HydrationApi (assuming Retrofit setup is already done)
+        HydrationApi hydrationApi = RetrofitClient.getRetrofitInstance().create(HydrationApi.class);
+
+        // Fetch the last 7 days hydration data
+        Call<List<Hydration>> call = hydrationApi.getLast7DaysHydration(customerId);
+
+        call.enqueue(new Callback<List<Hydration>>() {
+            @Override
+            public void onResponse(Call<List<Hydration>> call, Response<List<Hydration>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Hydration> hydrationList = response.body();
+
+                    // Insert the data into Room Database
+                    AsyncTask.execute(() -> {
+                        // Initialize Room Database and DAO
+                        AppDatabaseRoom db = AppDatabaseRoom.getInstance(context);
+                        HydrationRoomDao hydrationRoomDao = db.hydrationRoomDao();
+
+                        // First, delete all the existing hydration records
+                        hydrationRoomDao.deleteAllHydrations();
+
+                        // Convert the server hydration data to Room entities and insert them
+                        for (Hydration hydration : hydrationList) {
+                            HydrationRoom hydrationRoom = new HydrationRoom(hydration);
+                            hydrationRoomDao.insertHydration(hydrationRoom);
+                        }
+
+                        // Log success or update UI as needed
+                        Log.d("Hydration Sync", "Hydration data synced successfully.");
+                    });
+                } else {
+                    Log.e("Hydration Sync", "Failed to sync hydration data from server.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Hydration>> call, Throwable t) {
+                Log.e("Hydration Sync", "API call failed: " + t.getMessage());
+            }
+        });
+    }
+    //filling steps data from the server to the room
+    // In your Activity or ViewModel
+    public void syncStepCountData(Context context, Long userId) {
+        // Create an instance of StepCountApi (assuming Retrofit setup is already done)
+        StepCountApi stepCountApi = RetrofitClient.getRetrofitInstance().create(StepCountApi.class);
+
+        // Fetch the last 7 days step count data
+        Call<List<StepCount>> call = stepCountApi.getLast7DaysSteps(userId);
+
+        call.enqueue(new Callback<List<StepCount>>() {
+            @Override
+            public void onResponse(Call<List<StepCount>> call, Response<List<StepCount>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<StepCount> stepCountList = response.body();
+
+                    // Insert the data into Room Database
+                    AsyncTask.execute(() -> {
+                        // Initialize Room Database and DAO
+                        AppDatabaseRoom db = AppDatabaseRoom.getInstance(context);
+                        StepCountDao stepCountDao = db.stepCountDao();
+
+                        // First, delete all the existing step count records for the user
+                        stepCountDao.deleteAllStepsForUser(userId);
+
+                        // Convert the server step count data to Room entities and insert them
+                        for (StepCount stepCount : stepCountList) {
+                            StepCountRoom stepCountRoom = new StepCountRoom(
+                                    stepCount.getCustomerId(),
+                                    stepCount.getSteps(),
+                                    stepCount.getDate().toString() // Convert LocalDate to String
+                            );
+                            stepCountDao.insertStepCount(stepCountRoom);
+                        }
+
+                        // Log success or update UI as needed
+                        Log.d("StepCount Sync", "Step count data synced successfully.");
+                    });
+                } else {
+                    Log.e("StepCount Sync", "Failed to sync step count data from server.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<StepCount>> call, Throwable t) {
+                Log.e("StepCount Sync", "API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+
 }

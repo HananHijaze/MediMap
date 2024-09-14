@@ -225,9 +225,9 @@ public class Profile extends AppCompatActivity {
     private void setProfilePicture() {
 
         if (gender != null) {
-            if (gender.equalsIgnoreCase("male")) {
+            if (gender.equals("male")) {
                 profileImageView.setImageResource(R.drawable.mmale);
-            } else if (gender.equalsIgnoreCase("female")) {
+            } else if (gender.equals("female")) {
                 profileImageView.setImageResource(R.drawable.ffemale);
             }
         } else {

@@ -30,11 +30,14 @@ import com.example.medimap.roomdb.UserWeekdayDao;
 import com.example.medimap.roomdb.UserWeekdayRoom;
 import com.example.medimap.roomdb.UsersAllergiesDao;
 import com.example.medimap.roomdb.UsersAllergiesRoom;
+import com.example.medimap.roomdb.WeekDaysDao;
+import com.example.medimap.roomdb.WeekDaysRoom;
 import com.example.medimap.server.RetrofitClient;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -50,10 +53,10 @@ public class Settings extends AppCompatActivity {
     private UserDao userDao;
     private UserRoom userRoom;
     private UserApi userApi;
+    private UserWeekdayDao userWeekdayDao;
 
     // Selecting training days
     private TextView selectTrainingDays;
-    private UserWeekdayDao userWeekdayDao;
     private UsersAllergiesDao usersAllergiesDao;
     private AllergyDao allergyDao;
     private final String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -88,13 +91,17 @@ public class Settings extends AppCompatActivity {
 
         // Initialize Room database and UserDao
         userDao = database.userDao();
-
+        userWeekdayDao = database.userWeekdayRoomDao();
         // Initialize UI components and set up spinners
         initializeUIComponents();
         setUpSpinners();
 
         // Load user data from the database
         loadUserData();
+
+        // Load selected days for the user
+        loadSelectedDays();
+
     }
 
     // Initialize UI components
@@ -422,49 +429,62 @@ public class Settings extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    // Show the multi-choice dialog with the user's selected days pre-checked
     private void showDaysSelectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Training Days");
 
-        // MultiChoice dialog with actual selectable days, skipping the first placeholder
+        // MultiChoice dialog with selectable days
         builder.setMultiChoiceItems(daysOfWeek, selectedDays, (dialog, which, isChecked) -> {
             // Toggle the selected state
             selectedDays[which] = isChecked;
         });
 
         builder.setPositiveButton("OK", (dialog, which) -> {
-            saveSelectedDays();
+            saveSelectedDays(); // Save the selected days when user confirms
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-        // Create the dialog
+        // Create and show the dialog
         AlertDialog dialog = builder.create();
-
-        // Show the dialog first, so you can access the buttons
         dialog.show();
 
-        // Change the button colors
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue)); // OK button color
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));  // Cancel button color
+        // Change the button colors (Optional)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
     }
-
 
 
     // Save selected days to the database
     private void saveSelectedDays() {
         selectedWeekdays.clear();
 
+        // Assuming userId is obtained from userRoom (for example)
+        Long userId = userRoom.getId();
+
         for (int i = 0; i < selectedDays.length; i++) {
             if (selectedDays[i]) {
-                // Map the selected day to its index as the weekday ID
-                long userId = 0;
-                selectedWeekdays.add(new UserWeekdayRoom(userId, (long) i));
+                // Map the selected day to its index as the weekday ID, adjusting by adding 1
+                selectedWeekdays.add(new UserWeekdayRoom(userId, (long) (i + 1))); // i+1 to match the weekday ID in the database
             }
         }
 
+        // Save the selected weekdays to the database
+        AsyncTask.execute(() -> {
+            // Clear existing selections for the user
+            userWeekdayDao.deleteAllUserWeekdays();
 
+            // Insert the new selections
+            for (UserWeekdayRoom userWeekday : selectedWeekdays) {
+                userWeekdayDao.insertUserWeekday(userWeekday);
+            }
+
+            // Log or show a message if necessary
+            Log.d("Settings", "Selected days saved.");
+        });
     }
+
     //private boolean isSpinnerPromptSelected(Spinner spinner) {
         // Check if the first item (position 0) is selected
        // return spinner.getSelectedItemPosition() == 0;
@@ -503,5 +523,30 @@ public class Settings extends AppCompatActivity {
         Spinner allergiesSpinner = findViewById(R.id.allergies_spinner);
         allergiesSpinner.setAdapter(allergiesAdapter);
     }
+    // Load selected days from the database and update selectedDays[] array
+    private void loadSelectedDays() {
+        AsyncTask.execute(() -> {
+            Long userId = userRoom.getId();  // Assuming you have the user ID
+
+            // Get the user's selected weekdays
+            List<UserWeekdayRoom> userSelectedDays = userWeekdayDao.getAllUserWeekdaysForUser(userId);
+
+            // Reset selectedDays array (make sure all positions are reset, including 0)
+            Arrays.fill(selectedDays, false);
+
+            // Mark the days that the user has previously selected, including day 0 (Sunday)
+            for (UserWeekdayRoom userWeekday : userSelectedDays) {
+                Long weekdayId = userWeekday.getWeekdayId();
+                if (weekdayId != null && weekdayId >= 1 && weekdayId <= 7) {
+                    // Subtract 1 from the weekdayId to get the correct index in the selectedDays array
+                    selectedDays[weekdayId.intValue() - 1] = true; // Set the day as selected
+                }
+            }
+
+            // Now, you can show the dialog with the selected days marked
+          //  runOnUiThread(() -> showDaysSelectionDialog());
+        });
+    }
+
 
 }

@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Lose Weight"
+            android:text="Weight Loss"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
@@ -126,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Healthy life"
+            android:text="Healthy lifestlye"
             android:textColor="@color/blue"
             android:textSize="24dp"
             android:textStyle="bold" />
