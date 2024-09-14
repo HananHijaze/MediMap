@@ -49,10 +49,11 @@ public class Home extends AppCompatActivity implements SensorEventListener {
     // Page components
     private TextView waterOutput,textView3;
     private Button addWaterBtn;
-    private GifDrawable waterGif;
+    //private LinearLayout waterLayout;
     private SensorManager sensorManager;
     private Sensor stepCounterSensor;
     ProgressBar progressBar;
+    ProgressBar waterBottleProgress;
     TextView textView;
     int stepCount = 0;
     int totalSteps = 0;
@@ -117,14 +118,10 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         loadData();
         resetSteps();
 
-        // Button listeners
-        addWaterBtn = findViewById(R.id.addWaterBtn);
-        addWaterBtn.setOnClickListener(v -> addWater());
-
         // ImageView and click listeners
         ImageView stepsImage = findViewById(R.id.stepsImage); // 1. Steps
         LinearLayout steps = findViewById(R.id.steps);
-        ImageView imageView = findViewById(R.id.waterbottle); // 2. Water
+        ProgressBar waterBottleProgress = findViewById(R.id.waterBottleProgress); // 2. Water
         LinearLayout water = findViewById(R.id.water);
         ImageButton mealPlanButton = findViewById(R.id.mealPlanButton); // 3. Meal plan
         LinearLayout mealPlan = findViewById(R.id.mealPlan);
@@ -141,11 +138,6 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         });
 
         // 2. Water implementation
-        Glide.with(this)
-                .asGif()
-                .load(R.drawable.waterbottle2) // Replace with your GIF resource
-                .into(imageView);
-        water.isClickable();
         water.setOnClickListener(view -> {
             Intent in = new Intent(this, hydration_tracking.class);
             startActivity(in);
@@ -181,6 +173,10 @@ public class Home extends AppCompatActivity implements SensorEventListener {
             Intent in = new Intent(this, Map.class);
             startActivity(in);
         });
+
+        // Button listeners
+        addWaterBtn = findViewById(R.id.addWaterBtn);
+        addWaterBtn.setOnClickListener(v -> addWater());
     }
 
     /*****************************************Steps*****************************************/
@@ -331,12 +327,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
     }
 
     private void fillWaterBottle(){
-        if (waterGif != null) {
-            int totalFrames = waterGif.getFrameCount();
 
-            // Set frame based on current water amount
-            int currentFrame = (this.currentWaterAmount * totalFrames) / waterGoal;
-        }
     }
 
 //    //save water data

@@ -6,7 +6,6 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-
 @Database(entities = {UserRoom.class, HydrationRoom.class, WeeklyMealPlanRoom.class, WeeklyTrainingPlanRoom.class, UsersAllergiesRoom.class, WeekDaysRoom.class, UserWeekdayRoom.class, AllergyRoom.class, StepCountRoom.class,MealRoom.class, WorkoutRoom.class}, version = 10)
 
 @TypeConverters(Converters.class)  // Registering the Converters class

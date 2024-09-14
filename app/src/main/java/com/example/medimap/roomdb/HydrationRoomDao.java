@@ -30,11 +30,8 @@ public interface HydrationRoomDao {
     @Query("DELETE FROM hydration_table")
     void deleteAllHydrations();
 
-
-
     // Query to get the row with the latest date
     @Query("SELECT * FROM hydration_table WHERE date = (SELECT MAX(date) FROM hydration_table)")
-    HydrationRoom getLatestHydration();
-
+    HydrationRoom getNewestHydration();
 }
 
