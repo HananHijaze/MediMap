@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         // Remove all existing users in the background
         new Thread(() -> {
             userDao.deleteAllUsers();
-            UserRoom newUser = createTestUser(); // Create a new test user
+            UserRoom newUser = createTestUser();// Create a new test user
             userDao.insertUser(newUser); // Insert the test user
             Log.d("MainActivity", "Test user added: " + newUser.toString());
         }).start();
@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     // Helper method to create a test user
     private UserRoom createTestUser() {
         return new UserRoom(
+
                 "tester@test.com",
                 "test test",
                 "test123",
@@ -130,7 +131,9 @@ public class MainActivity extends AppCompatActivity {
                 2,  // Meals per day
                 2,  // Snacks per day
                 200  // Default water intake
+
         );
+
     }
     // Check if the user is logged in
     public boolean isUserLoggedIn() {
