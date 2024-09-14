@@ -99,7 +99,7 @@ public class Birthdate extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong("birthdate", selectedDate);
         editor.apply();
-        Toast.makeText(this, "Birthdate saved: " + getFormattedDate(selectedDate), Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, "Birthdate saved: " + getFormattedDate(selectedDate), Toast.LENGTH_LONG).show();
     }
 
     private String getFormattedDate(long timeInMillis) {

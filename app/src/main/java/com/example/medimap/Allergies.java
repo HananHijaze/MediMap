@@ -120,6 +120,6 @@ public class Allergies extends AppCompatActivity {
     private void retrieveAndShowAllergies() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         Set<String> savedAllergies = sharedPreferences.getStringSet("allergies", new HashSet<>());
-         Toast.makeText(this, "Allergies: " + savedAllergies.toString(), Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Allergies: " + savedAllergies.toString(), Toast.LENGTH_SHORT).show();
     }
 }

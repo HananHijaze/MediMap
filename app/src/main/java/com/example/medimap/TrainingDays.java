@@ -104,6 +104,6 @@ public class TrainingDays extends AppCompatActivity {
         Set<String> savedDays = sharedPreferences.getStringSet("trainingDays", new HashSet<>());
 
         // Optional: Show selected days in a Toast
-        Toast.makeText(this, "Training Days: " + savedDays.toString(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Training Days: " + savedDays.toString(), Toast.LENGTH_SHORT).show();
     }
 }
