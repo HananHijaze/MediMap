@@ -15,13 +15,16 @@ public interface WeeklyTrainingPlanRoomDao {
     @Update
     void updateWorkoutPlan(WeeklyTrainingPlanRoom workoutPlan);
 
+    @Query("SELECT * FROM workout_plan_table")
+    List<WeeklyTrainingPlanRoom> getAllWorkoutPlans();
+
     @Query("DELETE FROM workout_plan_table WHERE id = :workoutPlanId")
     void deleteWorkoutPlan(Long workoutPlanId);
 
-    @Query("SELECT * FROM workout_plan_table WHERE customerID = :customerId AND weekStartDate = :weekStartDate")
+    @Query("SELECT * FROM workout_plan_table WHERE customerID = :customerId")
     List<WeeklyTrainingPlanRoom> getWorkoutPlansForWeek(Long customerId, String weekStartDate);
 
-    @Query("SELECT * FROM workout_plan_table WHERE customerID = :customerId ORDER BY weekStartDate DESC")
+    @Query("SELECT * FROM workout_plan_table WHERE customerID = :customerId")
     List<WeeklyTrainingPlanRoom> getAllWorkoutPlansForCustomer(Long customerId);
 }
 

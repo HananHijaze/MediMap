@@ -1,6 +1,7 @@
 package com.example.medimap.server;
 
 
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -10,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface MealPlanApi {
 
@@ -33,8 +35,14 @@ public interface MealPlanApi {
     @DELETE("mealplans/{id}")
     Call<Void> deleteMealPlan(@Path("id") Long id);
 
-    @GET("latest/{customerID}")
+    @GET("mealsplans/latest/{customerID}")
     Call<MealPlan> getLatestMealPlan(@Path("customerID") Long customerID);
+
+    @GET("mealplans/latest")
+    Call<List<MealPlan>> getDatedMealPlans(
+            @Query("customerId") Long customerId,
+            @Query("inputDate") Date inputDate  // Date as a string in ISO format
+    );
 
 }
 

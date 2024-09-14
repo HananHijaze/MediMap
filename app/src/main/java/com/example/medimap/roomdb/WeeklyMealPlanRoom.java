@@ -3,6 +3,7 @@ package com.example.medimap.roomdb;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity(tableName = "meal_plan_table")
 public class WeeklyMealPlanRoom {
@@ -14,20 +15,17 @@ public class WeeklyMealPlanRoom {
 
     private Long mealID; // Foreign Key referencing Meal.mealID
 
-    private LocalDate weekStartDate;
+    private Date createdDate;
 
-    private LocalDate weekEndDate;
-
-    private String mealDay; // e.g., Sun, Mon, etc.
+    private int mealDay; // e.g., Sun, Mon, etc.
 
     private String mealTime; // e.g., breakfast, lunch, etc.
 
     // Constructors
-    public WeeklyMealPlanRoom(Long customerID, Long mealID, LocalDate weekStartDate, LocalDate weekEndDate, String mealDay, String mealTime) {
+    public WeeklyMealPlanRoom(Long customerID, Long mealID, Date createdDate,int mealDay, String mealTime) {
         this.customerID = customerID;
         this.mealID = mealID;
-        this.weekStartDate = weekStartDate;
-        this.weekEndDate = weekEndDate;
+        this.createdDate=createdDate;
         this.mealDay = mealDay;
         this.mealTime = mealTime;
     }
@@ -57,27 +55,19 @@ public class WeeklyMealPlanRoom {
         this.mealID = mealID;
     }
 
-    public LocalDate getWeekStartDate() {
-        return weekStartDate;
-    }
+   public Date getCreatedDate() {
+        return createdDate;
+   }
 
-    public void setWeekStartDate(LocalDate weekStartDate) {
-        this.weekStartDate = weekStartDate;
-    }
+   public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+   }
 
-    public LocalDate getWeekEndDate() {
-        return weekEndDate;
-    }
-
-    public void setWeekEndDate(LocalDate weekEndDate) {
-        this.weekEndDate = weekEndDate;
-    }
-
-    public String getMealDay() {
+    public int getMealDay() {
         return mealDay;
     }
 
-    public void setMealDay(String mealDay) {
+    public void setMealDay(int mealDay) {
         this.mealDay = mealDay;
     }
 
