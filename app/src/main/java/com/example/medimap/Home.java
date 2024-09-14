@@ -11,6 +11,7 @@ import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.server.HydrationApi;
 import com.example.medimap.server.StepCountApi;
+import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.button.MaterialButton;
 
@@ -40,6 +41,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Home extends AppCompatActivity implements SensorEventListener {
@@ -112,8 +114,8 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         // Initialize UI components
         initViews();
         setupSensors();
-        resetSteps();
         loadData();
+        resetSteps();
 
         // Button listeners
         addWaterBtn = findViewById(R.id.addWaterBtn);
@@ -208,7 +210,6 @@ public class Home extends AppCompatActivity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
-
     private void updateProgressBar(int stepCount) {
         int maxSteps = 10000;  // Maximum number of steps
         int progress = (stepCount * 100) / maxSteps;
@@ -220,14 +221,53 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         SharedPreferences sharedPreferences = getSharedPreferences("stepPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("stepCount", stepCount);
+        editor.putInt("previousTotalSteps", previousTotalSteps); // Save the previous total steps
         editor.apply();
+    }
+
+    private void resetSteps() {
+        textView.setOnClickListener(v ->
+                Toast.makeText(Home.this, "Long tap to reset steps", Toast.LENGTH_SHORT).show()
+        );
+
+        textView.setOnLongClickListener(v -> {
+            saveStepCountToRoom();
+            previousTotalSteps = totalSteps;  // Reset previous steps to current total// Reset current step count to 0
+            progressBar.setProgress(0);
+            textView.setText("0");
+            percent.setText("0%");
+            saveData();  // Save the reset state
+            return true;
+        });
+    }
+
+    private void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("stepPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("previousTotalSteps", previousTotalSteps); // Save previous total steps
+        editor.apply();
+    }
+
+    private void loadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("stepPrefs", MODE_PRIVATE);
+        previousTotalSteps = sharedPreferences.getInt("previousTotalSteps", 0); // Load previous total steps
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         saveData(); // Save steps data when the activity is paused
-        sensorManager.unregisterListener(this);
+        // Unregister sensor listeners
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
+        }
+        // Save data or release resources here
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Release any additional resources
     }
 
     @Override
@@ -239,33 +279,23 @@ public class Home extends AppCompatActivity implements SensorEventListener {
             sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
-
-    private void resetSteps() {
-        textView.setOnClickListener(v -> Toast.makeText(Home.this, "Long tap to reset steps", Toast.LENGTH_SHORT).show());
-
-        textView.setOnLongClickListener(v -> {
-            previousTotalSteps = totalSteps;
-            totalSteps = 0;
-            progressBar.setProgress(0);
-            textView.setText("0");
-            percent.setText("0%");
-            saveData();
-            return true;
-        });
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+    private void saveStepCountToRoom() {
+        // Run the database operation in a background thread
+        new Thread(() -> {
+            userRoom  = userDao.getFirstUser(); // Fetch the first user from the database
+            if (userRoom != null) { // Ensure the user exists before proceeding
+                Long userId = userRoom.getId();
+                StepCountRoom stepCountRoom = new StepCountRoom(userId, stepCount, getCurrentDate());
+                stepCountRoomDao.insertStepCount(stepCountRoom); // Insert step count into the Room database
+            }
+        }).start();
     }
 
-    private void saveData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("key1", String.valueOf(previousTotalSteps));
-        editor.apply();
-    }
 
-    private void loadData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        String savedNumber = sharedPreferences.getString("key1", "0");
-        previousTotalSteps = Integer.parseInt(savedNumber);
-    }
 
     /**************************************** Water ****************************************/
     private void loadWaterData() {

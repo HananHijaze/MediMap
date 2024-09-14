@@ -218,6 +218,7 @@ public class LogIn extends AppCompatActivity {
                     startActivity(in);
                 } else {
                     Toast.makeText(LogIn.this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
+
                 }
             });
         });

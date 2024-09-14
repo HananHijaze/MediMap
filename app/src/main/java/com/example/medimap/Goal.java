@@ -70,6 +70,8 @@ public class Goal extends AppCompatActivity {
                 saveGoal(); // Save the selected goal
                 retrieveAndShowGoal(); // Retrieve and show the goal for verification (optional)
                 Intent intent = new Intent(Goal.this, build_profile.class); // Replace with actual next activity
+               // intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
+
                 startActivity(intent);
                 finish(); // Optionally finish this activity so the user cannot go back to it
             } else {

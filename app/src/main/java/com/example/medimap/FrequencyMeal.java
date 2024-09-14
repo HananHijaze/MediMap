@@ -53,6 +53,7 @@ public class FrequencyMeal extends AppCompatActivity {
                 saveFrequency();
                 retrieveAndShowFrequency();
                 Intent intent = new Intent(FrequencyMeal.this, WorkOutPlaces.class);
+               intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
                 startActivity(intent);
             } else {
                 Toast.makeText(FrequencyMeal.this, "Please select both meal and snack frequencies", Toast.LENGTH_SHORT).show();
