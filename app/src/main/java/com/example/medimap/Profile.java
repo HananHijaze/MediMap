@@ -1,16 +1,17 @@
 package com.example.medimap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.content.SharedPreferences;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -21,45 +22,53 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.HydrationRoom;
-import com.example.medimap.roomdb.StepCountDao;
 import com.example.medimap.roomdb.StepCountRoom;
-import com.example.medimap.roomdb.UserDao;
-import com.google.android.material.button.MaterialButton;
 import com.example.medimap.roomdb.UserRoom;
+import com.google.android.material.button.MaterialButton;
+
 import java.io.IOException;
 import java.util.List;
 
 public class Profile extends AppCompatActivity {
     private ImageButton settings;
     private ImageView profileImageView;
-    private SeekBar bmiIndicator; // Declare as a class field
+    private SeekBar bmiIndicator;
     private TextView bmiLabel, nameTextView;
     private static final int PICK_IMAGE = 1;
-    private AppDatabaseRoom appDatabase; // Room database instance
-
-
+    private AppDatabaseRoom appDatabase;
+    private String gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
+
+        // Set up window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // Initialize the database instance before any database operations
         appDatabase = AppDatabaseRoom.getInstance(this);
 
+        // Ensure the database instance is not null
+        if (appDatabase == null) {
+            Log.e("Profile", "Database instance is null");
+            return; // Exit if the database instance failed to initialize
+        }
 
         // Initialize UI components
+        profileImageView = findViewById(R.id.profileImage);
+        setProfilePicture(); // Call this function after initializing profileImageView
+
         bmiIndicator = findViewById(R.id.bmi_indicator);
         bmiIndicator.setOnTouchListener((v, event) -> true); // Disable touch
 
         bmiLabel = findViewById(R.id.bmi_label);
         nameTextView = findViewById(R.id.nameTextView);
-        profileImageView = findViewById(R.id.profileImage);
 
         // Navigation buttons
         MaterialButton leftButton = findViewById(R.id.left);
@@ -98,7 +107,7 @@ public class Profile extends AppCompatActivity {
                 runOnUiThread(() -> {
                     // Update UI with user data
                     nameTextView.setText(firstUser.getName());
-
+                    gender=firstUser.getGender();
                     // Calculate and display BMI
                     int weight = firstUser.getWeight();
                     int height = firstUser.getHeight();
@@ -111,17 +120,16 @@ public class Profile extends AppCompatActivity {
                     fetchAndDisplayStepCount(firstUser.getId());
 
                     fetchAndDisplayWaterGoalAverage(firstUser.getId());
-
                 });
             }
         }).start();
 
         // Profile image click listener
-        profileImageView.setOnClickListener(view -> openGallery());
+        /* profileImageView.setOnClickListener(view -> openGallery()); */
     }
 
     private double calculateBMI(double weight, double heightInCm) {
-        double heightInMeters = heightInCm / 100.0;  // Convert height to meters
+        double heightInMeters = heightInCm / 100.0; // Convert height to meters
         return weight / (heightInMeters * heightInMeters);
     }
 
@@ -163,6 +171,7 @@ public class Profile extends AppCompatActivity {
         new Thread(() -> {
             List<StepCountRoom> stepCounts = appDatabase.stepCountDao().getLast7DaysStepCount(userId);
             UserRoom firstUser = appDatabase.userDao().getUserById(userId);
+
             if (stepCounts != null && !stepCounts.isEmpty()) {
                 runOnUiThread(() -> {
                     // Count the number of lines (entries)
@@ -173,6 +182,7 @@ public class Profile extends AppCompatActivity {
 
                     // Calculate the average steps
                     double averageSteps = (double) totalSteps / numberOfEntries;
+
                     // Update the ProgressBar with total or average steps
                     ProgressBar stepProgressBar = findViewById(R.id.stepsbar);
 
@@ -181,11 +191,12 @@ public class Profile extends AppCompatActivity {
 
                     // Set the progress value (you can use totalSteps or averageSteps)
                     stepProgressBar.setProgress((int) totalSteps); // Alternatively, use (int) averageSteps
-
                 });
             }
         }).start();
     }
+
+    // Fetch and display average water goal
     private void fetchAndDisplayWaterGoalAverage(Long userId) {
         new Thread(() -> {
             // Fetch all hydration records for the user
@@ -204,11 +215,23 @@ public class Profile extends AppCompatActivity {
                     // Update the ProgressBar with the total water intake
                     ProgressBar waterProgressBar = findViewById(R.id.hydrationbar);
                     waterProgressBar.setMax(firstUser.getHydrationGoal()); // Set max to user's hydration goal
-                    waterProgressBar.setProgress((int) totalWaterIntake);  // Set progress to total water intake
+                    waterProgressBar.setProgress((int) totalWaterIntake); // Set progress to total water intake
                 });
             }
         }).start();
     }
 
+    // Set the profile picture based on stored gender
+    private void setProfilePicture() {
 
+        if (gender != null) {
+            if (gender.equalsIgnoreCase("male")) {
+                profileImageView.setImageResource(R.drawable.mmale);
+            } else if (gender.equalsIgnoreCase("female")) {
+                profileImageView.setImageResource(R.drawable.ffemale);
+            }
+        } else {
+            profileImageView.setImageResource(R.drawable.profile_tsofen);
+        }
+    }
 }

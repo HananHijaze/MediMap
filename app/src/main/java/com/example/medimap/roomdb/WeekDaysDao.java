@@ -14,6 +14,9 @@ public interface WeekDaysDao {
     @Insert
     void insertWeekDays(WeekDaysRoom weekDays);
 
+    @Insert
+    void insertAllWeekDays(List<WeekDaysRoom> weekDaysList);
+
     @Update
     void updateWeekDays(WeekDaysRoom weekDays);
 

@@ -6,11 +6,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -20,6 +23,8 @@ public class DietType extends AppCompatActivity {
     private int totalPages = 11;
     private int currentPage;
     private String selectedDietType = "";
+    private ImageView infoIconVegetarian, infoIconVegan, infoIconKeto, infoIconPaleo, infoIconBalanced, infoIconLowCarb;
+
     private static final String PREFS_NAME = "UserSignUpData";
 
     @Override
@@ -32,8 +37,18 @@ public class DietType extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        // Initialize each info icon
+        infoIconVegetarian = findViewById(R.id.infoIconVegetarian);
+        infoIconVegan = findViewById(R.id.infoIconVegan);
+        infoIconKeto = findViewById(R.id.infoIconKeto);
+        infoIconPaleo = findViewById(R.id.infoIconPaleo);
+        infoIconBalanced = findViewById(R.id.infoIconBalanced);
+        infoIconLowCarb = findViewById(R.id.infoIconLowCarb);
 
         currentPage = getIntent().getIntExtra("currentPage", 6);
+
+        setDietTypeInfoListeners();
+
         circularProgressBar = findViewById(R.id.circularProgressBar);
         updateProgressBar();
 
@@ -85,4 +100,65 @@ public class DietType extends AppCompatActivity {
         editor.putString("dietType", selectedDietType);
         editor.apply();
     }
+    private void setDietTypeInfoListeners() {
+        infoIconVegetarian.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDietInfoDialog("Vegetarian Diet", "A vegetarian diet focuses on plant-based foods and excludes meat, but may include dairy and eggs.");
+            }
+        });
+
+        infoIconVegan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDietInfoDialog("Vegan Diet", "A vegan diet excludes all animal products, including meat, dairy, eggs, and even honey.");
+            }
+        });
+
+        infoIconKeto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDietInfoDialog("Keto Diet", "The ketogenic diet is a high-fat, low-carb diet that forces the body to burn fats rather than carbohydrates.");
+            }
+        });
+
+        infoIconPaleo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDietInfoDialog("Paleo Diet", "The paleo diet focuses on eating whole foods like meats, fish, fruits, vegetables, nuts, and seeds, avoiding processed foods.");
+            }
+        });
+
+        infoIconBalanced.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDietInfoDialog("Balanced Diet", "A balanced diet includes a variety of foods in the right proportions to achieve a healthy intake of nutrients.");
+            }
+        });
+
+        infoIconLowCarb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDietInfoDialog("Low Carb Diet", "A low-carb diet restricts carbohydrates, such as those found in sugary foods, pasta, and bread, and emphasizes foods high in protein and fat.");
+            }
+        });
+    }
+    // Helper method to show a dialog with the diet information
+    private void showDietInfoDialog(String dietType, String dietInfo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(dietType);
+        builder.setMessage(dietInfo);
+
+        // Make the dialog cancelable (close when clicked outside)
+        builder.setCancelable(true); // Enable canceling the dialog
+
+        AlertDialog dialog = builder.create();
+
+        // Allow the dialog to be canceled when the user touches outside
+        dialog.setCanceledOnTouchOutside(true); // Close the dialog if touched outside
+
+        dialog.show();
+    }
+
+
 }

@@ -40,6 +40,7 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
                 android:hint="Email">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email_edit_text"
@@ -56,6 +57,7 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
                 android:hint="Name">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name_edit_text"
@@ -72,6 +74,8 @@
                 android:id="@+id/gender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+
                 android:hint="Gender">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/gender_edit_text"
@@ -88,6 +92,7 @@
                 android:id="@+id/height"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
                 android:hint="Height">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/height_edit_text"
@@ -102,6 +107,8 @@
                 android:id="@+id/weight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+
                 android:hint="Weight">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/weight_edit_text"
@@ -116,6 +123,8 @@
                 android:id="@+id/birthDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+
                 android:hint="Birth Date">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/birthDate_edit_text"
@@ -166,6 +175,7 @@
                 android:id="@+id/stepcountgoal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
                 android:hint="Step Daily Goal">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/stepcountgoal_edit_text"
@@ -180,35 +190,41 @@
                 android:id="@+id/hydrationgoal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
                 android:hint="Hydration Daily Goal">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/hydrationgoal_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:drawableStart="@drawable/water"
-                    android:inputType="number" />
+                    android:inputType="number"
+                    android:clickable="false"
+                    android:focusable="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Workout Location -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/workoutlocation"
+
+            <TextView
+                android:id="@+id/workoutlocationtext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Workout Location">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/workoutlocation_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:drawableStart="@drawable/location"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="6dp"
+                android:text="Workout Location"
+                android:textColor="@android:color/black" />
+
+            <Spinner
+                android:id="@+id/workoutlocation"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/spinner_border"
+                android:prompt="@string/diet_type_prompt" />
 
             <!-- Diet Type -->
             <TextView
                 android:id="@+id/diet_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="6dp"
                 android:text="Diet Type"
                 android:textColor="@android:color/black" />
 
@@ -225,7 +241,7 @@
                 android:id="@+id/allergies_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="6dp"
                 android:text="Allergies"
                 android:textColor="@android:color/black" />
 
@@ -234,8 +250,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/spinner_border"
-                android:prompt="@string/allergies_prompt" />
+                android:background="@drawable/spinner_border" />
 
             <!-- Meals Per Day -->
             <TextView
@@ -260,6 +275,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+
                 android:text="Snacks Per Day"
                 android:textColor="@android:color/black" />
 
@@ -268,6 +284,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginBottom="6dp"
                 android:background="@drawable/spinner_border"
                 android:prompt="@string/snacks_per_day" />
 
@@ -276,8 +293,8 @@
                 android:id="@+id/waterDefault"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="Water Default">
+                android:layout_marginBottom="6dp"
+                android:hint="Water Default(ML)">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/waterDefault_edit_text"
                     android:layout_width="match_parent"
