@@ -102,7 +102,7 @@ public class build_profile extends AppCompatActivity {
         }
         //default water intake
        int WaterGoal =(int) calculateHydrationGoal(weight);
-
+//
         // Create a new UserRoom object with the retrieved data
         UserRoom newUser = new UserRoom(
                 email,
