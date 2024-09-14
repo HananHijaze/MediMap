@@ -33,7 +33,7 @@ public class DietType extends AppCompatActivity {
             return insets;
         });
 
-        currentPage = getIntent().getIntExtra("currentPage", 1);
+        currentPage = getIntent().getIntExtra("currentPage", 6);
         circularProgressBar = findViewById(R.id.circularProgressBar);
         updateProgressBar();
 
@@ -49,6 +49,7 @@ public class DietType extends AppCompatActivity {
             if (!selectedDietType.isEmpty()) {
                 saveDietType();
                 Intent intent = new Intent(DietType.this, Allergies.class);
+                intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
                 startActivity(intent);
             } else {
                 Toast.makeText(DietType.this, "Please select your diet type", Toast.LENGTH_SHORT).show();
