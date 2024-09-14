@@ -20,6 +20,7 @@ import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -69,7 +70,7 @@ public class build_profile extends AppCompatActivity {
         String phone = sharedPreferences.getString("phone", "N/A");
         String address = sharedPreferences.getString("address", "N/A");
         String password = sharedPreferences.getString("password", "N/A");
-        String gender = sharedPreferences.getString("gender", "N/A");
+        String gender = sharedPreferences.getString("gender", "N/A").toLowerCase();
 
         // Safely parse height and weight with fallback values
         int height = 0;
@@ -81,16 +82,16 @@ public class build_profile extends AppCompatActivity {
             e.printStackTrace();  // Log and handle the exception
         }
 
-        String bodyType = sharedPreferences.getString("bodyType", "N/A");
-        String dietType = sharedPreferences.getString("dietType", "N/A");
+        String bodyType = sharedPreferences.getString("bodyType", "N/A").toLowerCase();
+        String dietType = sharedPreferences.getString("dietType", "N/A").toLowerCase();
         Set<String> allergies = sharedPreferences.getStringSet("allergies", null);
         long birthdateTimestamp = sharedPreferences.getLong("birthdate", -1);
         int mealsPerDay = sharedPreferences.getInt("meals", 0); // Retrieve meals as integer
         int snacksPerDay = sharedPreferences.getInt("snacks", 0); // Retrieve snacks as integer
-        String workoutPlace = sharedPreferences.getString("workoutPlace", "N/A");
+        String workoutPlace = sharedPreferences.getString("workoutPlace", "N/A").toLowerCase();
         String workoutTime = sharedPreferences.getString("workoutTime", "N/A");
         Set<String> trainingDays = sharedPreferences.getStringSet("trainingDays", null);
-        String goal = sharedPreferences.getString("goal", "N/A");
+        String goal = sharedPreferences.getString("goal", "N/A").toLowerCase();
 
         // Convert birthdate timestamp to a formatted date
         String birthdate = "N/A";
@@ -99,6 +100,8 @@ public class build_profile extends AppCompatActivity {
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
             birthdate = sdf.format(date);
         }
+        //default water intake
+       int WaterGoal =(int) calculateHydrationGoal(weight);
 
         // Create a new UserRoom object with the retrieved data
         UserRoom newUser = new UserRoom(
@@ -112,7 +115,7 @@ public class build_profile extends AppCompatActivity {
                 bodyType,
                 goal,
                 6000,  // Step count goal (placeholder, modify as needed)
-                3000,   // Hydration goal in mL (placeholder, modify as needed)
+                WaterGoal,   // Hydration goal in mL (placeholder, modify as needed)
                 workoutPlace,
                 dietType,
                 mealsPerDay,  // Meals per day
@@ -127,6 +130,15 @@ public class build_profile extends AppCompatActivity {
             appDatabase.userDao().insertUser(newUser);
         }).start();  // Room operations must be done on a background thread
     }
+    public double calculateHydrationGoal(double weight) {
+        double hydrationGoal = weight * 0.033 * 1000;  // Convert to milliliters
+        return roundToNearest50(hydrationGoal);  // Round to nearest 50 ml
+    }
+
+    public double roundToNearest50(double value) {
+        return Math.round(value / 50) * 50;  // Round to the nearest 50 ml
+    }
+
     public void createplan(){
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String email = sharedPreferences.getString("email", "N/A");
