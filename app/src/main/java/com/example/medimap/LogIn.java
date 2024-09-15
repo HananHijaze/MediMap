@@ -210,7 +210,7 @@ public class LogIn extends AppCompatActivity {
                 user.getGender(),
                 (int) user.getHeight(),  // Assuming height is a double in User and int in UserRoom
                 (int) user.getWeight(),  // Assuming weight is a double in User and int in UserRoom
-                formatDate(user.getBirthDate()),// Assuming you want to save birthDate as a String in Room
+                getFormattedDate(user.getBirthDate().getTime()),// Assuming you want to save birthDate as a String in Room
                 user.getBodyType(),
                 user.getGoal(),
                 user.getStepcountgoal(),

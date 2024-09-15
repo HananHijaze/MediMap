@@ -15,17 +15,15 @@ public class WeeklyMealPlanRoom {
 
     private Long mealID; // Foreign Key referencing Meal.mealID
 
-    private Date createdDate;
 
     private int mealDay; // e.g., Sun, Mon, etc.
 
     private String mealTime; // e.g., breakfast, lunch, etc.
 
     // Constructors
-    public WeeklyMealPlanRoom(Long customerID, Long mealID, Date createdDate,int mealDay, String mealTime) {
+    public WeeklyMealPlanRoom(Long customerID, Long mealID, int mealDay, String mealTime) {
         this.customerID = customerID;
         this.mealID = mealID;
-        this.createdDate=createdDate;
         this.mealDay = mealDay;
         this.mealTime = mealTime;
     }
@@ -54,14 +52,6 @@ public class WeeklyMealPlanRoom {
     public void setMealID(Long mealID) {
         this.mealID = mealID;
     }
-
-   public Date getCreatedDate() {
-        return createdDate;
-   }
-
-   public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-   }
 
     public int getMealDay() {
         return mealDay;

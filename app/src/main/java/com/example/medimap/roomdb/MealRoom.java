@@ -18,8 +18,7 @@ public class MealRoom {
     private String mealType;
 
     // Constructors
-    public MealRoom(Long id, String dietType, int calories, Double carbs, Double fats, String mealName, Double protein, String mealType) {
-        this.id = id;
+    public MealRoom(String dietType, int calories, Double carbs, Double fats, String mealName, Double protein, String mealType) {
         this.dietType = dietType;
         this.calories = calories;
         this.carbs = carbs;
