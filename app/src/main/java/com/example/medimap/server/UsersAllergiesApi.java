@@ -26,4 +26,8 @@ public interface UsersAllergiesApi {
 
     @DELETE("usersallergies/{id}")
     Call<Void> deleteUsersAllergies(@Path("id") Long id);
+
+    @GET("usersallergies/user/{userId}")
+    Call<List<UsersAllergies>> getAllUsersAllergiesByUserId(@Path("userId") Long userId);
+
 }

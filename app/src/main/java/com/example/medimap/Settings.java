@@ -33,7 +33,10 @@ import com.example.medimap.roomdb.UsersAllergiesRoom;
 import com.example.medimap.roomdb.WeekDaysDao;
 import com.example.medimap.roomdb.WeekDaysRoom;
 import com.example.medimap.server.RetrofitClient;
+import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
+import com.example.medimap.server.UserWeekday;
+import com.example.medimap.server.UserWeekdayApi;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -284,6 +287,14 @@ public class Settings extends AppCompatActivity {
                         newUser.setId(userRoom.getId());
                         userDao.updateUser(newUser);
                     }
+
+
+                    // Convert UserRoom to User for the server update
+                    User updatedUser = new User(newUser);
+
+                    // Update the user data on the server
+                    updateUserOnServer(updatedUser);
+
                     runOnUiThread(() -> showMessage("User data saved successfully."));
                 } catch (Exception e) {
                     runOnUiThread(() -> showMessage("Failed to save user data. Please try again."));
@@ -292,29 +303,6 @@ public class Settings extends AppCompatActivity {
         }
     }
     private boolean validateInputs() {
-        // Validate Body Type Spinner
-       // if (isSpinnerPromptSelected(bodytypeput)) {
-         //   showMessage("Please select a valid body type.");
-          //  return false;
-      //  }
-
-        // Validate Goal Spinner
-      //  if (isSpinnerPromptSelected(goalput)) {
-       //     showMessage("Please select a valid goal.");
-       //     return false;
-      //  }
-
-        // Validate Diet Type Spinner
-       // if (isSpinnerPromptSelected(diettypeput)) {
-       //     showMessage("Please select a valid diet type.");
-      //      return false;
-     //   }
-
-        // Validate Allergies Spinner
-       // if (isSpinnerPromptSelected(allergiesput)) {
-       //     showMessage("Please select a valid allergy option.");
-      //      return false;
-     //    }
 
         // Validate Height
         String heightInput = heightput.getText().toString();
@@ -445,8 +433,16 @@ public class Settings extends AppCompatActivity {
         });
 
         builder.setPositiveButton("OK", (dialog, which) -> {
-            saveSelectedDays(); // Save the selected days when user confirms
+            if(NetworkUtils.isNetworkAvailable(this)==true)
+            {
+                saveSelectedDays(); // Save the selected days when user confirms
+            }
+            else{
+                showNoInternetDialog(); // Show the custom dialog
+            }
+
         });
+
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
@@ -483,6 +479,9 @@ public class Settings extends AppCompatActivity {
             for (UserWeekdayRoom userWeekday : selectedWeekdays) {
                 userWeekdayDao.insertUserWeekday(userWeekday);
             }
+            // Clear and re-create records on the server
+            deleteUserWeekdaysOnServer(userId, selectedWeekdays);
+
 
             // Log or show a message if necessary
             Log.d("Settings", "Selected days saved.");
@@ -550,6 +549,72 @@ public class Settings extends AppCompatActivity {
             // Now, you can show the dialog with the selected days marked
           //  runOnUiThread(() -> showDaysSelectionDialog());
         });
+    }
+
+    private void updateUserOnServer(User updatedUser) {
+        UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
+
+        Call<User> call = userApi.updateUser(updatedUser.getId(), updatedUser);
+        call.enqueue(new retrofit2.Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> showMessage("User updated on server successfully."));
+                } else {
+                    runOnUiThread(() -> showMessage("Failed to update user on server."));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                runOnUiThread(() -> showMessage("Error updating user on server: " + t.getMessage()));
+            }
+        });
+    }
+
+//deleting all the saved days for the user from the server
+    private void deleteUserWeekdaysOnServer(Long userId, List<UserWeekdayRoom> selectedWeekdays) {
+        UserWeekdayApi userWeekdayApi = RetrofitClient.getRetrofitInstance().create(UserWeekdayApi.class);
+        Call<Void> deleteCall = userWeekdayApi.deleteUserWeekday(userId);
+
+        deleteCall.enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    createUserWeekdaysOnServer(userId, selectedWeekdays);
+                } else {
+                    Log.e("Server Sync", "Failed to delete old weekdays on server");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("Server Sync", "Error communicating with server: " + t.getMessage());
+            }
+        });
+    }
+//inserting the new days that the user picked in the server
+    private void createUserWeekdaysOnServer(Long userId, List<UserWeekdayRoom> selectedWeekdays) {
+        UserWeekdayApi userWeekdayApi = RetrofitClient.getRetrofitInstance().create(UserWeekdayApi.class);
+
+        for (UserWeekdayRoom weekday : selectedWeekdays) {
+            UserWeekday userWeekday = new UserWeekday(userId, weekday.getWeekdayId());
+            Call<UserWeekday> createCall = userWeekdayApi.createUserWeekday(userWeekday);
+
+            createCall.enqueue(new retrofit2.Callback<UserWeekday>() {
+                @Override
+                public void onResponse(Call<UserWeekday> call, Response<UserWeekday> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("Server Sync", "Failed to create weekday on server");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserWeekday> call, Throwable t) {
+                    Log.e("Server Sync", "Error creating weekday on server: " + t.getMessage());
+                }
+            });
+        }
     }
 
 
