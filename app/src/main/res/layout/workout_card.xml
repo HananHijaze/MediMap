@@ -1,60 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    android:padding="16dp"
+    app:cardCornerRadius="15dp"
+    android:background="@drawable/border_unselected">
 
-    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:orientation="vertical"
-        android:padding="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/workoutName"
+            android:id="@+id/workout_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Workout Name"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black" />
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/workoutType"
+            android:id="@+id/workout_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Workout Type"
-            android:textSize="14sp"
-            android:textColor="@android:color/black" />
+            android:text="Type" />
 
         <TextView
-            android:id="@+id/workoutDuration"
+            android:id="@+id/workout_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Duration: 30 minutes"
-            android:textSize="14sp"
-            android:textColor="@android:color/black" />
+            android:text="Duration (mins)" />
 
         <TextView
-            android:id="@+id/workoutRepsSets"
+            android:id="@+id/workout_reps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reps: 10 Sets: 3"
-            android:textSize="14sp"
-            android:textColor="@android:color/black" />
+            android:text="Repetitions" />
 
         <TextView
-            android:id="@+id/workoutLocation"
+            android:id="@+id/workout_sets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location: Gym"
-            android:textSize="14sp"
-            android:textColor="@android:color/black" />
+            android:text="Sets" />
 
-    </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/workout_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location" />
 
-
-</LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

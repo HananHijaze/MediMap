@@ -98,10 +98,10 @@ public class MainActivity extends AppCompatActivity {
         // Remove all existing users in the background
         new Thread(() -> {
             userDao.deleteAllUsers();
-            UserRoom newUser = createTestUser();// Create a new test user
-            newUser.setId(1L);
-            userDao.insertUser(newUser); // Insert the test user
-            Log.d("MainActivity", "Test user added: " + newUser.toString());
+//            UserRoom newUser = createTestUser();// Create a new test user
+//            newUser.setId(1L);
+//            userDao.insertUser(newUser); // Insert the test user
+//            Log.d("MainActivity", "Test user added: " + newUser.toString());
         }).start();
     }
 
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     // Helper method to create a test user
     private UserRoom createTestUser() {
         return new UserRoom(
-
+1L,
                 "tester@test.com",
                 "test test",
                 "test123",

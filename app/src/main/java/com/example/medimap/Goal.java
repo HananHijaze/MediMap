@@ -106,6 +106,6 @@ public class Goal extends AppCompatActivity {
     private void retrieveAndShowGoal() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String savedGoal = sharedPreferences.getString("goal", "No goal selected");
-        Toast.makeText(this, "Goal: " + savedGoal, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Goal: " + savedGoal, Toast.LENGTH_SHORT).show();
     }
 }

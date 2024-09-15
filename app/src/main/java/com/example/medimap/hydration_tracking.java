@@ -415,8 +415,11 @@ public class hydration_tracking extends AppCompatActivity {
     //get latest hydration from room
     private void getNewestHydrationFromRoom(){
         Thread getNewestHydrationTh = new Thread(() -> {
+            System.out.println("GET NEWEST HYDRATION THREAD");
+          
             //get newest hydration
             HydrationRoom newestHydration = this.hydrationRoomDao.getNewestHydration();
+          
             //check if there is no users
             if (newestHydration == null) {
                 System.out.println("NO HYDRATION WAS FOUND");
@@ -455,6 +458,7 @@ public class hydration_tracking extends AppCompatActivity {
     private void getNewestTempHydrationFromRoom(HydrationRoom hydrationRoom){
         Thread getNewestTemptHydrationTh = new Thread(() -> {
             System.out.println("GET NEWEST TEMP HYDRATION THREAD");
+          
             //get newest hydration
             TempHydrationRoom newestTempHydrationRoom = null;
             newestTempHydrationRoom = tempHydrationRoomDao.getTempHydByDate(hydrationRoom.getDate());

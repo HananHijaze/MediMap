@@ -5,7 +5,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,9 +26,20 @@ import com.example.medimap.roomdb.WeekDaysRoom;
 import com.example.medimap.server.RetrofitClient;
 import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
+import com.example.medimap.server.AllergyApi;
+import com.example.medimap.server.UsersAllergies;
+import com.example.medimap.server.UsersAllergiesApi;
+import com.example.medimap.server.UserWeekday;
+import com.example.medimap.server.UserWeekdayApi;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Set;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +50,8 @@ public class build_profile extends AppCompatActivity {
     private static final String PREFS_NAME = "UserSignUpData"; // SharedPreferences file name
     private AppDatabaseRoom appDatabase; // Room database instance
     private User user;
+    private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
+    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,183 +64,299 @@ public class build_profile extends AppCompatActivity {
             return insets;
         });
 
-        // Initialize the Room database instance
-        appDatabase = AppDatabaseRoom.getInstance(this);
-
-        // Retrieve all user data from SharedPreferences and save to the database
-        retrieveAndSaveUserDataToDatabase();
+        try {
+            insertUser();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+//        // Initialize the Room database instance
+      appDatabase = AppDatabaseRoom.getInstance(this);
+//
+//        // Check internet connection before proceeding
+     if (NetworkUtils.isNetworkAvailable(this)) {
+         retrieveAndSaveUserDataToDatabase();
         createplan();
-
-        // Simulate loading for 5 seconds before navigating to the home screen
+    } else {
+            showNoInternetDialog(); // Show dialog if no internet
+       }      // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent in = new Intent(this, Home.class);
-            in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(in);
-            finish(); // Optionally finish this activity if you don't want to return to it
+           in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+           startActivity(in);
+          finish(); // Optionally finish this activity if you don't want to return to it
         }, 5000);
     }
 
-    // Method to retrieve user data from SharedPreferences and save to the Room database
+    // Method to retrieve user data from SharedPreferences and save to Room and server
     private void retrieveAndSaveUserDataToDatabase() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-        // Retrieve data from SharedPreferences with safe fallback values
-        String fullName = sharedPreferences.getString("fullName", "N/A");
         String email = sharedPreferences.getString("email", "N/A");
-        String phone = sharedPreferences.getString("phone", "N/A");
-        String address = sharedPreferences.getString("address", "N/A");
-        String password = sharedPreferences.getString("password", "N/A");
-        String gender = sharedPreferences.getString("gender", "N/A").toLowerCase();
+        UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
+        Call<User> call = userApi.findByEmail(email);
 
-        // Safely parse height and weight with fallback values
-        int height = 0;
-        int weight = 0;
-        try {
-            height = Integer.parseInt(sharedPreferences.getString("height", "0"));
-            weight = Integer.parseInt(sharedPreferences.getString("weight", "0"));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();  // Log and handle the exception
-        }
+        call.enqueue(new Callback<User>() {
+                         @Override
+                         public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                             if (response.isSuccessful() && response.body() != null) {
+                                 User user = response.body();
+                                 UserRoom newUser = null;
+                                 SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                                 editor.putLong("userid", user.getId());
+                                 editor.apply();
+                                 try {
+                                     newUser = new UserRoom(
+                                             user.getId(),
+                                             email,
+                                             user.getName(),
+                                             user.getPassword(),
+                                             user.getGender(),
+                                             (int) user.getHeight(),
+                                             (int) user.getWeight(),
+                                             formatDate(user.getBirthDate()),
+                                             user.getBodyType(),
+                                             user.getGoal(),
+                                             6000,  // Step count goal
+                                             user.getHydrationgoal(),   // Hydration goal in mL
+                                             user.getWheretoworkout(),
+                                             user.getDietType(),
+                                             user.getMealsperday(),   // Meals per day
+                                             user.getSnackesperday(),  // Snacks per day
+                                             150          // Default water intake
+                                     );
+                                 } catch (ParseException e) {
+                                     throw new RuntimeException(e);
+                                 }
+                                 //newUser.setId(user.getId());
+                                 // Insert the user data into the Room database asynchronously
+                                 //UserRoom finalNewUser = newUser;
+                                 UserRoom finalNewUser = newUser;
+                                 new Thread(() -> {
+                                     // Clear the user, allergies, and training days tables before inserting new user data
+                                     appDatabase.userDao().deleteAllUsers();
+                                     appDatabase.usersAllergiesRoomDao().deleteAllUsersAllergies();
+                                     appDatabase.userWeekdayRoomDao().deleteAllUserWeekdays();
 
-        String bodyType = sharedPreferences.getString("bodyType", "N/A").toLowerCase();
-        String dietType = sharedPreferences.getString("dietType", "N/A").toLowerCase();
-        Set<String> allergies = sharedPreferences.getStringSet("allergies", null);
-        Set<String> trainingDays = sharedPreferences.getStringSet("trainingDays", null); // Added for training days
-        long birthdateTimestamp = sharedPreferences.getLong("birthdate", -1);
-        int mealsPerDay = sharedPreferences.getInt("meals", 0); // Retrieve meals as integer
-        int snacksPerDay = sharedPreferences.getInt("snacks", 0); // Retrieve snacks as integer
-        String workoutPlace = sharedPreferences.getString("workoutPlace", "N/A").toLowerCase();
-        String workoutTime = sharedPreferences.getString("workoutTime", "N/A");
-        String goal = sharedPreferences.getString("goal", "N/A").toLowerCase();
+                                     appDatabase.userDao().insertUser(finalNewUser);
 
-        // Convert birthdate timestamp to a formatted date
-        String birthdate = "N/A";
-        if (birthdateTimestamp != -1) {
-            java.util.Date date = new java.util.Date(birthdateTimestamp);
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
-            birthdate = sdf.format(date);
-        }
-        // Default water intake
-        int WaterGoal = (int) calculateHydrationGoal(weight);
+                                     // Query the inserted user using email to get the userId
+                                     UserRoom insertedUser = appDatabase.userDao().getUserByEmail(email);
+                                     if (insertedUser != null) {
+                                         long userId = insertedUser.getId();
 
-        // Create a new UserRoom object with the retrieved data
-        UserRoom newUser = new UserRoom(
-                email,
-                fullName,
-                password,
-                gender,
-                height,
-                weight,
-                birthdate,
-                bodyType,
-                goal,
-                6000,  // Step count goal (placeholder, modify as needed)
-                WaterGoal,   // Hydration goal in mL
-                workoutPlace,
-                dietType,
-                mealsPerDay,  // Meals per day
-                snacksPerDay, // Snacks per day
-                150          // Default water intake (placeholder, modify as needed)
-        );
+//                            // Save allergies to the Room and server
+//                            saveUserAllergies(userId, allergies);
+//
+//                            // Save training days to the Room and server
+//                            saveUserTrainingDays(userId, trainingDays);
+                                     }
 
-        // Insert the user data into the Room database asynchronously
-        new Thread(() -> {
-            // Clear the user and allergy tables before inserting new user data
-            appDatabase.userDao().deleteAllUsers();
-            appDatabase.usersAllergiesRoomDao().deleteAllUsersAllergies(); // Clear allergies table
-            appDatabase.userWeekdayRoomDao().deleteAllUserWeekdays(); // Clear user weekday table
+                                 }).start();  // Room operations must be done on a background thread
+                             }
+                         }
 
-            appDatabase.userDao().insertUser(newUser);
+                         @Override
+                         public void onFailure(Call<User> call, Throwable t) {
 
-            // Query the inserted user using email to get the userId
-            UserRoom insertedUser = appDatabase.userDao().getUserByEmail(email);
-            if (insertedUser != null) {
-                long userId = insertedUser.getId();
+                         }
+                     });
+    }
 
-                // Save the user's allergies in the database
+            // Method to save user allergies
+            private void saveUserAllergies(long userId, Set<String> allergies) {
                 if (allergies != null && !allergies.isEmpty()) {
-                    // Retrieve all allergies from the AllergyRoom table
                     List<AllergyRoom> allAllergies = appDatabase.allergyDao().getAllAllergies();
-
-                    // Loop through each allergy in SharedPreferences
                     for (String allergyName : allergies) {
                         for (AllergyRoom allergy : allAllergies) {
                             if (allergy.getName().equalsIgnoreCase(allergyName)) {
-                                // Create a new UsersAllergiesRoom entry with the retrieved userId
                                 UsersAllergiesRoom userAllergy = new UsersAllergiesRoom(userId, allergy.getId());
-
-                                // Insert the user's allergy into the users_allergies_table
                                 appDatabase.usersAllergiesRoomDao().insertUsersAllergies(userAllergy);
+
+                                // Send allergies to the server
+                                UsersAllergiesApi usersAllergiesApi = RetrofitClient.getRetrofitInstance().create(UsersAllergiesApi.class);
+                                UsersAllergies usersAllergies = new UsersAllergies(userId, allergy.getId());
+                                System.out.println(usersAllergies.getAllergyId() + " " + usersAllergies.getUserId());
+                                usersAllergiesApi.createUsersAllergies(usersAllergies).enqueue(new Callback<UsersAllergies>() {
+                                    @Override
+                                    public void onResponse(Call<UsersAllergies> call, Response<UsersAllergies> response) {
+                                        if (!response.isSuccessful()) {
+                                            Toast.makeText(build_profile.this, "Failed to save allergy to server", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<UsersAllergies> call, Throwable t) {
+                                        Toast.makeText(build_profile.this, "Error saving allergy to server: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
                             }
                         }
                     }
                 }
+            }
 
-                // Save the user's training days in the database
+            // Method to save user training days
+            private void saveUserTrainingDays(long userId, Set<String> trainingDays) {
                 if (trainingDays != null && !trainingDays.isEmpty()) {
-                    // Retrieve all weekdays from the WeekDaysRoom table
                     List<WeekDaysRoom> allWeekDays = appDatabase.weekDaysRoomDao().getAllWeekDays();
-
-                    // Loop through each training day in SharedPreferences
                     for (String trainingDay : trainingDays) {
                         for (WeekDaysRoom weekDay : allWeekDays) {
                             if (weekDay.getDayName().equalsIgnoreCase(trainingDay)) {
-                                // Create a new UserWeekdayRoom entry with the retrieved userId
                                 UserWeekdayRoom userWeekday = new UserWeekdayRoom(userId, weekDay.getId());
-
-                                // Insert the user's training days into the user_weekday_table
                                 appDatabase.userWeekdayRoomDao().insertUserWeekday(userWeekday);
+
+                                // Send training days to the server
+                                UserWeekdayApi userWeekdayApi = RetrofitClient.getRetrofitInstance().create(UserWeekdayApi.class);
+                                UserWeekday userWeekdayServer = new UserWeekday(userId, weekDay.getId());
+                                userWeekdayApi.createUserWeekday(userWeekdayServer).enqueue(new Callback<UserWeekday>() {
+                                    @Override
+                                    public void onResponse(Call<UserWeekday> call, Response<UserWeekday> response) {
+                                        if (!response.isSuccessful()) {
+                                            Toast.makeText(build_profile.this, "Failed to save training day to server", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<UserWeekday> call, Throwable t) {
+                                        Toast.makeText(build_profile.this, "Error saving training day to server: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
                             }
                         }
                     }
                 }
             }
 
-        }).start();  // Room operations must be done on a background thread
-    }
+            // Calculate hydration goal
+            public double calculateHydrationGoal(double weight) {
+                double hydrationGoal = weight * 0.033 * 1000;  // Convert to milliliters
+                return roundToNearest50(hydrationGoal);  // Round to nearest 50 ml
+            }
 
-    // Calculate hydration goal
-    public double calculateHydrationGoal(double weight) {
-        double hydrationGoal = weight * 0.033 * 1000;  // Convert to milliliters
-        return roundToNearest50(hydrationGoal);  // Round to nearest 50 ml
-    }
+            public double roundToNearest50(double value) {
+                return Math.round(value / 50) * 50;  // Round to the nearest 50 ml
+            }
 
-    public double roundToNearest50(double value) {
-        return Math.round(value / 50) * 50;  // Round to the nearest 50 ml
-    }
+            // Create user plan
+            public void createplan() {
+                SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                String email = sharedPreferences.getString("email", "N/A");
 
-    // Create user plan
-    public void createplan() {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String email = sharedPreferences.getString("email", "N/A");
+                UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
 
-        UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
+                // Make the API call to get the user by email
+                Call<User> call = userApi.getUserById(1L);
 
-        // Make the API call to get the user by email
-        Call<User> call = userApi.getUserById(1L);
+                call.enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            user = response.body();
+                            getplan(user);
+                        } else {
+                            Toast.makeText(build_profile.this, "Failed to retrieve user plan", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
-        call.enqueue(new Callback<User>() {
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Toast.makeText(build_profile.this, "Error retrieving user plan: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
 
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    user = response.body();
-                    getplan(user);
-                } else {
-                    // Handle the error response
+            // Get user plan
+            public void getplan(User user) {
+                CreatingPlan creatingPlan = CreatingPlan.getInstance();
+                creatingPlan.createPlan(this, user);
+            }
+
+            // Show a no internet connection dialog
+            private void showNoInternetDialog() {
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_no_internet, null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setView(dialogView);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                Button btnOk = dialogView.findViewById(R.id.Save);
+                btnOk.setOnClickListener(v -> dialog.dismiss());
+            }
+
+            private void insertUser() throws ParseException {
+
+                SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+                // Retrieve data from SharedPreferences with safe fallback values
+                String fullName = sharedPreferences.getString("fullName", "N/A");
+                String email = sharedPreferences.getString("email", "N/A");
+                String password = sharedPreferences.getString("password", "N/A");
+                String gender = sharedPreferences.getString("gender", "N/A").toLowerCase();
+
+                // Safely parse height and weight with fallback values
+                int height = 0;
+                int weight = 0;
+                try {
+                    height = Integer.parseInt(sharedPreferences.getString("height", "0"));
+                    weight = Integer.parseInt(sharedPreferences.getString("weight", "0"));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();  // Log and handle the exception
                 }
+
+                String bodyType = sharedPreferences.getString("bodyType", "N/A").toLowerCase();
+                String dietType = sharedPreferences.getString("dietType", "N/A").toLowerCase();
+                Set<String> allergies = sharedPreferences.getStringSet("allergies", null);
+                Set<String> trainingDays = sharedPreferences.getStringSet("trainingDays", null);
+                long birthdate = sharedPreferences.getLong("birthdate", -1);
+                int mealsPerDay = sharedPreferences.getInt("meals", 0);
+                int snacksPerDay = sharedPreferences.getInt("snacks", 0);
+                String workoutPlace = sharedPreferences.getString("workoutPlace", "N/A").toLowerCase();
+                String goal = sharedPreferences.getString("goal", "N/A").toLowerCase();
+
+
+                int WaterGoal = (int) calculateHydrationGoal(weight);
+
+
+                // Create a new UserRoom object
+                User newUser_Server = new User(
+                        email,
+                        fullName,
+                        password,
+                        gender,
+                        height,
+                        weight,
+                        parseDate(getFormattedDate(birthdate)),
+                        bodyType,
+                        goal,
+                        6000,  // Step count goal
+                        WaterGoal,   // Hydration goal in mL
+                        workoutPlace,
+                        dietType,
+                        mealsPerDay,  // Meals per day
+                        snacksPerDay, // Snacks per day
+                        150          // Default water intake
+                );
+                Service.getInstance().addUser(newUser_Server);
+
             }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // Handle the failure
+            // Method to parse String to Date
+            public Date parseDate(String dateString) throws ParseException {
+                return sdf.parse(dateString);
             }
-        });
-    }
 
-    // Get user plan
-    public void getplan(User user) {
-        CreatingPlan creatingPlan = CreatingPlan.getInstance();
-        creatingPlan.createPlan(this, user);
-    }
-}
+            private String getFormattedDate(Long timeInMillis) {
+                // Convert the time in milliseconds to a Date object
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(timeInMillis);
+
+                // Format the date using the specified DATE_FORMAT
+                return sdf.format(calendar.getTime());
+            }
+
+            private String formatDate(Date date) throws ParseException {
+                return sdf.format(date);
+            }
+
+        }
+
