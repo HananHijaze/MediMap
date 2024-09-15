@@ -158,14 +158,35 @@
                         android:layout_weight="1"
                         android:background="@drawable/custom_linear_layout"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageView
-                            android:id="@+id/waterbottle"
-                            android:layout_width="150dp"
-                            android:layout_height="200dp"
-                            android:layout_marginTop="10dp"
-                            android:scaleType="centerInside" />
+                            android:id="@+id/bottleCap"
+                            android:layout_width="50dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/bottle_cap"
+                            android:layout_marginTop="3dp" />
+
+                        <LinearLayout
+                            android:id="@+id/waterLayout"
+                            android:layout_width="80dp"
+                            android:layout_height="300dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/custom_linear_layout"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:backgroundTint="#B6F9FF">
+
+                            <ProgressBar
+                                android:id="@+id/waterBottleProgress"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:progressDrawable="@drawable/custom_water_progress" />
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/waterOutput"
@@ -175,7 +196,8 @@
                             android:textAlignment="center"
                             android:textColor="@color/blue"
                             android:textSize="24sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:layout_marginVertical="0dp"/>
 
                         <Button
                             android:id="@+id/addWaterBtn"
@@ -189,12 +211,8 @@
                             android:textColor="@color/blue"
                             android:textSize="14sp"
                             android:textStyle="bold"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.501"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.751" />
+                            android:layout_marginTop="0dp"
+                            android:layout_marginBottom="5dp"/>
 
                     </LinearLayout>
 

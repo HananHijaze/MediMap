@@ -1,36 +1,34 @@
-package com.example.medimap.server;
+package com.example.medimap.roomdb;
 
-import com.example.medimap.roomdb.HydrationRoom;
-import com.example.medimap.roomdb.TempHydrationRoom;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import com.example.medimap.server.Hydration;
 
 import java.time.LocalDate;
 
-public class Hydration {
-
+@Entity(tableName = "temp_hydration_table")
+public class TempHydrationRoom {
+    @PrimaryKey(autoGenerate = true)
     private Long id; // Primary Key
+
     private Long customerId; // Foreign Key referencing User.email
+
     private Double drank; // Amount of water consumed (e.g., in liters)
-    private LocalDate date;
+
+    private LocalDate date; // LocalDate field
 
     // Constructors
-    public Hydration() {}
-
-    public Hydration(Long customerId, Double drank, LocalDate date) {
+    public TempHydrationRoom(Long customerId, Double drank, LocalDate date) {
         this.customerId = customerId;
         this.drank = drank;
         this.date = date;
     }
 
-    public Hydration(HydrationRoom hydrationRoom){
-        this.customerId = hydrationRoom.getCustomerId();
-        this.drank = hydrationRoom.getDrank();
-        this.date = hydrationRoom.getDate();
-    }
-
-    public Hydration(TempHydrationRoom tempHydrationRoom){
-        this.customerId = tempHydrationRoom.getCustomerId();
-        this.drank = tempHydrationRoom.getDrank();
-        this.date = tempHydrationRoom.getDate();
+    public TempHydrationRoom(Hydration hydration){
+        this.customerId = hydration.getCustomerId();
+        this.drank = hydration.getDrank();
+        this.date = hydration.getDate();
     }
 
     // Getters and Setters

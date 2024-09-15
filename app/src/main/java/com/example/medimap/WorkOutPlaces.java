@@ -94,6 +94,6 @@ public class WorkOutPlaces extends AppCompatActivity {
     private void retrieveAndShowWorkoutPlace() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String savedWorkoutPlace = sharedPreferences.getString("workoutPlace", "No place selected");
-        Toast.makeText(this, "Workout Place: " + savedWorkoutPlace, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Workout Place: " + savedWorkoutPlace, Toast.LENGTH_SHORT).show();
     }
 }

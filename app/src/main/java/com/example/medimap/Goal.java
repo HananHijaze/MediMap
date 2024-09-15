@@ -49,17 +49,17 @@ public class Goal extends AppCompatActivity {
 
         // Set up goal selection listeners
         gainMuscleLayout.setOnClickListener(v -> {
-            selectedGoal = "Gain Muscle"; // Set the selected goal to "Gain Muscle"
+            selectedGoal = "gain muscle"; // Set the selected goal to "Gain Muscle"
             toggleSelection(gainMuscleLayout, loseWeightLayout, healthyLifeLayout);
         });
 
         loseWeightLayout.setOnClickListener(v -> {
-            selectedGoal = "Weight Loss"; // Set the selected goal to "Weight Loss"
+            selectedGoal = "lose weight"; // Set the selected goal to "Weight Loss"
             toggleSelection(loseWeightLayout, gainMuscleLayout, healthyLifeLayout);
         });
 
         healthyLifeLayout.setOnClickListener(v -> {
-            selectedGoal = "Healthy Life"; // Set the selected goal to "Healthy Life"
+            selectedGoal = "healthy life"; // Set the selected goal to "Healthy Life"
             toggleSelection(healthyLifeLayout, gainMuscleLayout, loseWeightLayout);
         });
 
@@ -106,6 +106,6 @@ public class Goal extends AppCompatActivity {
     private void retrieveAndShowGoal() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String savedGoal = sharedPreferences.getString("goal", "No goal selected");
-        Toast.makeText(this, "Goal: " + savedGoal, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Goal: " + savedGoal, Toast.LENGTH_SHORT).show();
     }
 }
