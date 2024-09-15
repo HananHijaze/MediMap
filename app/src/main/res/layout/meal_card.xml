@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,51 +6,172 @@
     android:elevation="4dp"
     android:padding="16dp"
     app:cardCornerRadius="15dp"
-    android:background="@drawable/border_unselected"
-    >
+    android:background="@drawable/border_unselected">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="horizontal"
+        android:padding="8dp">
 
-        <TextView
-            android:id="@+id/mealname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Meal Name"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+        <!-- Rounded Image on the left -->
 
-        <TextView
-            android:id="@+id/mealtype"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Type" />
+        <!-- Right side content -->
+        <ImageView
+            android:id="@+id/meal_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="16dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/snack" />
 
-        <TextView
-            android:id="@+id/mealcalories"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Calories"/>
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:padding="8dp">
 
-        <TextView
-            android:id="@+id/mealcarbs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Carbs"/>
+            <!-- Meal Name -->
+            <TextView
+                android:id="@+id/mealname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Meal Name"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/blue" />
 
-        <TextView
-            android:id="@+id/mealfats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fats"/>
+            <!-- Meal Type -->
+            <TextView
+                android:id="@+id/mealtype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Type"
+                android:textSize="16sp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/black"/>
 
-        <TextView
-            android:id="@+id/mealprotein"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Protein"/>
+            <!-- Nutritional Info Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- Calories -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_calories" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Calories"
+                        android:textSize="12sp"
+                        android:gravity="center" />
+                    <TextView
+                        android:id="@+id/mealcalories"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="200 cal"
+                        android:textSize="14sp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- Carbs -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_carbs" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Carbs"
+                        android:textSize="12sp"
+                        android:gravity="center" />
+                    <TextView
+                        android:id="@+id/mealcarbs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="30g"
+                        android:textSize="14sp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- Fats -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_fats" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fats"
+                        android:textSize="12sp"
+                        android:gravity="center" />
+                    <TextView
+                        android:id="@+id/mealfats"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10g"
+                        android:textSize="14sp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- Protein -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_protein" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Protein"
+                        android:textSize="12sp"
+                        android:gravity="center" />
+                    <TextView
+                        android:id="@+id/mealprotein"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15g"
+                        android:textSize="14sp"
+                        android:gravity="center" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>
