@@ -144,8 +144,8 @@ public class Signup extends AppCompatActivity {
 
         //check the sharedPreferences (its working alhamdulillah)
         // Display the retrieved data using Toast messages
-       // Toast.makeText(this, "Full Name: " + fullName, Toast.LENGTH_SHORT).show();
-       // Toast.makeText(this, "Email: " + email, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Full Name: " + fullName, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Email: " + email, Toast.LENGTH_SHORT).show();
         //Toast.makeText(this, "Phone: " + phone, Toast.LENGTH_SHORT).show();
         //Toast.makeText(this, "Address: " + address, Toast.LENGTH_SHORT).show();
         //Toast.makeText(this, "Password: " + password, Toast.LENGTH_SHORT).show();

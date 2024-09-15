@@ -188,6 +188,7 @@ public class LogIn extends AppCompatActivity {
     }
     private UserRoom convertToUserRoom(User user) {
         return new UserRoom(
+                user.getId(),
                 user.getEmail(),
                 user.getName(),
                 user.getPassword(),
