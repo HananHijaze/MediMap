@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.roomdb.UsersAllergiesRoom;
 import com.example.medimap.roomdb.AllergyRoom;
@@ -52,6 +53,7 @@ public class build_profile extends AppCompatActivity {
     private User user;
     private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+    private UserDao userDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +73,13 @@ public class build_profile extends AppCompatActivity {
         }
 //        // Initialize the Room database instance
       appDatabase = AppDatabaseRoom.getInstance(this);
+        // Initialize the UserDao
+        userDao = appDatabase.userDao();
 //
 //        // Check internet connection before proceeding
      if (NetworkUtils.isNetworkAvailable(this)) {
          retrieveAndSaveUserDataToDatabase();
-        createplan();
-    } else {
+        } else {
             showNoInternetDialog(); // Show dialog if no internet
        }      // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -85,6 +88,7 @@ public class build_profile extends AppCompatActivity {
            startActivity(in);
           finish(); // Optionally finish this activity if you don't want to return to it
         }, 5000);
+        createplan();
     }
 
     // Method to retrieve user data from SharedPreferences and save to Room and server
@@ -240,31 +244,32 @@ public class build_profile extends AppCompatActivity {
 
             // Create user plan
             public void createplan() {
-                SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                String email = sharedPreferences.getString("email", "N/A");
+                new Thread(() -> {
+                    Long id= userDao.getAllUsers().get(0).getId();
+                    UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
 
-                UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
+                    // Make the API call to get the user by email
+                    Call<User> call = userApi.getUserById(id);
 
-                // Make the API call to get the user by email
-                Call<User> call = userApi.getUserById(1L);
-
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            user = response.body();
-                            getplan(user);
-                        } else {
-                            Toast.makeText(build_profile.this, "Failed to retrieve user plan", Toast.LENGTH_SHORT).show();
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                user = response.body();
+                                getplan(user);
+                            } else {
+                                Toast.makeText(build_profile.this, "Failed to retrieve user plan", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(build_profile.this, "Error retrieving user plan: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                            Toast.makeText(build_profile.this, "Error retrieving user plan: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }).start();
             }
+
 
             // Get user plan
             public void getplan(User user) {

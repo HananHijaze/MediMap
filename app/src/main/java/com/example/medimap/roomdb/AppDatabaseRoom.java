@@ -6,9 +6,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+
 @Database(entities = {UserRoom.class, HydrationRoom.class, TempHydrationRoom.class, WeeklyMealPlanRoom.class,
         WeeklyTrainingPlanRoom.class, UsersAllergiesRoom.class, WeekDaysRoom.class, UserWeekdayRoom.class,
         AllergyRoom.class, StepCountRoom.class,MealRoom.class, WorkoutRoom.class}, version = 11)
+
 
 @TypeConverters(Converters.class)  // Registering the Converters class
 public abstract class AppDatabaseRoom extends RoomDatabase {
