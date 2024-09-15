@@ -297,6 +297,8 @@ public class Settings extends AppCompatActivity {
                     // Update the user data on the server
                     updateUserOnServer(updatedUser);
                     showRatePlanDialog(Settings.this);
+                    //we first want to see if the user likes his plan we might not want to create a new plan all the time
+                    //CreatingPlan.getInstance().createPlan(Settings.this, updatedUser);
                     runOnUiThread(() -> showMessage("User data saved successfully."));
                 } catch (Exception e) {
                     runOnUiThread(() -> showMessage("Failed to save user data. Please try again."));
