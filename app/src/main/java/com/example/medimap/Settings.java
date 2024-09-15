@@ -267,8 +267,12 @@ public class Settings extends AppCompatActivity {
             String dietType = diettypeput.getSelectedItem().toString();
             int snacksPerDay = Integer.parseInt(snacksperdayput.getSelectedItem().toString());
             int waterDefault = parseIntSafely(waterDefaultPut.getText().toString());
+            SharedPreferences sharedPreferences = getSharedPreferences("UserSignUpData", MODE_PRIVATE);
 
-            UserRoom newUser = new UserRoom(email, name, "", gender, height, weight, birthDate,
+            Long id  = sharedPreferences.getLong("id", 1L);
+
+
+            UserRoom newUser = new UserRoom(id,email, name, "", gender, height, weight, birthDate,
                     bodyType, goal, stepCountGoal, hydrationGoal, whereToWorkout,
                     dietType, mealsPerDay, snacksPerDay, waterDefault);
 

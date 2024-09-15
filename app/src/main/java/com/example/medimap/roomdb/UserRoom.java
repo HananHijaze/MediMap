@@ -30,9 +30,10 @@ public class UserRoom {
     private int waterDefault;
 
     // Constructor
-    public UserRoom( String email, String name, String password, String gender, int height, int weight,
+    public UserRoom(Long id, String email, String name, String password, String gender, int height, int weight,
                 String birthDate, String bodyType, String goal, int stepCountGoal, int hydrationGoal,
                 String whereToWorkout, String dietType, int mealsPerDay, int snacksPerDay, int waterDefault) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;

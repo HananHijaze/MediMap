@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     // Helper method to create a test user
     private UserRoom createTestUser() {
         return new UserRoom(
-
+1L,
                 "tester@test.com",
                 "test test",
                 "test123",
