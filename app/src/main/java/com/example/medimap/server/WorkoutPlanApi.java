@@ -36,11 +36,12 @@ public interface WorkoutPlanApi {
     @GET("workoutplans/latest/{customerID}")
     Call<WorkoutPlan> getLatestWorkoutPlan(@Path("customerID") Long customerID);
 
-    @GET("workoutplans/latest")
+    @GET("workoutplans/latestWorkout")
     Call<List<WorkoutPlan>> getDatedTrainingPlans(
             @Query("customerId") Long customerId,
-            @Query("inputDate") String inputDate // Pass date as String in the expected format
+            @Query("inputDate") String inputDate
     );
+
 
 
 }
