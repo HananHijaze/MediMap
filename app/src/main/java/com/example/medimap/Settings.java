@@ -3,11 +3,13 @@ package com.example.medimap;
 import static com.example.medimap.server.RetrofitClient.getRetrofitInstance;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -294,7 +296,7 @@ public class Settings extends AppCompatActivity {
 
                     // Update the user data on the server
                     updateUserOnServer(updatedUser);
-
+                    showRatePlanDialog(Settings.this);
                     runOnUiThread(() -> showMessage("User data saved successfully."));
                 } catch (Exception e) {
                     runOnUiThread(() -> showMessage("Failed to save user data. Please try again."));
@@ -615,6 +617,42 @@ public class Settings extends AppCompatActivity {
                 }
             });
         }
+    }
+    public void showRatePlanDialog(Context context) {
+        // Inflate the dialog layout
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.rate_plan_dialog, null);
+
+        // Create the dialog
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);  // Prevent user from closing the dialog without interaction
+        AlertDialog dialog = dialogBuilder.create();
+
+        // Find the Spinner and populate it with numbers 1-10
+        Spinner spinner = dialogView.findViewById(R.id.planratingspinner);
+        List<Integer> ratings = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            ratings.add(i);
+        }
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, ratings);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        // Handle submit button click
+        Button submitButton = dialogView.findViewById(R.id.submitbutton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedRating = (int) spinner.getSelectedItem();
+                // Handle the selected rating, e.g., save it to the database or send it to a server
+                Toast.makeText(context, "You rated the plan: " + selectedRating, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        // Show the dialog
+        dialog.show();
     }
 
 
