@@ -58,6 +58,11 @@ public class Birthdate extends AppCompatActivity {
         updateProgressBar();
 
         calendarView = findViewById(R.id.calendarView);
+
+        // Set the maximum date to today's date
+        Calendar calendar = Calendar.getInstance();
+        calendarView.setMaxDate(calendar.getTimeInMillis());
+
         calendarView.setOnDateChangeListener(this::onDateChange);
 
         Button nextButton = findViewById(R.id.nextButton);
@@ -99,7 +104,6 @@ public class Birthdate extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong("birthdate", selectedDate);
         editor.apply();
-       // Toast.makeText(this, "Birthdate saved: " + getFormattedDate(selectedDate), Toast.LENGTH_LONG).show();
     }
 
     private String getFormattedDate(long timeInMillis) {
