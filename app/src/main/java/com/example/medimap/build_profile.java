@@ -18,7 +18,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
-import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.roomdb.UsersAllergiesRoom;
 import com.example.medimap.roomdb.AllergyRoom;
@@ -51,7 +50,6 @@ public class build_profile extends AppCompatActivity {
     private User user;
     private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-    private UserDao userDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,21 +73,7 @@ public class build_profile extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-
         // Simulate loading for 5 seconds before navigating to the home screen
-
-//        // Initialize the Room database instance
-      appDatabase = AppDatabaseRoom.getInstance(this);
-        // Initialize the UserDao
-        userDao = appDatabase.userDao();
-//
-//        // Check internet connection before proceeding
-     if (NetworkUtils.isNetworkAvailable(this)) {
-         retrieveAndSaveUserDataToDatabase();
-        } else {
-            showNoInternetDialog(); // Show dialog if no internet
-       }      // Simulate loading for 5 seconds before navigating to the home screen
-
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent in = new Intent(this, Home.class);
             in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -98,15 +82,12 @@ public class build_profile extends AppCompatActivity {
         }, 5000);
 
 //        // Check internet connection before proceeding (preserved as a comment for now)
-       if (NetworkUtils.isNetworkAvailable(this)) {
-        retrieveAndSaveUserDataToDatabase();
-        createplan();
+        if (NetworkUtils.isNetworkAvailable(this)) {
+            retrieveAndSaveUserDataToDatabase();
+            createplan();
         } else {
-           showNoInternetDialog(); // Show dialog if no internet
+            showNoInternetDialog(); // Show dialog if no internet
         }
-
-        createplan();
-
     }
 
     // Method to retrieve user data from SharedPreferences and save to Room and server
@@ -170,7 +151,6 @@ public class build_profile extends AppCompatActivity {
         });
     }
 
-
     // Method to save user allergies in Room and server
     private void saveUserAllergies(long userId, Set<String> allergies) {
         if (allergies != null && !allergies.isEmpty()) {
@@ -207,52 +187,15 @@ public class build_profile extends AppCompatActivity {
                         Service.getInstance().addUserWeekday(userWeekdayServer);
                     }
                 }
-
-            // Create user plan
-            public void createplan() {
-                new Thread(() -> {
-                    Long id= userDao.getAllUsers().get(0).getId();
-                    UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
-
-                    // Make the API call to get the user by email
-                    Call<User> call = userApi.getUserById(id);
-
-                    call.enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                user = response.body();
-                                getplan(user);
-                            } else {
-                                Toast.makeText(build_profile.this, "Failed to retrieve user plan", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<User> call, Throwable t) {
-                            Toast.makeText(build_profile.this, "Error retrieving user plan: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }).start();
-
             }
         }
     }
-
 
     // Calculate hydration goal based on weight
     public double calculateHydrationGoal(double weight) {
         double hydrationGoal = weight * 0.033 * 1000;  // Convert to milliliters
         return roundToNearest50(hydrationGoal);  // Round to nearest 50 ml
     }
-
-
-            // Get user plan
-            public void getplan(User user) {
-                CreatingPlan creatingPlan = CreatingPlan.getInstance();
-                creatingPlan.createPlan(this, user);
-            }
-
 
     public double roundToNearest50(double value) {
         return Math.round(value / 50) * 50;  // Round to the nearest 50 ml
@@ -346,5 +289,5 @@ public class build_profile extends AppCompatActivity {
     public void getplan(User user) {
         CreatingPlan creatingPlan = CreatingPlan.getInstance();
         creatingPlan.createPlan(this,user);
-}
+    }
 }
