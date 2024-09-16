@@ -4,21 +4,29 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.medimap.server.RetrofitClient;
+import com.example.medimap.server.User;
+import com.example.medimap.server.UserApi;
 import com.google.android.material.textfield.TextInputEditText;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Signup extends AppCompatActivity {
     Button signup;
     TextInputEditText fullNameEditText, emailEditText, phoneEditText, addressEditText, passwordEditText;
-
     private static final String PREFS_NAME = "UserSignUpData"; // SharedPreferences file name
 
     @Override
@@ -33,37 +41,28 @@ public class Signup extends AppCompatActivity {
             return insets;
         });
 
-        // Initialize the input fields by linking them to their respective views with correct IDs
+        // Initialize the input fields
         fullNameEditText = findViewById(R.id.full_name);
         emailEditText = findViewById(R.id.email_edit);
         phoneEditText = findViewById(R.id.phone_edit);
         addressEditText = findViewById(R.id.address_edit);
         passwordEditText = findViewById(R.id.password_edit);
 
-        // Initialize the Login button and set its click listener
-        Button loginButton = findViewById(R.id.Login);
-        loginButton.setOnClickListener(view -> {
-            Intent in = new Intent(this, LogIn.class);
-            startActivity(in);
-        });
-
         // Initialize the Sign-Up button
         signup = findViewById(R.id.signup);
 
         // Set a click listener for the Sign-Up button
         signup.setOnClickListener(view -> {
-            // Validate the input fields before proceeding
             if (validateInput()) {
-                // Save the input data to SharedPreferences
-                saveUserData();
-
-                // Retrieve and show data in Toast messages for verification
-                retrieveAndShowUserData();
-
-                // If validation is successful, start the Birthdate activity
-                Intent in = new Intent(this, Birthdate.class);
-                startActivity(in);
+                checkNetworkAndProceed();
             }
+        });
+
+        // Initialize the Login button
+        Button loginButton = findViewById(R.id.Login);
+        loginButton.setOnClickListener(view -> {
+            Intent in = new Intent(this, LogIn.class);
+            startActivity(in);
         });
     }
 
@@ -107,8 +106,8 @@ public class Signup extends AppCompatActivity {
         if (TextUtils.isEmpty(passwordEditText.getText())) {
             passwordEditText.setError("Password is required");
             isValid = false;
-        } else if (passwordEditText.getText().toString().length() > 8) {
-            passwordEditText.setError("Password must be Maximum 8 characters long");
+        } else if (passwordEditText.getText().toString().length() < 4 || passwordEditText.getText().toString().length() > 8) {
+            passwordEditText.setError("Password must be 4 to 8 characters long");
             isValid = false;
         }
 
@@ -117,6 +116,68 @@ public class Signup extends AppCompatActivity {
         }
 
         return isValid;
+    }
+
+    private void checkNetworkAndProceed() {
+        if (NetworkUtils.isNetworkAvailable(this)) {
+            // Network is available, check the server for user existence
+            checkUserExists();
+        } else {
+            // Show dialog if no network is available
+            showNoInternetDialog();
+        }
+    }
+
+    private void checkUserExists() {
+        String email = emailEditText.getText().toString().trim();
+        UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
+
+        // Call the API to check if a user with the email exists
+        Call<User> call = userApi.findByEmail(email);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // User exists, show "User already signed up" dialog and redirect to login page
+                    showUserAlreadyExistsDialog();
+                } else {
+                    // If the user doesn’t exist, proceed with sign-up
+                    proceedWithSignup();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(Signup.this, "Error checking user: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void proceedWithSignup() {
+        // Save user data and proceed to the next step
+        saveUserData();
+        retrieveAndShowUserData();
+
+        // Proceed to the Birthdate activity
+        Intent in = new Intent(Signup.this, Birthdate.class);
+        startActivity(in);
+    }
+
+    // Show "User already signed up" dialog
+    private void showUserAlreadyExistsDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_user_already_exists, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button btnOk = dialogView.findViewById(R.id.okButton);
+        btnOk.setOnClickListener(v -> {
+            dialog.dismiss();
+            // Redirect to login page
+            Intent loginIntent = new Intent(Signup.this, LogIn.class);
+            startActivity(loginIntent);
+        });
     }
 
     private void saveUserData() {
@@ -135,19 +196,27 @@ public class Signup extends AppCompatActivity {
     private void retrieveAndShowUserData() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-        // Retrieve the data (we can use it in the last page  )
-       /* String fullName = sharedPreferences.getString("fullName", "");
+        // Retrieve the data (for verification or use later)
+        /*
+        String fullName = sharedPreferences.getString("fullName", "");
         String email = sharedPreferences.getString("email", "");
         String phone = sharedPreferences.getString("phone", "");
         String address = sharedPreferences.getString("address", "");
-        String password = sharedPreferences.getString("password", "");*/
+        String password = sharedPreferences.getString("password", "");
 
-        //check the sharedPreferences (its working alhamdulillah)
-        // Display the retrieved data using Toast messages
-        // Toast.makeText(this, "Full Name: " + fullName, Toast.LENGTH_SHORT).show();
-        // Toast.makeText(this, "Email: " + email, Toast.LENGTH_SHORT).show();
-        //Toast.makeText(this, "Phone: " + phone, Toast.LENGTH_SHORT).show();
-        //Toast.makeText(this, "Address: " + address, Toast.LENGTH_SHORT).show();
-        //Toast.makeText(this, "Password: " + password, Toast.LENGTH_SHORT).show();
+        // For testing
+        Toast.makeText(this, "Full Name: " + fullName, Toast.LENGTH_SHORT).show();
+        */
+    }
+
+    // Show no internet dialog (reuse this method)
+    private void showNoInternetDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_no_internet, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        Button btnOk = dialogView.findViewById(R.id.Save);
+        btnOk.setOnClickListener(v -> dialog.dismiss());
     }
 }
