@@ -45,7 +45,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
     }
 
     public static class MealPlanViewHolder extends RecyclerView.ViewHolder {
-        TextView mealName, dietType, calories, carbs, fats, protein;
+        TextView mealName, calories, carbs, fats, protein;
 
         public MealPlanViewHolder(@NonNull View itemView) {
             super(itemView);

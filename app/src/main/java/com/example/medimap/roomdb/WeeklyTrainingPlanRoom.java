@@ -15,15 +15,14 @@ public class WeeklyTrainingPlanRoom {
 
     private Long workoutID; // Foreign Key referencing Workout.workoutID
 
-    private Date createdate;
 
-    private int workoutDay; // e.g., Mon, Tue, etc.
+
+    private int workoutDay;
 
     // Constructors
-    public WeeklyTrainingPlanRoom(Long customerID, Long workoutID, Date createdate,int workoutDay) {
+    public WeeklyTrainingPlanRoom(Long customerID, Long workoutID, int workoutDay) {
         this.customerID = customerID;
         this.workoutID = workoutID;
-        this.createdate = createdate;
         this.workoutDay = workoutDay;
     }
 
@@ -50,14 +49,6 @@ public class WeeklyTrainingPlanRoom {
 
     public void setWorkoutID(Long workoutID) {
         this.workoutID = workoutID;
-    }
-
-    public Date getCreatedate() {
-        return createdate;
-    }
-
-    public void setCreatedate(Date createdate) {
-        this.createdate = createdate;
     }
 
     public int getWorkoutDay() {

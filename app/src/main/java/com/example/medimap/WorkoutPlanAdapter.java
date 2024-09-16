@@ -48,11 +48,11 @@ public class WorkoutPlanAdapter extends RecyclerView.Adapter<WorkoutPlanAdapter.
 
         public WorkoutViewHolder(@NonNull View itemView) {
             super(itemView);
-            workoutName = itemView.findViewById(R.id.workoutName);
-            workoutType = itemView.findViewById(R.id.workoutType);
-            workoutDuration = itemView.findViewById(R.id.workoutDuration);
-            workoutRepsSets = itemView.findViewById(R.id.workoutRepsSets);
-            workoutLocation = itemView.findViewById(R.id.workoutLocation);
+            workoutName = itemView.findViewById(R.id.workout_name);
+            workoutType = itemView.findViewById(R.id.workout_type);
+            workoutDuration = itemView.findViewById(R.id.workout_duration);
+            workoutRepsSets = itemView.findViewById(R.id.workout_reps);
+            workoutLocation = itemView.findViewById(R.id.workout_location);
         }
     }
 }

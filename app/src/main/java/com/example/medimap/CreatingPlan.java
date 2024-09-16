@@ -5,9 +5,13 @@ import android.util.Log;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.MealDao;
+import com.example.medimap.roomdb.MealRoom;
+import com.example.medimap.roomdb.WeeklyMealPlanRoom;
 import com.example.medimap.roomdb.WeeklyMealPlanRoomDao;
+import com.example.medimap.roomdb.WeeklyTrainingPlanRoom;
 import com.example.medimap.roomdb.WeeklyTrainingPlanRoomDao;
 import com.example.medimap.roomdb.WorkoutDao;
+import com.example.medimap.roomdb.WorkoutRoom;
 import com.example.medimap.server.Meal;
 import com.example.medimap.server.MealApi;
 import com.example.medimap.server.MealPlan;
@@ -39,6 +43,10 @@ public class CreatingPlan {
     private List<UserWeekday> days;
     private List<Workout> workoutList;
     private AppDatabaseRoom roomdb;
+    private WeeklyTrainingPlanRoomDao workoutPlanDao;
+    private WeeklyMealPlanRoomDao mealPlanDao;
+    private MealDao mealDao;
+    private WorkoutDao workoutDao;
 
     private CreatingPlan() {
     }
@@ -51,23 +59,13 @@ public class CreatingPlan {
     }
 
     public void createPlan(Context context, User user) {
-        // Initialize database and DAOs outside the background thread
         roomdb = AppDatabaseRoom.getInstance(context);
+        // Initialize database and DAOs outside the background thread
         WeeklyTrainingPlanRoomDao workoutPlanDao = roomdb.weeklyTrainingPlanRoomDao();
         WeeklyMealPlanRoomDao mealPlanDao = roomdb.weeklyMealPlanRoomDao();
         MealDao mealDao = roomdb.mealDao();
         WorkoutDao workoutDao = roomdb.workoutDao();
-
-        // Perform database operations inside a background thread
-        Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            // Delete all entries in the background thread
-            workoutPlanDao.deleteAllWorkoutPlans();
-            mealPlanDao.deleteAllMealPlans();
-            mealDao.deleteAllMealPlans();
-            workoutDao.deletallWorkouts();
-        });
-
+        deletefromroom();
         // Encode the User into an encodedUser
         encodedUser encodedUser = UserDataEncoder.encodeValues(user);
 
@@ -100,6 +98,8 @@ public class CreatingPlan {
         // Fetch workouts and user weekdays based on predictions
         getworkoutplan(user, workoutPlanIndex);
         getmealplan(user, breakfastIndex, lunchIndex, dinnerIndex, snackIndex);
+        insertintoplans();
+
     }
 
     public static int argMax(float[] probabilities) {
@@ -201,6 +201,10 @@ public class CreatingPlan {
                 // Create and add WorkoutPlan
                 WorkoutPlan wp = new WorkoutPlan(user.getId(), workout.getWorkoutID(), new Date(), Integer.parseInt(userWeekday.getWeekdayId().toString()));
                 Service.getInstance().addWorkoutPlan(wp);
+                WeeklyTrainingPlanRoom workoutPlan = new WeeklyTrainingPlanRoom(user.getId(), workout.getWorkoutID(), Integer.parseInt(userWeekday.getWeekdayId().toString()));
+                new Thread(() -> {
+                    workoutPlanDao.insertWorkoutPlan(workoutPlan);
+                });
             }
         }
     }
@@ -302,6 +306,10 @@ public class CreatingPlan {
                         for (int i = 0; i < breakfastNumber; i++) {
                             MealPlan mp = new MealPlan(user.getId(), getRandomMealByDietType(meals, user.getDietType()), new Date(), j, "Breakfast");
                             Service.getInstance().addMealPlan(mp);
+                            WeeklyMealPlanRoom mealPlan = new WeeklyMealPlanRoom(user.getId(), getRandomMealByDietType(meals, user.getDietType()), j, "Breakfast");
+                            new Thread(() -> {
+                                mealPlanDao.insertMealPlan(mealPlan);
+                            });
                         }
                     }
                 }
@@ -327,6 +335,11 @@ public class CreatingPlan {
                         for (int i = 0; i < lunchNumber; i++) {
                             MealPlan mp = new MealPlan(user.getId(), getRandomMealByDietType(meals, user.getDietType()), new Date(), j, "Lunch");
                             Service.getInstance().addMealPlan(mp);
+                            WeeklyMealPlanRoom mealPlan = new WeeklyMealPlanRoom(user.getId(), getRandomMealByDietType(meals, user.getDietType()), j, "Lunch");
+                            new Thread(() -> {
+                                mealPlanDao.insertMealPlan(mealPlan);
+                            });
+
                         }
                     }
                 }
@@ -352,6 +365,10 @@ public class CreatingPlan {
                         for (int i = 0; i < dinnerNumber; i++) {
                             MealPlan mp = new MealPlan(user.getId(), getRandomMealByDietType(meals, user.getDietType()), new Date(), j, "Dinner");
                             Service.getInstance().addMealPlan(mp);
+                            WeeklyMealPlanRoom mealPlan = new WeeklyMealPlanRoom(user.getId(), getRandomMealByDietType(meals, user.getDietType()), j, "Dinner");
+                            new Thread(() -> {
+                                mealPlanDao.insertMealPlan(mealPlan);
+                            });
                         }
                     }
                 }
@@ -378,6 +395,10 @@ public class CreatingPlan {
                         for (int i = 0; i < snacknumber; i++) {
                             MealPlan mp =new MealPlan(user.getId(),getRandomMealByDietType(meals,user.getDietType()),new Date(),j,"Snack");
                             Service.getInstance().addMealPlan(mp);
+                            WeeklyMealPlanRoom mealPlan = new WeeklyMealPlanRoom(user.getId(),getRandomMealByDietType(meals,user.getDietType()),j,"Snack");
+                            new Thread(() -> {
+                                mealPlanDao.insertMealPlan(mealPlan);
+                            });
                         }
                     }
                 }
@@ -402,5 +423,59 @@ public class CreatingPlan {
             Random random = new Random();
             return meals.get(random.nextInt(meals.size())).getMealID();
         }
+    }
+    private void deletefromroom(){
+        // Perform database operations inside a background thread
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            // Delete all entries in the background thread
+            workoutPlanDao.deleteAllWorkoutPlans();
+            mealPlanDao.deleteAllMealPlans();
+            mealDao.deleteAllMealPlans();
+            workoutDao.deletallWorkouts();
+        });
+
+    }
+    private void insertintoplans(){
+        new Thread(() -> {
+            List<WeeklyTrainingPlanRoom> traininglist= workoutPlanDao.getAllWorkoutPlans();
+            for(WeeklyTrainingPlanRoom training:traininglist){
+                WorkoutApi workoutApi = RetrofitClient.getRetrofitInstance().create(WorkoutApi.class);
+                Call<Workout> call = workoutApi.getWorkoutById(training.getWorkoutID());
+                call.enqueue(new Callback<Workout>() {
+                    @Override
+                    public void onResponse(Call<Workout> call, Response<Workout> response) {
+                        Workout workout=response.body();
+                        WorkoutRoom workoutRoom=new WorkoutRoom(workout.getName(),workout.getDescription(),workout.getDuration(),workout.getRepetitions(),workout.getSets(),workout.getLocation(),workout.getWorkoutType());
+                        workoutDao.insertWorkout(workoutRoom);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Workout> call, Throwable t) {
+
+                    }
+                });
+            }
+        }).start();
+        new Thread(() -> {
+            List<WeeklyMealPlanRoom> meallist= mealPlanDao.getAllMealPlans();
+            for(WeeklyMealPlanRoom meal:meallist){
+                MealApi mealsApi = RetrofitClient.getRetrofitInstance().create(MealApi.class);
+                Call<Meal>call = mealsApi.getMealById(meal.getMealID());
+                call.enqueue(new Callback<Meal>(){
+                    @Override
+                    public void onResponse(Call<Meal> call, Response<Meal> response) {
+                        Meal meal=response.body();
+                        MealRoom mealRoom=new MealRoom(meal.getDiet_type(),meal.getCalories(),meal.getCarbs(),meal.getFats(),meal.getName(),meal.getProtein(),meal.getType());
+                        mealDao.insertMeal(mealRoom);
+                }
+
+                    @Override
+                    public void onFailure(Call<Meal> call, Throwable t) {
+
+                    }
+                });
+            }
+        }).start();
     }
 }

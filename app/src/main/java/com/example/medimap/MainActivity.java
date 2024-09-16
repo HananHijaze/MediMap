@@ -98,9 +98,10 @@ public class MainActivity extends AppCompatActivity {
         // Remove all existing users in the background
         new Thread(() -> {
             userDao.deleteAllUsers();
-            UserRoom newUser = createTestUser();// Create a new test user
-            userDao.insertUser(newUser); // Insert the test user
-            Log.d("MainActivity", "Test user added: " + newUser.toString());
+//            UserRoom newUser = createTestUser();// Create a new test user
+//            newUser.setId(1L);
+//            userDao.insertUser(newUser); // Insert the test user
+//            Log.d("MainActivity", "Test user added: " + newUser.toString());
         }).start();
     }
 

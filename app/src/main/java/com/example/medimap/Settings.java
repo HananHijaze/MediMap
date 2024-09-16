@@ -3,11 +3,13 @@ package com.example.medimap;
 import static com.example.medimap.server.RetrofitClient.getRetrofitInstance;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,7 +35,10 @@ import com.example.medimap.roomdb.UsersAllergiesRoom;
 import com.example.medimap.roomdb.WeekDaysDao;
 import com.example.medimap.roomdb.WeekDaysRoom;
 import com.example.medimap.server.RetrofitClient;
+import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
+import com.example.medimap.server.UserWeekday;
+import com.example.medimap.server.UserWeekdayApi;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -284,6 +289,16 @@ public class Settings extends AppCompatActivity {
                         newUser.setId(userRoom.getId());
                         userDao.updateUser(newUser);
                     }
+
+
+                    // Convert UserRoom to User for the server update
+                    User updatedUser = new User(newUser);
+
+                    // Update the user data on the server
+                    updateUserOnServer(updatedUser);
+                    showRatePlanDialog(Settings.this);
+                    //we first want to see if the user likes his plan we might not want to create a new plan all the time
+                    //CreatingPlan.getInstance().createPlan(Settings.this, updatedUser);
                     runOnUiThread(() -> showMessage("User data saved successfully."));
                 } catch (Exception e) {
                     runOnUiThread(() -> showMessage("Failed to save user data. Please try again."));
@@ -292,29 +307,6 @@ public class Settings extends AppCompatActivity {
         }
     }
     private boolean validateInputs() {
-        // Validate Body Type Spinner
-       // if (isSpinnerPromptSelected(bodytypeput)) {
-         //   showMessage("Please select a valid body type.");
-          //  return false;
-      //  }
-
-        // Validate Goal Spinner
-      //  if (isSpinnerPromptSelected(goalput)) {
-       //     showMessage("Please select a valid goal.");
-       //     return false;
-      //  }
-
-        // Validate Diet Type Spinner
-       // if (isSpinnerPromptSelected(diettypeput)) {
-       //     showMessage("Please select a valid diet type.");
-      //      return false;
-     //   }
-
-        // Validate Allergies Spinner
-       // if (isSpinnerPromptSelected(allergiesput)) {
-       //     showMessage("Please select a valid allergy option.");
-      //      return false;
-     //    }
 
         // Validate Height
         String heightInput = heightput.getText().toString();
@@ -445,8 +437,16 @@ public class Settings extends AppCompatActivity {
         });
 
         builder.setPositiveButton("OK", (dialog, which) -> {
-            saveSelectedDays(); // Save the selected days when user confirms
+            if(NetworkUtils.isNetworkAvailable(this)==true)
+            {
+                saveSelectedDays(); // Save the selected days when user confirms
+            }
+            else{
+                showNoInternetDialog(); // Show the custom dialog
+            }
+
         });
+
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
@@ -483,6 +483,9 @@ public class Settings extends AppCompatActivity {
             for (UserWeekdayRoom userWeekday : selectedWeekdays) {
                 userWeekdayDao.insertUserWeekday(userWeekday);
             }
+            // Clear and re-create records on the server
+            deleteUserWeekdaysOnServer(userId, selectedWeekdays);
+
 
             // Log or show a message if necessary
             Log.d("Settings", "Selected days saved.");
@@ -550,6 +553,108 @@ public class Settings extends AppCompatActivity {
             // Now, you can show the dialog with the selected days marked
           //  runOnUiThread(() -> showDaysSelectionDialog());
         });
+    }
+
+    private void updateUserOnServer(User updatedUser) {
+        UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
+
+        Call<User> call = userApi.updateUser(updatedUser.getId(), updatedUser);
+        call.enqueue(new retrofit2.Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> showMessage("User updated on server successfully."));
+                } else {
+                    runOnUiThread(() -> showMessage("Failed to update user on server."));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                runOnUiThread(() -> showMessage("Error updating user on server: " + t.getMessage()));
+            }
+        });
+    }
+
+//deleting all the saved days for the user from the server
+    private void deleteUserWeekdaysOnServer(Long userId, List<UserWeekdayRoom> selectedWeekdays) {
+        UserWeekdayApi userWeekdayApi = RetrofitClient.getRetrofitInstance().create(UserWeekdayApi.class);
+        Call<Void> deleteCall = userWeekdayApi.deleteUserWeekday(userId);
+
+        deleteCall.enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    createUserWeekdaysOnServer(userId, selectedWeekdays);
+                } else {
+                    Log.e("Server Sync", "Failed to delete old weekdays on server");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("Server Sync", "Error communicating with server: " + t.getMessage());
+            }
+        });
+    }
+//inserting the new days that the user picked in the server
+    private void createUserWeekdaysOnServer(Long userId, List<UserWeekdayRoom> selectedWeekdays) {
+        UserWeekdayApi userWeekdayApi = RetrofitClient.getRetrofitInstance().create(UserWeekdayApi.class);
+
+        for (UserWeekdayRoom weekday : selectedWeekdays) {
+            UserWeekday userWeekday = new UserWeekday(userId, weekday.getWeekdayId());
+            Call<UserWeekday> createCall = userWeekdayApi.createUserWeekday(userWeekday);
+
+            createCall.enqueue(new retrofit2.Callback<UserWeekday>() {
+                @Override
+                public void onResponse(Call<UserWeekday> call, Response<UserWeekday> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("Server Sync", "Failed to create weekday on server");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserWeekday> call, Throwable t) {
+                    Log.e("Server Sync", "Error creating weekday on server: " + t.getMessage());
+                }
+            });
+        }
+    }
+    public void showRatePlanDialog(Context context) {
+        // Inflate the dialog layout
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.rate_plan_dialog, null);
+
+        // Create the dialog
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);  // Prevent user from closing the dialog without interaction
+        AlertDialog dialog = dialogBuilder.create();
+
+        // Find the Spinner and populate it with numbers 1-10
+        Spinner spinner = dialogView.findViewById(R.id.planratingspinner);
+        List<Integer> ratings = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            ratings.add(i);
+        }
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, ratings);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        // Handle submit button click
+        Button submitButton = dialogView.findViewById(R.id.submitbutton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedRating = (int) spinner.getSelectedItem();
+                // Handle the selected rating, e.g., save it to the database or send it to a server
+                Toast.makeText(context, "You rated the plan: " + selectedRating, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        // Show the dialog
+        dialog.show();
     }
 
 
