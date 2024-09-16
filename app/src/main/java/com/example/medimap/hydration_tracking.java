@@ -36,11 +36,20 @@ import com.example.medimap.server.RetrofitClient;
 import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 
 import retrofit2.Call;
@@ -81,7 +90,7 @@ public class hydration_tracking extends AppCompatActivity {
     private int defaultWaterAmount = 0;
     private List<HydrationRoom> allHydrations;
 //    private List<TempHydrationRoom> allTempHydrations;
-    private Date prevDate;
+    private LocalDate prevDate;
     private boolean connected = false;
 
     //preference
@@ -97,8 +106,18 @@ public class hydration_tracking extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         System.out.println("CREATED HYDRATION TRACKING");
+        createHydrationTrackingPage();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("ON RESUME HYDRATION TRACKING");
+        createHydrationTrackingPage();
+    }
+
+    private void createHydrationTrackingPage(){
 
         //water output text
         waterOutput = findViewById(R.id.waterOutput);
@@ -139,25 +158,47 @@ public class hydration_tracking extends AppCompatActivity {
         // Fetch the single user from local
         getUserRoomTh();
 
+        if(this.userRoom == null) {
+            System.out.println("USER ROOM IS NULL (OnCreate)");
+            Toast.makeText(this, "NO USER WAS FOUND", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         // Fetch hydration data from local
         getNewestHydrationFromRoom();
-        getNewestTempHydrationFromRoom(this.hydrationRoom);
+        if(this.hydrationRoom != null)
+            getNewestTempHydrationFromRoom(this.hydrationRoom);
+        else{
+            System.out.println("HYDRATION ROOM IS NULL (OnCreate)");
+            Toast.makeText(this, "NO HYDRATION FOUND IS NULL", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
-        // set date
-        this.prevDate = Converters.localDateToDate(this.hydrationRoom.getDate());
+        // Set date for daily reset
+        this.prevDate = this.hydrationRoom.getDate();
+        System.out.println("PREV DATE IS: "+this.prevDate);
 
-        // Check Reset
+//        // Check Reset
 //        checkResetData(this.prevDate);
-
+//
         //load water def, goal and amount
         this.defaultWaterAmount = this.userRoom.getWaterDefault();
         this.waterGoal = this.userRoom.getHydrationGoal();
+        System.out.println("WATER GOAL IS: "+this.waterGoal);
+        System.out.println("WATER DEFAULT IS: "+this.defaultWaterAmount);
 
         //load newest hydration
         getNewestHydrationFromRoom();
-        this.currentWaterAmount = this.hydrationRoom.getDrank();
+        if(this.hydrationRoom != null)
+            getNewestTempHydrationFromRoom(this.hydrationRoom);
+        else {
+            System.out.println("HYDRATION ROOM IS NULL (OnCreate)");
+            Toast.makeText(this, "NO HYDRATION FOUND IS NULL", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
-        allHydrations = getAllHydrations();
+        this.currentWaterAmount = this.hydrationRoom.getDrank();
+        System.out.println("CURRENT WATER AMOUNT IS: " + this.currentWaterAmount);
 
         //update visuals
         String defaultWaterTxt = this.defaultWaterAmount + "ml";
@@ -168,17 +209,33 @@ public class hydration_tracking extends AppCompatActivity {
         String waterOutputStr = (int) this.currentWaterAmount + " ml / " + this.waterGoal + " ml";
         waterOutput.setText(waterOutputStr);
 
+        //get hydration data
+        getAllUserHydrations(this.userRoom.getId());
+        if(this.allHydrations == null) {
+            //add example data
+            addExampleHydrationsToRoom();
+        }
+
+        //get hydration data
+        getAllUserHydrations(this.userRoom.getId());
+
+        //check hydration list
+        if(this.allHydrations != null) {
+            for (int i = 0; i < this.allHydrations.size(); i++) {
+                System.out.println("HYDRATION NUM: " + i);
+                HydrationRoom hydR = this.allHydrations.get(i);
+                System.out.println("HYDRATION DATE: " + hydR.getDate() + " " + hydR.getDrank());
+            }
+            //load barChart
+            loadBarChart(this.allHydrations);
+        }
+        else
+            System.out.println("HYDRATION LIST IS NULL (OnCreate");
+
         //listeners for buttons
         addWaterBtn.setOnClickListener(v -> addWater());
         editWaterDefault.setOnClickListener(v -> showEditAmountDialog());
     }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        System.out.println("ON RESUME");
-//        loadData();
-//    }
 
     /**************************************** Getters And Setters ****************************************/
     //getters and setters
@@ -214,7 +271,7 @@ public class hydration_tracking extends AppCompatActivity {
         anim.setDuration(750);
         this.waterProgressBar.startAnimation(anim);
     }
-//
+
 //    private void setAllTempHydrations(List<TempHydrationRoom> allTempHydrations) {
 //        synchronized (this){this.allTempHydrations = allTempHydrations;}
 //    }
@@ -224,71 +281,6 @@ public class hydration_tracking extends AppCompatActivity {
 //    }
 
     /**************************************** Load The Data ****************************************/
-//    private void loadData() {
-//        // Load previously saved water amount
-//        this.currentWaterAmount = getSavedWaterAmount();
-//        System.out.println("LOAD DATA: THIS IS THE CURRENT WATER AMOUNT: " + this.currentWaterAmount);
-//
-//        // Load user dao
-//        userDao = AppDatabaseRoom.getInstance(this).userDao();
-//        System.out.println("LOAD DATA: LOADED USER DAO");
-//
-//        //check user room
-//        if (this.userRoom == null) {
-//            System.out.println("USER ROOM NOT FOUND");
-//            Toast.makeText(this, "user not found", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        this.user = new User(this.userRoom);
-//        System.out.println("USER ID and NAME ARE: " + this.user.getId() + " " + this.user.getEmail());
-//        System.out.println("USER BIRTHDATE: " + this.user.getBirthDate().toString());
-//        //check internet and server connection
-//        boolean connected = CheckConnection();
-//
-//        //get default water amount and goal from user room
-//        this.defaultWaterAmount = userRoom.getWaterDefault();
-//        this.waterGoal = userRoom.getHydrationGoal();
-//        System.out.println("WATER GOAL IS: " + this.waterGoal);
-//        System.out.println("WATER DEFAULT IS: " + this.defaultWaterAmount);
-//
-//        String addWaterTxt = this.defaultWaterAmount + "ml";
-//        this.addWaterBtn.setText(addWaterTxt);
-//        String waterOutputStr = (int) this.currentWaterAmount + " ml / " + this.waterGoal + " ml";
-//        this.waterOutput.setText(waterOutputStr);
-//
-//        /******* TEST *******/
-//        //save a new hydration to room
-//        this.hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
-//        new Thread(() -> {
-//            saveHydration();
-//        }).start();
-//
-//        //delete oldest hydration
-//        new Thread(() -> {
-//            hydrationRoomDao.deleteOldestHydration();
-//            System.out.println("DELETE OLDEST NO ERROR!!!!!");
-//        }).start();
-//
-//        //getting all hydrations for user room
-//        new Thread(() -> {
-//            List<HydrationRoom> hydList = hydrationRoomDao.getAllHydrationsForCustomer(this.userRoom.getId());
-//            if (hydList == null) {
-//                System.out.println("HYDRATION LIST IS NULL!!!!");
-//                return;
-//            }
-//            HydrationRoom hydrationRoom = hydList.get(0);
-//            if (hydrationRoom != null) {
-//                System.out.println("DELETED HYDRATION ROOM!!!!");
-//            }
-//        }).start();
-//
-//        fillWaterBottle();
-//
-//        load barChart
-//        loadBarChart();
-//    }
-
     //gets the local user from server
     private void getUserFromServer(String email){
         // Call the API to get the user by email from the server
@@ -358,7 +350,7 @@ public class hydration_tracking extends AppCompatActivity {
             // Wait for the thread to finish
             fetchUserRoomTh.join();
         } catch (Exception e) {
-            Log.e("HYDRATION_TRACKING", "SOMETHING WENT WRONG", e);
+            System.out.println("EXCEPTION WHILE GETTING USER ROOM");
             Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
             //finish activity and go back to home
             finish();
@@ -366,15 +358,27 @@ public class hydration_tracking extends AppCompatActivity {
     }
 
     private void getAllUserHydrations(Long userId){
-        List<Hydration> allHydrations=null;
         if(this.connected){
             getUserHydrationsFromServer(userId);
         }
         else{
-            new Thread(() -> {
+            Thread getHydrationListTh = new Thread(() -> {
                 List<HydrationRoom> allHydRoom = this.hydrationRoomDao.getAllHydrationsForCustomer(userId);
+                if(allHydRoom ==null)
+                    System.out.println("HYD LIST IS NULL (getHydrationListTh)");
                 setAllHydrations(allHydRoom);
             });
+            getHydrationListTh.start();
+
+            try {
+                //wait for thread to finish
+                getHydrationListTh.join();
+            } catch (Exception e) {
+                Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+                System.out.println("EXCEPTION WHILE GETTING USER "+userId+" HYD LIST");
+                //finish activity and go back to home
+                finish();
+            }
         }
         return;
     }
@@ -429,7 +433,7 @@ public class hydration_tracking extends AppCompatActivity {
 //                        Toast.makeText(hydration_tracking.this, "No hydration data found", Toast.LENGTH_SHORT).show();
 //                    }
 //                });
-                System.out.println("GOING TO CREATE A NEW HYDRATION");
+                System.out.println("GOING TO CREATE A NEW HYDRATION (NULL)");
                 createNewHydration(this.userRoom.getId());
                 System.out.println("CREATED NEW HYDRATION DATE IS: "+this.hydrationRoom.getDate());
                 return;
@@ -439,7 +443,6 @@ public class hydration_tracking extends AppCompatActivity {
                 setThisHydrationRoom(newestHydration);
                 System.out.println("LOAD DATA: LOADED HYDRATION ROOM");
                 System.out.println("HYDRATION ROOM IS: " + newestHydration.getDate() + " " + newestHydration.getDrank());
-                getNewestTempHydrationFromRoom(newestHydration);
             }
         });
         getNewestHydrationTh.start();
@@ -471,7 +474,7 @@ public class hydration_tracking extends AppCompatActivity {
 //                        Toast.makeText(hydration_tracking.this, "No temp hydration data found", Toast.LENGTH_SHORT).show();
 //                    }
 //                });
-                System.out.println("GOING TO CREATE A NEW TEMP HYDRATION");
+                System.out.println("GOING TO CREATE A NEW TEMP HYDRATION (NULL)");
                 createNewTempHydration(this.userRoom.getId());
                 System.out.println("CREATED NEW TEMP HYDRATION DATE IS: "+this.tempHydrationRoom.getDate());
                 return;
@@ -533,98 +536,150 @@ public class hydration_tracking extends AppCompatActivity {
         }
     }
 
-    private void loadBarChart() {
-//        private void loadStepDataIntoChart() {
-//            new Thread(() -> {
-//                // Retrieve data from the database
-//                Long userId = this.userRoom.getId();
-//                List<HydrationRoom> stepData = this.hydrationRoomDao.getAllHydrationsForCustomer(userId);
-//
-//                // Prepare the entries for the bar chart
-//                List<BarEntry> entries = new ArrayList<>();
-//                List<String> formattedDates = new ArrayList<>(); // To store formatted dates for x-axis labels
-//
-//                for (int i = 0; i < stepData.size(); i++) {
-//                    StepCountRoom step = stepData.get(i);
-//                    // Use the index as x-axis and the step count as y-axis
-//                    entries.add(new BarEntry(i, step.getSteps()));
-//                    // Format the date without the year (day-month)
-//                    String formattedDate = sdf.format(java.sql.Date.valueOf(step.getDate()));
-//                    formattedDates.add(formattedDate); // Collect formatted dates for x-axis labels
-//                }
-//
-//                // Post the data to the main thread to update the chart
-//                runOnUiThread(() -> {
-//                    BarChart barChart = findViewById(R.id.stepChart);
-//
-//                    // Create the dataset
-//                    BarDataSet dataSet = new BarDataSet(entries, "Steps");
-//                    dataSet.setColor(getResources().getColor(R.color.white)); // Set bar color
-//                    dataSet.setValueTextColor(getResources().getColor(R.color.black)); // Value text color
-//
-//                    // Customize bar width
-//                    BarData barData = new BarData(dataSet);
-//                    barData.setBarWidth(0.9f); // Set custom bar width
-//
-//                    // Set the data to the chart
-//                    barChart.setData(barData);
-//                    barChart.setFitBars(true); // Make the bars fit nicely within the chart
-//                    barChart.invalidate();  // Refresh the chart with the new data
-//
-//                    // Customize x-axis
-//                    XAxis xAxis = barChart.getXAxis();
-//                    xAxis.setValueFormatter(new IndexAxisValueFormatter(formattedDates)); // Display formatted dates (day-month) on x-axis
-//                    xAxis.setGranularity(1f); // Ensure labels are spaced evenly
-//                    xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Position x-axis labels at the bottom
-//
-//                    // Customize y-axis
-//                    YAxis leftAxis = barChart.getAxisLeft();
-//                    leftAxis.setAxisMinimum(0f); // Start y-axis at 0
-//                    leftAxis.setAxisMaximum(12000f); // Set a maximum limit for better visualization (optional)
-//
-//                    // Add goal line (LimitLine) at 10,000 steps
-//                    LimitLine goalLine = new LimitLine(10000f, "Step Goal (10,000)");
-//                    goalLine.setLineWidth(2f); // Set the thickness of the goal line
-//                    goalLine.setLineColor(getResources().getColor(R.color.red)); // Set the color of the goal line
-//                    goalLine.setTextSize(12f); // Set the text size for the label
-//                    goalLine.setTextColor(getResources().getColor(R.color.red)); // Set the text color for the label
-//
-//                    // Add the goal line to the left axis
-//                    leftAxis.addLimitLine(goalLine);
-//
-//                    barChart.getAxisRight().setEnabled(false); // Disable the right y-axis
-//
-//                    // Enable chart scaling and dragging
-//                    barChart.setDragEnabled(true); // Enable dragging
-//                    barChart.setScaleEnabled(true); // Enable scaling
-//                    barChart.setScaleXEnabled(true); // Enable horizontal scaling
-//                    barChart.setPinchZoom(false); // Disable pinch zooming
-//                    barChart.setDoubleTapToZoomEnabled(true); // Enable double-tap zoom
-//
-//                    // Set visible range (number of bars visible at once)
-//                    barChart.setVisibleXRangeMaximum(7); // Show only 7 bars at a time
-//                    barChart.moveViewToX(entries.size() - 7); // Move to the last 7 entries
-//
-//                    // Add animation
-//                    barChart.animateY(1000); // Animate chart on the y-axis for 1 second
-//
-//                    // Customize legend
-//                    Legend legend = barChart.getLegend();
-//                    legend.setTextSize(14f); // Set text size
-//                    legend.setForm(Legend.LegendForm.CIRCLE); // Customize legend form
-//                });
-//            }).start();
-//        }
+    //creates example hydration for barChart
+    private void addExampleHydrationsToRoom() {
+        List<HydrationRoom> hydrationList = new ArrayList<>();
+
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1500.0, LocalDate.of(2024, 9, 1)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2000.0, LocalDate.of(2024, 9, 2)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1200.0, LocalDate.of(2024, 9, 3)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2500.0, LocalDate.of(2024, 9, 4)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1000.0, LocalDate.of(2024, 9, 5)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2300.0, LocalDate.of(2024, 9, 6)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1700.0, LocalDate.of(2024, 9, 7)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2100.0, LocalDate.of(2024, 9, 8)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 4000.0, LocalDate.of(2024, 9, 9)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 3000.0, LocalDate.of(2024, 9, 10)));
+
+        // Iterate through the hydrationList and insert each HydrationRoom
+        for (HydrationRoom hydrationRoom : hydrationList) {
+            addHydrationToRoom(hydrationRoom);
+        }
     }
 
-    private int getSavedWaterAmount() {
-        int waterAmount = 0;
-//        if (this.sharedPreferences == null) {
-//            System.out.println("DATA NOT FOUND");
-//            Toast.makeText(this, "data not found", Toast.LENGTH_SHORT).show();
-//        }
-//        waterAmount = sharedPreferences.getInt("drank", 0);
-        return waterAmount;
+    //adds a hydration to the room
+    private void addHydrationToRoom(HydrationRoom hydrationRoom){
+        Thread addHydrationTh = new Thread(() -> {
+            this.hydrationRoomDao.insertHydration(hydrationRoom);
+        });
+        addHydrationTh.start();
+
+        try {
+            //wait for thread to finish
+            addHydrationTh.join();
+        } catch (Exception e) {
+            System.out.println("EXCEPTION WHEN ADDING EXAMPLE HYDRATION");
+            //finish activity and go back to home
+            finish();
+        }
+    }
+
+    private void loadBarChart(List<HydrationRoom> hydrationData) {
+        Thread loadBarChartTh = new Thread(() -> {
+            // Prepare the entries for the bar chart
+            List<BarEntry> entries = new ArrayList<>();
+            List<String> formattedDates = new ArrayList<>(); // To store formatted dates for x-axis labels
+
+            // Date formatter to format the date as "dd-MM" (day-month)
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
+
+            for (int i = 0; i < hydrationData.size(); i++) {
+                HydrationRoom hydration = hydrationData.get(i);
+
+                // Use the index as x-axis and the drank as y-axis
+                entries.add(new BarEntry(i, hydration.getDrank().intValue()));
+
+                // Format the date without the year (day-month)
+                Date hydrationDate = Converters.localDateToDate(hydration.getDate());
+                String formattedDate = sdf.format(hydrationDate);
+                formattedDates.add(formattedDate); // Collect formatted dates for x-axis labels
+            }
+
+            // Post the data to the main thread to update the chart
+            runOnUiThread(() -> {
+                // Create the dataset
+                BarDataSet dataSet = new BarDataSet(entries, "Hydration");
+                dataSet.setColor(getResources().getColor(R.color.blue)); // Set bar color
+                dataSet.setValueTextColor(getResources().getColor(R.color.black)); // Value text color
+
+                // Customize bar width
+                BarData barData = new BarData(dataSet);
+                barData.setBarWidth(0.8f); // Set custom bar width
+
+                // Set the data to the chart
+                this.barChart.setData(barData);
+                this.barChart.setFitBars(true); // Make the bars fit nicely within the chart
+                this.barChart.invalidate();  // Refresh the chart with the new data
+
+                // Customize x-axis
+                XAxis xAxis = this.barChart.getXAxis();
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(formattedDates)); // Display formatted dates (day-month) on x-axis
+                xAxis.setGranularity(1f); // Ensure labels are spaced evenly
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Position x-axis labels at the bottom
+
+                // Customize y-axis
+                YAxis leftAxis = this.barChart.getAxisLeft();
+                leftAxis.setAxisMinimum(0f); // Start y-axis at 0
+                float maxDrank = getMaxDrank(hydrationData).floatValue() +500;
+                leftAxis.setAxisMaximum(maxDrank); // Set a maximum limit for better visualization (optional)
+
+                // Add goal line (LimitLine) at 10,000 steps
+                String goalLineStr = "Hydration Goal: "+this.waterGoal+"ml";
+                LimitLine goalLine = new LimitLine(this.waterGoal, goalLineStr);
+                goalLine.setLineWidth(1.5f); // Set the thickness of the goal line
+                goalLine.setLineColor(getResources().getColor(R.color.red)); // Set the color of the goal line
+                goalLine.setTextSize(8f); // Set the text size for the label
+                goalLine.setTextColor(getResources().getColor(R.color.red)); // Set the text color for the label
+
+                // Add the goal line to the left axis
+                leftAxis.addLimitLine(goalLine);
+
+                // Enable chart scaling and dragging
+                this.barChart.setDragEnabled(true); // Enable dragging
+                this.barChart.setScaleEnabled(true); // Enable scaling
+                this.barChart.setScaleXEnabled(true); // Enable horizontal scaling
+                this.barChart.setPinchZoom(false); // Disable pinch zooming
+                this.barChart.setDoubleTapToZoomEnabled(true); // Enable double-tap zoom
+
+                this.barChart.getAxisRight().setEnabled(false); // Disable the right y-axis
+                this.barChart.getLegend().setEnabled(false); // Disable the legend
+                this.barChart.getDescription().setText("");
+                this.barChart.setDrawGridBackground(false); // Disable grid lines
+
+                // Set visible range (number of bars visible at once)
+                this.barChart.setVisibleXRangeMaximum(7); // Show only 7 bars at a time
+                this.barChart.moveViewToX(entries.size() - 7); // Move to the last 7 entries
+
+                // Add animation
+                this.barChart.animateY(1000); // Animate chart on the y-axis for 1 second
+            });
+        });
+        loadBarChartTh.start();
+
+        try {
+            // Wait for the thread to finish
+            loadBarChartTh.join();
+        } catch (Exception e) {
+            System.out.println("EXCEPTION WHEN LOADING BAR CHART");
+        }
+    }
+
+    private Double getMaxDrank(List<HydrationRoom> hydrationList) {
+        if (hydrationList == null || hydrationList.isEmpty()) {
+            return null; // Return null or some default value if the list is empty or null
+        }
+
+        // Initialize maxDrank with the first object's "drank" value
+        Double maxDrank = Double.MIN_VALUE;
+
+        // Iterate through the list to find the maximum drank value
+        for (HydrationRoom hydration : hydrationList) {
+            if (hydration.getDrank() > maxDrank) {
+                maxDrank = hydration.getDrank();
+            }
+        }
+
+        return maxDrank; // Return the maximum "drank" value
     }
 
     /**************************************** Add Water ****************************************/
@@ -636,10 +691,20 @@ public class hydration_tracking extends AppCompatActivity {
         this.tempHydrationRoom.setDrank(this.currentWaterAmount);
 
         //update hydration in room
-        new Thread(() -> {
+        Thread addHydrationTh = new Thread(() -> {
             hydrationRoomDao.updateHydration(this.hydrationRoom);
             tempHydrationRoomDao.updateTempHydration(this.tempHydrationRoom);
-        }).start();
+        });
+        addHydrationTh.start();
+
+        try {
+            //wait for thread to finish
+            addHydrationTh.join();
+        } catch (Exception e) {
+            System.out.println("EXCEPTION WHEN ADDING WATER");
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+            //finish activity and go back to home
+        }
 
         String waterOutputStr = (int) this.currentWaterAmount + " ml / " + this.waterGoal + " ml";
         waterOutput.setText(waterOutputStr);
@@ -680,17 +745,27 @@ public class hydration_tracking extends AppCompatActivity {
                     input.setText("");
                 }
                 else if(inputWaterAmount == this.defaultWaterAmount){
-                    Toast.makeText(this, "No changes were made", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "No change", Toast.LENGTH_SHORT).show();
                     input.setText("");
                 }
                 else {
                     this.defaultWaterAmount = inputWaterAmount;
                     System.out.println("UPDATED WATER DEFAULT: "+this.defaultWaterAmount);
                     //update default hydration in room
-                    new Thread(() -> {
+                    Thread updateDefaultWaterTh = new Thread(() -> {
                         this.userRoom.setWaterDefault(this.defaultWaterAmount);
                         this.userDao.updateUser(userRoom);
-                    }).start();
+                    });
+                    updateDefaultWaterTh.start();
+
+                    try {
+                        //wait for thread to finish
+                        updateDefaultWaterTh.join();
+                    } catch (Exception e) {
+                        System.out.println("EXCEPTION WHEN UPDATING DEFAULT WATER");
+                        Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+                        //finish activity and go back to home
+                    }
 
                     //set button text
                     String addWaterTxt = this.defaultWaterAmount + "ml";
@@ -707,82 +782,9 @@ public class hydration_tracking extends AppCompatActivity {
     }
 
     /**************************************** Save the Data ****************************************/
-    public void scheduleDailyReset() {
-//        Calendar currentDate = Calendar.getInstance();
-//        Calendar dueDate = Calendar.getInstance();
-//
-//        // Set the time to 00:00
-//        dueDate.set(Calendar.HOUR_OF_DAY, 0);
-//        dueDate.set(Calendar.MINUTE, 0);
-//        dueDate.set(Calendar.SECOND, 0);
-//
-//        // Check if the dueDate has already passed today, schedule for the next day
-//        if (dueDate.before(currentDate)) {
-//            dueDate.add(Calendar.HOUR_OF_DAY, 24);
-//        }
-//
-//        long timeDiff = dueDate.getTimeInMillis() - currentDate.getTimeInMillis();
-
-        // Schedule the work
-//        WorkRequest dailyWorkRequest =
-//                new PeriodicWorkRequest.Builder(ResetWorker.class, 24, TimeUnit.HOURS)
-//                        .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
-//                        .build();
-//
-//        WorkManager.getInstance(getApplicationContext()).enqueue(dailyWorkRequest);
-
-        //update user in server
-//        Service.getInstance().updateUser(userRoom.getId(), this.user);
-//
-//        //save new hydration in room and server
-//        saveHydration();
-
-        //Current date
-        Date currDate = new Date();
-
-        //previous date
-        setPrevDate(this.prevDate);
-
-        //if day changed
-        if(currDate.after(this.prevDate)){
-            //update user in server
-            getUserFromServer(this.userRoom.getEmail());
-            this.user.setWaterDefault(this.userRoom.getWaterDefault());
-            /******** add user to server ********/
-
-            saveHydration();
-        }
-
-
-    }
-
-    private void setPrevDate(Date date){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        this.sharedPreferences.edit().putLong("prevDate", date.getTime()).apply();
-        editor.apply();
-    }
-
-    private Date getPrevDate(){
-        long  prevLong = this.sharedPreferences.getLong("prevDate",0 );
-        return new Date(prevLong);
-    }
-
-    private void saveHydration() {
-//        //add hydrationRoom in room
-//        new Thread(() -> {
-//            hydrationRoom.setDrank(this.currentWaterAmount);
-//            hydrationRoomDao.insertHydration(hydrationRoom);
-//            System.out.println("HYDRATION SAVED IN ROOM: drank= "+hydrationRoom.getDrank()+
-//                    " ID= "+hydrationRoom.getId()+" DATE= "+hydrationRoom.getDate().toString());
-//        }).start();
-
-        //add hydration in server
-        //Service.getInstance().addHydration(hydration);
-    }
-
-    private void checkResetData(Date prevDate){
-        Date currDate = new Date();
-        if(currDate.after(prevDate)) {
+    private void checkResetData(LocalDate prevDate){
+        LocalDate currDate = LocalDate.now();
+        if(currDate.isAfter(prevDate)) {
             Thread resetThread = new Thread(() -> {
 
                 List<HydrationRoom> allHyd = hydrationRoomDao.getAllHydrationsForCustomer(this.userRoom.getId());
@@ -842,18 +844,21 @@ public class hydration_tracking extends AppCompatActivity {
         }
     }
 
+    //uploads a user to server
     private void uploadUserToServer(User user) {
         this.userApi.updateUser(user.getId(),user);
     }
 
+    //upload a temp hydration to server
     private void uploadHydrationToServer(Hydration hydration){
         this.hydrationApi.createHydration(hydration);
     }
 
+    //uploads all temp hydration to server
     private void uploadAllTempHydration(List<TempHydrationRoom> allTempHydrations, User user){
         for(TempHydrationRoom tempH : allTempHydrations){
             Hydration hydration = new Hydration(tempH);
-            hydration.setCustomerId(user.getId());/*******************************************/
+            hydration.setCustomerId(user.getId());
             uploadHydrationToServer(hydration);
         }
     }

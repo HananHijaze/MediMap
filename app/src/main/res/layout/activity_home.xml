@@ -56,7 +56,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/nameText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
@@ -171,7 +171,7 @@
 
                         <LinearLayout
                             android:id="@+id/waterLayout"
-                            android:layout_width="80dp"
+                            android:layout_width="75dp"
                             android:layout_height="300dp"
                             android:layout_weight="1"
                             android:background="@drawable/custom_linear_layout"
@@ -180,7 +180,7 @@
                             android:backgroundTint="#B6F9FF">
 
                             <ProgressBar
-                                android:id="@+id/waterBottleProgress"
+                                android:id="@+id/waterProgress"
                                 style="?android:attr/progressBarStyleHorizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
