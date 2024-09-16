@@ -11,11 +11,12 @@ public class Meal {
     private Double fats;
     private String type; // e.g., breakfast, lunch, dinner, snack
     private String Diet_type;//vegetarian, vegan, keto, gluten-free, dairy-free,pescatarian
+    private int cluster;
 
     // Constructors
     public Meal() {}
 
-    public Meal(String name, Integer calories, Double protein, Double carbs, Double fats, String type, String diet_type) {
+    public Meal(String name, Integer calories, Double protein, Double carbs, Double fats, String type, String diet_type,int cluster) {
         this.name = name;
         this.calories = calories;
         this.protein = protein;
@@ -23,6 +24,7 @@ public class Meal {
         this.fats = fats;
         this.type = type;
         this.Diet_type= diet_type;
+        this.cluster=cluster;
     }
 
     // Getters and Setters
@@ -88,5 +90,11 @@ public class Meal {
 
     public void setDiet_type(String diet_type) {
         this.Diet_type = diet_type;
+    }
+    public int getCluster() {
+        return cluster;
+    }
+    public void setCluster(int cluster) {
+        this.cluster = cluster;
     }
 }
