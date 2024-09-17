@@ -118,7 +118,6 @@ public class hydration_tracking extends AppCompatActivity {
             return insets;
         });
         System.out.println("CREATED HYDRATION TRACKING");
-        createNotificationChannel();
 
         createHydrationTrackingPage();
 
@@ -132,7 +131,6 @@ public class hydration_tracking extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         System.out.println("ON RESUME HYDRATION TRACKING");
-        createNotificationChannel();
 
         createHydrationTrackingPage();
     }
@@ -808,6 +806,8 @@ public class hydration_tracking extends AppCompatActivity {
     }
 
     private void sendNotification() {
+        createNotificationChannelHyd();
+
         String channelId = "hydration_goal_channel"; // The same ID used when creating the channel
         String title = "Hydration Goal Reached!";
         String message = "Congratulations! You've reached your daily hydration goal of " + this.waterGoal + " ml.";
@@ -827,7 +827,7 @@ public class hydration_tracking extends AppCompatActivity {
         }
     }
 
-    private void createNotificationChannel() {
+    private void createNotificationChannelHyd() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
             String channelId = "hydration_goal_channel";
@@ -956,8 +956,13 @@ public class hydration_tracking extends AppCompatActivity {
                     }
 
                 }
+                if(this.tempHydrationRoom !=null) {
+                    LocalDate today = LocalDate.now();
+                    if( !(this.tempHydrationRoom.getDate().equals(today)) ) {
+                        createNewTempHydration(this.userRoom.getId());
+                    }
+                }
                 createNewHydration(this.userRoom.getId());
-                createNewTempHydration(this.userRoom.getId());
             });
             resetThread.start();
 

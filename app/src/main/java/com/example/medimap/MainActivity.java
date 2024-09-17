@@ -85,22 +85,6 @@ public class MainActivity extends AppCompatActivity {
 //            createShortcut();
 //        }
 
-        Thread deleteExamplesTh = new Thread(() -> {
-            HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
-            hydrationRoomDao.deleteAllHydrations();
-            TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
-            tempHydrationRoomDao.deleteAllTempHydration();
-        });
-        deleteExamplesTh.start();
-
-        try{
-            deleteExamplesTh.join();
-        }catch (Exception e){
-            System.out.println("EXCEPTION WHEN DELETING EXAMPLE HYDRATION");
-            //finish activity and go back to home
-            finish();
-        }
-
         // Check the users and navigate accordingly using a background thread
         new Thread(() -> {
             List<UserRoom> users = userDao.getAllUsers(); // Get all users
@@ -117,22 +101,22 @@ public class MainActivity extends AppCompatActivity {
                     HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
                     TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
 
-                    Thread HydrationExamplesTh = new Thread(() -> {
-                        hydrationRoomDao.deleteAllHydrations();
-                        tempHydrationRoomDao.deleteAllTempHydration();
-
-                        //add example hydration data
-                        addExampleHydrationsToRoom(userRoom);
-                    });
-                    HydrationExamplesTh.start();
-
-                    try{
-                        HydrationExamplesTh.join();
-                    }catch (Exception e){
-                        System.out.println("EXCEPTION WHEN DELETING AND ADDING EXAMPLE HYDRATION");
-                        //finish activity and go back to home
-                        finish();
-                    }
+//                    Thread HydrationExamplesTh = new Thread(() -> {
+//                        hydrationRoomDao.deleteAllHydrations();
+//                        tempHydrationRoomDao.deleteAllTempHydration();
+//
+//                        //add example hydration data
+//                        addExampleHydrationsToRoom(userRoom);
+//                    });
+//                    HydrationExamplesTh.start();
+//
+//                    try{
+//                        HydrationExamplesTh.join();
+//                    }catch (Exception e){
+//                        System.out.println("EXCEPTION WHEN DELETING AND ADDING EXAMPLE HYDRATION");
+//                        //finish activity and go back to home
+//                        finish();
+//                    }
                     navigateTo(Home.class); // Navigate to Home if logged in
 
                 } else {
@@ -144,22 +128,22 @@ public class MainActivity extends AppCompatActivity {
                     HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
                     TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
 
-                    Thread HydrationExamplesTh = new Thread(() -> {
-                        hydrationRoomDao.deleteAllHydrations();
-                        tempHydrationRoomDao.deleteAllTempHydration();
-
-                        //add example hydration data
-                        addExampleHydrationsToRoom(userRoom);
-                    });
-                    HydrationExamplesTh.start();
-
-                    try{
-                        HydrationExamplesTh.join();
-                    }catch (Exception e){
-                        System.out.println("EXCEPTION WHEN DELETING AND ADDING EXAMPLE HYDRATION");
-                        //finish activity and go back to home
-                        finish();
-                    }
+//                    Thread HydrationExamplesTh = new Thread(() -> {
+//                        hydrationRoomDao.deleteAllHydrations();
+//                        tempHydrationRoomDao.deleteAllTempHydration();
+//
+//                        //add example hydration data
+//                        addExampleHydrationsToRoom(userRoom);
+//                    });
+//                    HydrationExamplesTh.start();
+//
+//                    try{
+//                        HydrationExamplesTh.join();
+//                    }catch (Exception e){
+//                        System.out.println("EXCEPTION WHEN DELETING AND ADDING EXAMPLE HYDRATION");
+//                        //finish activity and go back to home
+//                        finish();
+//                    }
 
                     navigateTo(LogIn.class); // Navigate to LogIn if not logged in
 
@@ -171,12 +155,12 @@ public class MainActivity extends AppCompatActivity {
 
         /*********************************** ADDING TESTER USER ***********************************/
         // Remove all existing users in the background
-        new Thread(() -> {
-            userDao.deleteAllUsers();
-            UserRoom newUser = createTestUser();// Create a new test user
-            userDao.insertUser(newUser); // Insert the test user
-            Log.d("MainActivity", "Test user added: " + newUser.toString());
-        }).start();
+//        new Thread(() -> {
+//            userDao.deleteAllUsers();
+//            UserRoom newUser = createTestUser();// Create a new test user
+//            userDao.insertUser(newUser); // Insert the test user
+//            Log.d("MainActivity", "Test user added: " + newUser.toString());
+//        }).start();
     }
 
     private void addExampleHydrationsToRoom(UserRoom userRoom) {
@@ -256,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 "Keto",
                 2,  // Meals per day
                 2,  // Snacks per day
-                200  // Default water intake
+                150  // Default water intake
 
         );
     }
