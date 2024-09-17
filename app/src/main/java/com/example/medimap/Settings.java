@@ -59,6 +59,7 @@ public class Settings extends AppCompatActivity {
     private UserRoom userRoom;
     private UserApi userApi;
     private UserWeekdayDao userWeekdayDao;
+    private int selectedRating;
 
     // Selecting training days
     private TextView selectTrainingDays;
@@ -297,8 +298,9 @@ public class Settings extends AppCompatActivity {
                     // Update the user data on the server
                     updateUserOnServer(updatedUser);
                     showRatePlanDialog(Settings.this);
-                    //we first want to see if the user likes his plan we might not want to create a new plan all the time
-                    //CreatingPlan.getInstance().createPlan(Settings.this, updatedUser);
+                    if(selectedRating<8)//we only create a new plan if the firts one got a rating less than 8
+                        CreatingPlan.getInstance().createPlan(Settings.this, updatedUser);
+
                     runOnUiThread(() -> showMessage("User data saved successfully."));
                 } catch (Exception e) {
                     runOnUiThread(() -> showMessage("Failed to save user data. Please try again."));
@@ -646,7 +648,8 @@ public class Settings extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int selectedRating = (int) spinner.getSelectedItem();
+                selectedRating = (int) spinner.getSelectedItem();
+
                 // Handle the selected rating, e.g., save it to the database or send it to a server
                 Toast.makeText(context, "You rated the plan: " + selectedRating, Toast.LENGTH_SHORT).show();
                 dialog.dismiss();

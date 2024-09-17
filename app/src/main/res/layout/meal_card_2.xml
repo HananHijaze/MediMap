@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
                 android:src="@drawable/lunch"
-            android:contentDescription="Meal Icon" />
+                android:contentDescription="Meal Icon" />
         </androidx.cardview.widget.CardView>
 
         <!-- Right side content in RelativeLayout -->
@@ -181,20 +181,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
-            <!-- Edit button in the top right corner -->
-            <ImageButton
-                android:id="@+id/Editb"
-                android:layout_width="wrap_content"
-                android:layout_height="89dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Edit Meal"
-                android:importantForAccessibility="yes"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:src="@drawable/ic_editt" />
 
         </RelativeLayout>
 
