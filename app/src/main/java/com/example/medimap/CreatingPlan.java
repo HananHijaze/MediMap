@@ -64,7 +64,7 @@ public class CreatingPlan {
         workoutPlanDao = roomdb.weeklyTrainingPlanRoomDao();
         mealPlanDao = roomdb.weeklyMealPlanRoomDao();
         mealDao = roomdb.mealDao();
-         workoutDao = roomdb.workoutDao();
+        workoutDao = roomdb.workoutDao();
         deletefromroom();
         // Encode the User into an encodedUser
         encodedUser encodedUser = UserDataEncoder.encodeValues(user);

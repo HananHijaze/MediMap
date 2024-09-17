@@ -97,19 +97,19 @@
     <string name="_0_snacks">0 Snacks</string>
     <string name="_1_snack">1 Snack</string>
     <string name="_2_snacks">2 Snacks</string>
-        <!-- Meals per Day Array -->
-        <string-array name="meals_per_day_array">
-            <item>2</item>
-            <item>3</item>
-            <item>4</item>
-        </string-array>
+    <!-- Meals per Day Array -->
+    <string-array name="meals_per_day_array">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
 
-        <!-- Snacks per Day Array -->
-        <string-array name="snacks_per_day_array">
-            <item>0</item>
-            <item>1</item>
-            <item>2</item>
-        </string-array>
+    <!-- Snacks per Day Array -->
+    <string-array name="snacks_per_day_array">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string name="meals_per_day">Meals per day</string>
 
     <string-array name="workout_location_array">

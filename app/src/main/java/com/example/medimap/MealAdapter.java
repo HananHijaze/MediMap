@@ -164,7 +164,6 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
                                       if (response.isSuccessful()) {
                                           List<MealPlan> mealPlans = response.body();
                                             for(MealPlan mp : mealPlans){
-                                                System.out.println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+mp.getCreationdate());
                                                 Date creationDate = mp.getCreationdate();
                                                 Calendar calendar = Calendar.getInstance();
                                                 calendar.setTime(creationDate);

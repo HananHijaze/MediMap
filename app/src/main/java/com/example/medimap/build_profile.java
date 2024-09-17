@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -67,11 +68,37 @@ public class build_profile extends AppCompatActivity {
         // Initialize Room database
         appDatabase = AppDatabaseRoom.getInstance(this);
 
-        try {
-            insertUser(); // Insert user into Room and server
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+// Handler to run code on the main thread
+        Handler handler = new Handler(Looper.getMainLooper());
+        // In your method
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    insertUser(); // Insert user into Room and server
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // Use handler to execute code after the thread finishes
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // This will run on the main (UI) thread
+                        if (NetworkUtils.isNetworkAvailable(build_profile.this)) {
+                            retrieveAndSaveUserDataToDatabase();
+                            createplan();
+                        } else {
+                            showNoInternetDialog(); // Show dialog if no internet
+                        }
+                    }
+                });
+            }
+        });
+
+// Start the thread
+        thread.start();
+
 
         // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -81,7 +108,7 @@ public class build_profile extends AppCompatActivity {
             finish(); // Optionally finish this activity if you don't want to return to it
         }, 5000);
 
-//        // Check internet connection before proceeding (preserved as a comment for now)
+        // Check internet connection before proceeding (preserved as a comment for now)
         if (NetworkUtils.isNetworkAvailable(this)) {
             retrieveAndSaveUserDataToDatabase();
             createplan();
@@ -237,8 +264,11 @@ public class build_profile extends AppCompatActivity {
                 email, fullName, password, gender, height, weight, parseDate(getFormattedDate(birthdate)),
                 bodyType, goal, 6000, waterGoal, workoutPlace, dietType, mealsPerDay, snacksPerDay, 150
         );
-
+        Throwable t = null;
+        Log.e("we are here","hereweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+newUser_Server.getId()+newUser_Server.getEmail(),t);
         // Send user to server
+
+
         Service.getInstance().addUser(newUser_Server);
     }
 
@@ -265,7 +295,7 @@ public class build_profile extends AppCompatActivity {
         UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
 
         // Make the API call to get the user by email
-        Call<User> call = userApi.getUserById(1L);
+        Call<User> call = userApi.findByEmail(email);
 
         call.enqueue(new Callback<User>() {
             @Override
