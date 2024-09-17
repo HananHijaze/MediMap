@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ public class build_profile extends AppCompatActivity {
     private static final String PREFS_NAME = "UserSignUpData"; // SharedPreferences file name
     private AppDatabaseRoom appDatabase; // Room database instance
     private User user;
-    private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
+    private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss";
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 
     @Override
@@ -81,12 +82,12 @@ public class build_profile extends AppCompatActivity {
             finish(); // Optionally finish this activity if you don't want to return to it
         }, 5000);
 
-//        // Check internet connection before proceeding (preserved as a comment for now)
-        if (NetworkUtils.isNetworkAvailable(this)) {
-            retrieveAndSaveUserDataToDatabase();
+////        // Check internet connection before proceeding (preserved as a comment for now)
+       if (NetworkUtils.isNetworkAvailable(this)) {
+           retrieveAndSaveUserDataToDatabase();
             createplan();
-        } else {
-            showNoInternetDialog(); // Show dialog if no internet
+       } else {
+           showNoInternetDialog(); // Show dialog if no internet
         }
     }
 
@@ -237,9 +238,30 @@ public class build_profile extends AppCompatActivity {
                 email, fullName, password, gender, height, weight, parseDate(getFormattedDate(birthdate)),
                 bodyType, goal, 6000, waterGoal, workoutPlace, dietType, mealsPerDay, snacksPerDay, 150
         );
-
+        Throwable t = null;
+        Log.e("we are here","hereweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+newUser_Server.getId()+newUser_Server.getEmail(),t);
         // Send user to server
-        Service.getInstance().addUser(newUser_Server);
+
+        Thread addUserThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Call the addUser function inside the thread
+                Service.getInstance().addUser(newUser_Server);
+            }
+        });
+
+// Start the thread
+        addUserThread.start();
+
+        try {
+            // Wait for the thread to complete before calling getplan()
+            addUserThread.join();
+            // Now call getplan after the addUser thread has finished
+            getplan(newUser_Server);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     // Method to parse String to Date

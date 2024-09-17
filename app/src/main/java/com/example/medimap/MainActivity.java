@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 "tester@test.com",
                 "test test",
                 "test123",
-                "Male",
+                "male",
                 170,
                 70,
                 "05/07/2004",
