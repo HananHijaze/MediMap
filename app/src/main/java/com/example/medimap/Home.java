@@ -175,6 +175,8 @@ public class Home extends AppCompatActivity implements SensorEventListener {
 
         System.out.println("CREATED HOME");
 
+        System.out.println("DATE TODAY IS: "+LocalDate.now());
+
         // Navigation buttons
         MaterialButton leftButton = findViewById(R.id.left);
         leftButton.setOnClickListener(view -> {
@@ -262,7 +264,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
 
         System.out.println("GOING TO CREATE HYDRATION SECTION");
         //create hydration section
-        //createHydrationTrackingPage();
+        createHydrationTrackingPage();
     }
 
     /***************************************** Steps *****************************************/
@@ -407,7 +409,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
             sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-        //createHydrationTrackingPage();
+        createHydrationTrackingPage();
     }
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -1112,6 +1114,8 @@ public class Home extends AppCompatActivity implements SensorEventListener {
     }
 
     private void sendNotification() {
+        createNotificationChannelHyd();
+
         String channelId = "hydration_goal_channel"; // The same ID used when creating the channel
         String title = "Hydration Goal Reached!";
         String message = "Congratulations! You've reached your daily hydration goal of " + this.waterGoal + " ml.";
@@ -1131,7 +1135,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         }
     }
 
-    private void createNotificationChannel() {
+    private void createNotificationChannelHyd() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
             String channelId = "hydration_goal_channel";
@@ -1153,6 +1157,8 @@ public class Home extends AppCompatActivity implements SensorEventListener {
     private void checkResetData(LocalDate prevDate){
         LocalDate currDate = LocalDate.now();
         if(currDate.isAfter(prevDate)) {
+            System.out.println("RESETTING DATA");
+
             Thread resetThread = new Thread(() -> {
 
                 List<HydrationRoom> allHyd = hydrationRoomDao.getAllHydrationsForCustomer(this.userRoom.getId());
@@ -1192,8 +1198,13 @@ public class Home extends AppCompatActivity implements SensorEventListener {
                     }
 
                 }
+                if(this.tempHydrationRoom !=null) {
+                    LocalDate today = LocalDate.now();
+                    if( !(this.tempHydrationRoom.getDate().equals(today)) ) {
+                        createNewTempHydration(this.userRoom.getId());
+                    }
+                }
                 createNewHydration(this.userRoom.getId());
-                createNewTempHydration(this.userRoom.getId());
             });
             resetThread.start();
 
