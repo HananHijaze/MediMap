@@ -24,11 +24,15 @@ import com.bumptech.glide.Glide;
 import com.example.medimap.roomdb.AllergyDao;
 import com.example.medimap.roomdb.AllergyRoom;
 import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.HydrationRoom;
+import com.example.medimap.roomdb.HydrationRoomDao;
+import com.example.medimap.roomdb.TempHydrationRoomDao;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.roomdb.WeekDaysDao;
 import com.example.medimap.roomdb.WeekDaysRoom;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,14 +86,44 @@ public class MainActivity extends AppCompatActivity {
 
         // Check the users and navigate accordingly using a background thread
         new Thread(() -> {
-            boolean isUserDaoEmpty = userDao.getAllUsers().isEmpty(); // Check if the user DAO is empty
+            List<UserRoom> users = userDao.getAllUsers(); // Get all users
+            boolean isUserDaoEmpty = users.isEmpty(); // Check if the user DAO is empty
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 if (isUserDaoEmpty) {
                     navigateTo(Signup.class); // Navigate to Signup if no users
                 } else if (isUserLoggedIn()) {
+
+                    UserRoom userRoom = users.get(0); // Get the first user
+                    System.out.println("USER NAME: " + userRoom.getId()+" "+userRoom.getName());
+
+                    //delete existing hydration data
+                    HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
+                    TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
+                    new Thread(() -> {
+                        hydrationRoomDao.deleteAllHydrations();
+                        tempHydrationRoomDao.deleteAllTempHydration();
+                    }).start();
+
+                    //add example hydration data
+                    addExampleHydrationsToRoom(userRoom);
                     navigateTo(Home.class); // Navigate to Home if logged in
+
                 } else {
+
+                    UserRoom userRoom = users.get(0); // Get the first user
+                    System.out.println("USER NAME: " + userRoom.getId()+" "+userRoom.getName());
+
+                    //delete existing hydration data
+                    HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
+                    TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
+                    new Thread(() -> {
+                        hydrationRoomDao.deleteAllHydrations();
+                        tempHydrationRoomDao.deleteAllTempHydration();
+                    }).start();
+                    //add example hydration data
+                    addExampleHydrationsToRoom(userRoom);
                     navigateTo(LogIn.class); // Navigate to LogIn if not logged in
+
                 }
             }, 5000); // 5-second delay
         }).start(); // Start the thread
@@ -103,6 +137,56 @@ public class MainActivity extends AppCompatActivity {
             UserRoom newUser = createTestUser();// Create a new test user
             userDao.insertUser(newUser); // Insert the test user
             Log.d("MainActivity", "Test user added: " + newUser.toString());
+        }).start();
+    }
+
+    private void addExampleHydrationsToRoom(UserRoom userRoom) {
+        List<HydrationRoom> hydrationList = new ArrayList<>();
+
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 1500.0, LocalDate.of(2024, 9, 1)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 2000.0, LocalDate.of(2024, 9, 2)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 1200.0, LocalDate.of(2024, 9, 3)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 2500.0, LocalDate.of(2024, 9, 4)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 1000.0, LocalDate.of(2024, 9, 5)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 2300.0, LocalDate.of(2024, 9, 6)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 1700.0, LocalDate.of(2024, 9, 7)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 2100.0, LocalDate.of(2024, 9, 8)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 4000.0, LocalDate.of(2024, 9, 9)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 3000.0, LocalDate.of(2024, 9, 10)));
+
+        // Iterate through the hydrationList and insert each HydrationRoom
+        Long Hid = 1L;
+        for (HydrationRoom hydrationRoom : hydrationList) {
+            hydrationRoom.setId(Hid++);
+            addHydrationToRoom(hydrationRoom);
+        }
+    }
+
+    //adds a hydration to the room
+    private void addHydrationToRoom(HydrationRoom hydrationRoom){
+        HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
+
+        Thread addHydrationTh = new Thread(() -> {
+            hydrationRoomDao.insertHydration(hydrationRoom);
+        });
+        addHydrationTh.start();
+
+        try {
+            //wait for thread to finish
+            addHydrationTh.join();
+        } catch (Exception e) {
+            System.out.println("EXCEPTION WHEN ADDING EXAMPLE HYDRATION");
+            //finish activity and go back to home
+            finish();
+        }
+    }
+
+    private void deleteHydrationData() {
+        HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
+        TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
+        new Thread(() -> {
+            hydrationRoomDao.deleteAllHydrations();
+            tempHydrationRoomDao.deleteAllTempHydration();
         }).start();
     }
 
