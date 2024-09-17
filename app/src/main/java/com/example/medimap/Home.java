@@ -497,6 +497,10 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         this.waterProgressBar.startAnimation(anim);
     }
 
+    public void setConnected(boolean connected){this.connected = connected;}
+
+    public boolean getConnected(){return this.connected;}
+
 //    private void setAllTempHydrations(List<TempHydrationRoom> allTempHydrations) {
 //        synchronized (this){this.allTempHydrations = allTempHydrations;}
 //    }
@@ -506,6 +510,52 @@ public class Home extends AppCompatActivity implements SensorEventListener {
 //    }
 
     /**************************************** Load The Data ****************************************/
+    //check server connection
+    private void checkServerConnection() {
+        if (NetworkUtils.isNetworkAvailable(this)){
+
+            Thread checkServerThread = new Thread(() -> {
+
+                // Call a lightweight endpoint to check server availability
+                Retrofit retrofit = RetrofitClient.getRetrofitInstance();
+                UserApi userApi = retrofit.create(UserApi.class);
+                Call<Void> call = userApi.pingServer();
+
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse
+                            (@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            setConnected(true);
+                            System.out.println("SERVER IS CONNECTED: "+getConnected());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                        setConnected(false);
+                        System.out.println("CONNECTED TO SERVER: "+getConnected());
+                        Toast.makeText(Home.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+            });
+            checkServerThread.start();
+
+            try {
+                //wait for thread to finish
+                checkServerThread.join();
+            } catch (Exception e) {
+                Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+                System.out.println("SOMETHING WENT WRONG WITH THE SERVER CHECK");
+                //finish activity and go back to home
+                finish();
+            }
+        }else{
+            setConnected(false);
+        }
+    }
+
     //gets the local user from server
     private void getUserFromServer(String email){
         // Call the API to get the user by email from the server
@@ -803,8 +853,12 @@ public class Home extends AppCompatActivity implements SensorEventListener {
 
     /**************************************** Add Water ****************************************/
     private void addWater() {
+
+        System.out.println("PRESSED ADD WATER BUTTON");
         float prevWaterAmount = (float)this.currentWaterAmount;
         this.currentWaterAmount = this.currentWaterAmount + this.defaultWaterAmount;
+        System.out.println("CURRENT WATER AMOUNT IS: " + this.currentWaterAmount);
+
 
         this.hydrationRoom.setDrank(this.currentWaterAmount);
         this.tempHydrationRoom.setDrank(this.currentWaterAmount);
@@ -822,7 +876,6 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         } catch (Exception e) {
             System.out.println("EXCEPTION WHEN ADDING WATER");
             Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
-            //finish activity and go back to home
         }
 
         String waterOutputStr = (int) this.currentWaterAmount +" ml";
@@ -832,11 +885,15 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         updateWaterProgress(prevWaterAmount,(float) this.currentWaterAmount);
 
         if(this.currentWaterAmount >= this.waterGoal) {
-            boolean ReachedGoalNoti = sharedPreferences.getBoolean("ReachedHydGoalNotification", false);
+            SharedPreferences sharedPreferences = getSharedPreferences("waterPrefs", MODE_PRIVATE);
+            boolean ReachedGoalNoti = sharedPreferences.getBoolean("ReachedHydGoalNoti", false);
+            System.out.println("REACHED HYDRATION GOAL");
             if (ReachedGoalNoti) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("ReachedHydGoalNotification", true);
+                editor.putBoolean("ReachedHydGoalNoti", true);
                 editor.apply(); // Apply changes
+
+                Toast.makeText(this, "Hydration goal reached!", Toast.LENGTH_SHORT).show();
 
                 //send notification
                 sendNotification();
