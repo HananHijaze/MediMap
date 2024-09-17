@@ -5,8 +5,12 @@ import static java.lang.Long.getLong;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.graphics.Typeface;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -21,6 +25,7 @@ import android.os.Handler;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -116,6 +121,11 @@ public class hydration_tracking extends AppCompatActivity {
         createNotificationChannel();
 
         createHydrationTrackingPage();
+
+        // Create a shortcut if supported
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            createShortcut();
+        }
     }
 
     @Override
@@ -256,50 +266,84 @@ public class hydration_tracking extends AppCompatActivity {
         editWaterDefault.setOnClickListener(v -> showEditAmountDialog());
     }
 
+    // Method to create a shortcut if supported (for Android 7.1+)
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
+    private void createShortcut() {
+        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+
+        if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported()) {
+            // Check if the shortcut already exists
+            boolean shortcutExists = false;
+            for (ShortcutInfo pinnedShortcut : shortcutManager.getPinnedShortcuts()) {
+                if (pinnedShortcut.getId().equals("shortcut_example")) {
+                    shortcutExists = true;
+                    break;
+                }
+            }
+
+            // If the shortcut does not exist, create and pin it
+            if (!shortcutExists) {
+                Intent addWaterIntent = new Intent(this, AddWaterReceiver.class);
+                addWaterIntent.setAction("com.example.medimap.ADD_WATER");
+
+                ShortcutInfo shortcut = new ShortcutInfo.Builder(this, "shortcut_example")
+                        .setShortLabel(getString(R.string.shortcut_short_label))
+                        .setLongLabel(getString(R.string.shortcut_long_label))
+                        .setIcon(Icon.createWithResource(this, R.drawable.ic_shortcut))
+                        .setIntent(new Intent(Intent.ACTION_VIEW, null, this, Home.class))
+                        .build();
+
+                shortcutManager.requestPinShortcut(shortcut, null);
+            }
+        }
+    }
+
     /**************************************** Getters And Setters ****************************************/
     //getters and setters
-    private void setThisUser(User user){synchronized (this){this.user = user;}}
+    public void setThisUser(User user){synchronized (this){this.user = user;}}
 
-    private User getThisUser(){synchronized (this){return this.user;}}
+    public User getThisUser(){synchronized (this){return this.user;}}
 
-    private UserRoom getThisUserRoom() {synchronized (this){return this.userRoom;}}
+    public UserRoom getThisUserRoom() {synchronized (this){return this.userRoom;}}
 
-    private void setThisUserRoom(UserRoom userRoom) {synchronized (this){this.userRoom = userRoom;}}
+    public void setThisUserRoom(UserRoom userRoom) {synchronized (this){this.userRoom = userRoom;}}
 
-    private void setThisHydrationRoom(HydrationRoom hydrationRoom) {synchronized (this){this.hydrationRoom= hydrationRoom;}}
+    public void setThisHydrationRoom(HydrationRoom hydrationRoom) {synchronized (this){this.hydrationRoom= hydrationRoom;}}
 
-    private HydrationRoom getThisHydrationRoom() {synchronized (this){return this.hydrationRoom;}}
+    public HydrationRoom getThisHydrationRoom() {synchronized (this){return this.hydrationRoom;}}
 
-    private void setThisTempHydrationRoom(TempHydrationRoom tempHydrationRoom) {
+    public void setThisTempHydrationRoom(TempHydrationRoom tempHydrationRoom) {
         synchronized (this){this.tempHydrationRoom= tempHydrationRoom;}}
 
-    private TempHydrationRoom getThisTempHydrationRoom() {
+    public TempHydrationRoom getThisTempHydrationRoom() {
         synchronized (this){return this.tempHydrationRoom;}}
 
-    private void setAllHydrations(List<HydrationRoom> allHydrations) {
+    public void setAllHydrations(List<HydrationRoom> allHydrations) {
         synchronized (this){this.allHydrations = allHydrations;}
     }
 
-    private List<HydrationRoom> getAllHydrations() {
+    public List<HydrationRoom> getAllHydrations() {
         synchronized (this){return this.allHydrations;}
     }
 
-    private void setConnected(boolean connected){this.connected = connected;}
+    public void setConnected(boolean connected){this.connected = connected;}
 
-    private boolean getConnected(){return this.connected;}
+    public boolean getConnected(){return this.connected;}
 
-    private void updateWaterProgress(float from, float to){
+    public void updateWaterProgress(float from, float to){
         ProgressBarAnimation anim = new ProgressBarAnimation(this.waterProgressBar,
                 from*100/this.waterGoal, to*100/this.waterGoal);
         anim.setDuration(750);
         this.waterProgressBar.startAnimation(anim);
     }
 
-//    private void setAllTempHydrations(List<TempHydrationRoom> allTempHydrations) {
+    public void getAddWater(){ this.addWater();}
+
+//    public void setAllTempHydrations(List<TempHydrationRoom> allTempHydrations) {
 //        synchronized (this){this.allTempHydrations = allTempHydrations;}
 //    }
 //
-//    private List<TempHydrationRoom> getAllTempHydrations() {
+//    public List<TempHydrationRoom> getAllTempHydrations() {
 //        synchronized (this){return this.allTempHydrations;}
 //    }
 
@@ -321,13 +365,14 @@ public class hydration_tracking extends AppCompatActivity {
                                 (@NonNull Call<Void> call, @NonNull Response<Void> response) {
                             if (response.isSuccessful()) {
                                 setConnected(true);
-                                System.out.println("SERVER IS CONNECTED");
+                                System.out.println("SERVER IS CONNECTED: "+getConnected());
                             }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                             setConnected(false);
+                            System.out.println("CONNECTED TO SERVER: "+getConnected());
                             Toast.makeText(hydration_tracking.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
 
                         }
@@ -748,11 +793,13 @@ public class hydration_tracking extends AppCompatActivity {
         updateWaterProgress(prevWaterAmount,(float) this.currentWaterAmount);
 
         if(this.currentWaterAmount >= this.waterGoal) {
-            boolean ReachedGoalNoti = sharedPreferences.getBoolean("ReachedHydGoalNotification", false);
+            boolean ReachedGoalNoti = sharedPreferences.getBoolean("ReachedHydGoalNoti", false);
             if (ReachedGoalNoti) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("ReachedHydGoalNotification", true);
+                editor.putBoolean("ReachedHydGoalNoti", true);
                 editor.apply(); // Apply changes
+
+                Toast.makeText(this, "Hydration goal reached!", Toast.LENGTH_SHORT).show();
 
                 //send notification
                 sendNotification();
