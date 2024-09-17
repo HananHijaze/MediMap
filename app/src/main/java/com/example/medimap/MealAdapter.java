@@ -26,6 +26,7 @@ import com.example.medimap.server.MealPlanApi;
 import com.example.medimap.server.RetrofitClient;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -163,8 +164,13 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
                                       if (response.isSuccessful()) {
                                           List<MealPlan> mealPlans = response.body();
                                             for(MealPlan mp : mealPlans){
-                                                System.out.println(mp.getMealID());
-                                                MealPlan m =new MealPlan(userId,meal.getMealID(),mp.getCreationdate(),mp.getMealDay(),mp.getMealTime());
+                                                System.out.println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+mp.getCreationdate());
+                                                Date creationDate = mp.getCreationdate();
+                                                Calendar calendar = Calendar.getInstance();
+                                                calendar.setTime(creationDate);
+                                                calendar.add(Calendar.HOUR, 12); // Add 12 hours
+                                                Date newDate = calendar.getTime();
+                                                MealPlan m =new MealPlan(userId,meal.getMealID(),newDate,mp.getMealDay(),mp.getMealTime());
                                                 Call<MealPlan> call1 = mealPlanApi.updateMealPlan(mp.getId(),m);
                                                 call1.enqueue(new Callback<MealPlan>() {
                                                     @Override

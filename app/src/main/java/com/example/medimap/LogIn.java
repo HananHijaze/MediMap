@@ -150,7 +150,6 @@ public class LogIn extends AppCompatActivity {
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     User user = response.body();
-                    Toast.makeText(LogIn.this, "we are here", Toast.LENGTH_SHORT).show();
 
                     // Check if the password matches
                     if (user.getPassword().equals(passwordIn)) {
@@ -189,7 +188,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 Log.e("Login Error", "Failed to connect to server", t);  // Log the full exception
-                Toast.makeText(LogIn.this, "Failed to hhhhhhhhhhhhhhhhhh connect to server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LogIn.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
             }
         });
     }
