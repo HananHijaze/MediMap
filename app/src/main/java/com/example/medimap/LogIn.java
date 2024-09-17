@@ -62,7 +62,7 @@ public class LogIn extends AppCompatActivity {
     UserDao userDao;
     private UserApi userApi;
     boolean serverReachable;
-    private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss";
+    private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 
 
@@ -150,6 +150,7 @@ public class LogIn extends AppCompatActivity {
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     User user = response.body();
+                    Toast.makeText(LogIn.this, "we are here", Toast.LENGTH_SHORT).show();
 
                     // Check if the password matches
                     if (user.getPassword().equals(passwordIn)) {
@@ -188,7 +189,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 Log.e("Login Error", "Failed to connect to server", t);  // Log the full exception
-                Toast.makeText(LogIn.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LogIn.this, "Failed to hhhhhhhhhhhhhhhhhh connect to server", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -210,7 +211,7 @@ public class LogIn extends AppCompatActivity {
                 user.getGender(),
                 (int) user.getHeight(),  // Assuming height is a double in User and int in UserRoom
                 (int) user.getWeight(),  // Assuming weight is a double in User and int in UserRoom
-                getFormattedDate(user.getBirthDate().getTime()),// Assuming you want to save birthDate as a String in Room
+                getFormattedDate(user.getBirthDate().getTime()),
                 user.getBodyType(),
                 user.getGoal(),
                 user.getStepcountgoal(),

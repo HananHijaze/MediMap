@@ -7,142 +7,38 @@
     android:padding="8dp"
     android:background="@color/white">
 
-    <!-- Meal to change CardView with red border -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/mealToChange"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="30dp"
-        android:background="@drawable/border_red">
+    <!-- Meal to change using meal_card_2 -->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Meal to change"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
+    <!-- RecyclerView to hold meal cards -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mealtochange"
+        android:layout_width="350dp"
+        android:layout_height="180dp"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="center"
-        android:textColor="@color/blue"
-        android:textStyle="bold"
         android:text="What meal do you want to change to?"
-        android:textSize="20sp" />
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-
-
-    <!-- Meal 1 CardView -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/meal1"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mealRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="418dp"
         android:layout_marginBottom="16dp"
-        app:cardCornerRadius="30dp"
-        android:background="@drawable/border_unselected">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Meal 1"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
-
-    <!-- Meal 2 CardView -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/meal2"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="30dp"
-        android:background="@drawable/border_unselected">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Meal 2"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
-
-    <!-- Meal 3 CardView -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/meal3"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="30dp"
-        android:background="@drawable/border_unselected">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Meal 3"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
-
-    <!-- Meal 4 CardView -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/meal4"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="30dp"
-        android:background="@drawable/border_unselected">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Meal 4"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
-
-    <!-- Meal 5 CardView -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/meal5"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="30dp"
-        android:background="@drawable/border_unselected">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Meal 5"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
+        android:layout_weight="1" />
 
     <!-- Buttons for Cancel and Apply -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="79dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -150,11 +46,11 @@
             android:id="@+id/buttonCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:text="Cancel"
             android:textColor="@color/blue"
             app:strokeColor="@color/blue"
-            app:strokeWidth="1dp"
-            android:backgroundTint="@color/white"
-            android:text="Cancel" />
+            app:strokeWidth="1dp" />
 
         <Button
             android:id="@+id/buttonApply"
