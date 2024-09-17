@@ -3,6 +3,7 @@ import android.Manifest;  // For ACTIVITY_RECOGNITION permission
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.pm.PackageManager;  // For permission handling
 
 import androidx.annotation.NonNull;
@@ -42,7 +43,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.button.MaterialButton;
 
 import android.app.AlarmManager;
-import android.app.PendingInte
+import android.app.PendingIntent;
 import android.app.AlertDialog;
 
 import android.content.Context;
