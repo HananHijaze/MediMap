@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,7 +16,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.medimap.roomdb.UserDao;
 
 public class Gender extends AppCompatActivity {
-
+    private ProgressBar circularProgressBar;
+    private int totalPages = 11;
+    private int currentPage;
     private String selectedGender = "";
 
     @Override
@@ -28,6 +31,13 @@ public class Gender extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        // Get the current page number passed from the previous activity
+        currentPage = getIntent().getIntExtra("currentPage", 2);
+
+        // Initialize the circular progress bar
+        circularProgressBar = findViewById(R.id.circularProgressBar);
+        updateProgressBar();  // Update progress bar based on the current page
+
         // Reference the layouts
         LinearLayout femaleLayout = findViewById(R.id.linearLayoutFemale);
         LinearLayout maleLayout = findViewById(R.id.linearLayoutMale);
@@ -58,6 +68,7 @@ public class Gender extends AppCompatActivity {
             if (!selectedGender.isEmpty()) {
                 saveGender();
                 Intent intent = new Intent(Gender.this, height.class); // Replace with your next activity
+                intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
                 startActivity(intent);
             } else {
                 Toast.makeText(Gender.this, "Please select your gender", Toast.LENGTH_SHORT).show();
@@ -65,6 +76,11 @@ public class Gender extends AppCompatActivity {
         });
     }
 
+    private void updateProgressBar() {
+        // Updates the progress bar based on the current page number
+        int progress = (currentPage * 100) / totalPages;
+        circularProgressBar.setProgress(progress);
+    }
     private void saveGender() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserSignUpData", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

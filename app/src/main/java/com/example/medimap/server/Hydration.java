@@ -1,6 +1,7 @@
 package com.example.medimap.server;
 
 import com.example.medimap.roomdb.HydrationRoom;
+import com.example.medimap.roomdb.TempHydrationRoom;
 
 import java.time.LocalDate;
 
@@ -24,6 +25,12 @@ public class Hydration {
         this.customerId = hydrationRoom.getCustomerId();
         this.drank = hydrationRoom.getDrank();
         this.date = hydrationRoom.getDate();
+    }
+
+    public Hydration(TempHydrationRoom tempHydrationRoom){
+        this.customerId = tempHydrationRoom.getCustomerId();
+        this.drank = tempHydrationRoom.getDrank();
+        this.date = tempHydrationRoom.getDate();
     }
 
     // Getters and Setters

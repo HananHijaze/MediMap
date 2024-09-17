@@ -1,5 +1,7 @@
 package com.example.medimap;
 
+import static java.lang.Long.getLong;
+
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,15 +14,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
+
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.Converters;
 import com.example.medimap.roomdb.HydrationRoom;
 import com.example.medimap.roomdb.HydrationRoomDao;
+import com.example.medimap.roomdb.TempHydrationRoom;
+import com.example.medimap.roomdb.TempHydrationRoomDao;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
 import com.example.medimap.server.Hydration;
@@ -29,16 +36,25 @@ import com.example.medimap.server.RetrofitClient;
 import com.example.medimap.server.User;
 import com.example.medimap.server.UserApi;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Locale;
+import java.util.concurrent.Executors;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class hydration_tracking extends AppCompatActivity {
@@ -47,16 +63,21 @@ public class hydration_tracking extends AppCompatActivity {
     private TextView waterOutput;
     private Button addWaterBtn;
     private BarChart barChart;
-    private ProgressBar hydrationProgressBar;
+    private ProgressBar waterProgressBar;
 
     //Daos
     private UserDao userDao;
+    private HydrationRoomDao hydrationRoomDao;
+    private TempHydrationRoomDao tempHydrationRoomDao;
 
-    //Rooms
+    //Room
     private UserRoom userRoom;
+    private HydrationRoom hydrationRoom;
+    private TempHydrationRoom tempHydrationRoom;
 
-    //objects
+    //Server
     private User user;
+    private Hydration hydration;
 
     //Servers
     private HydrationApi hydrationApi;
@@ -67,8 +88,12 @@ public class hydration_tracking extends AppCompatActivity {
     private double currentWaterAmount = 0;
     private int waterGoal = 0;
     private int defaultWaterAmount = 0;
-    private ArrayList<BarEntry> barEntries;
+    private List<HydrationRoom> allHydrations;
+//    private List<TempHydrationRoom> allTempHydrations;
+    private LocalDate prevDate;
+    private boolean connected = false;
 
+    //preference
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -81,111 +106,228 @@ public class hydration_tracking extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         System.out.println("CREATED HYDRATION TRACKING");
-
-        //server
-        retrofit = RetrofitClient.getRetrofitInstance();
-        hydrationApi = retrofit.create(HydrationApi.class);
-        userApi = retrofit.create(UserApi.class);
-
-        //buttons
-        addWaterBtn = findViewById(R.id.addWaterBtn);
-        addWaterBtn.setOnClickListener(v -> addWater());
-        Button editWaterDefault;
-        editWaterDefault = findViewById(R.id.editButton);
-        editWaterDefault.setOnClickListener(v -> showEditAmountDialog());
-
-        //barChart
-        barChart = findViewById(R.id.barChart);
-        this.barEntries = new ArrayList<>();
-
-        waterOutput = findViewById(R.id.waterOutput);
-
-        //get all Data
-        loadData();
-
-
-        //scheduleDailyReset();
+        createHydrationTrackingPage();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println("ON RESUME");
-        loadData();
+        System.out.println("ON RESUME HYDRATION TRACKING");
+        createHydrationTrackingPage();
     }
 
-    /**************************************** Load The Data ****************************************/
-    private void loadData() {
-        // Load previously saved water amount
-        this.currentWaterAmount = getSavedWaterAmount();
-        System.out.println("LOAD DATA: THIS IS THE CURRENT WATER AMOUNT: " + this.currentWaterAmount);
+    private void createHydrationTrackingPage(){
 
-        // Load user dao
-        userDao = AppDatabaseRoom.getInstance(this).userDao();
-        System.out.println("LOAD DATA: LOADED USER DAO");
+        //water output text
+        waterOutput = findViewById(R.id.waterOutput);
 
-        // Fetch the single user from local
-        fetchUserRoomTh();
+        //buttons
+        addWaterBtn = findViewById(R.id.addWaterBtn);
+        Button editWaterDefault;
+        editWaterDefault = findViewById(R.id.editButton);
 
-        //check user room
-        if (userRoom == null) {
-            System.out.println("USER NOT FOUND");
-            Toast.makeText(this, "user not found", Toast.LENGTH_SHORT).show();
-            return;
+        //progress bottle
+        waterProgressBar = findViewById(R.id.waterProgress);
+        waterProgressBar.setMax(100);
+
+        //barChart
+        barChart = findViewById(R.id.barChart);
+
+        //check network and server connection
+        this.connected = CheckConnection();
+
+        if(connected){
+            //get server components
+            retrofit = RetrofitClient.getRetrofitInstance();
+            hydrationApi = retrofit.create(HydrationApi.class);
+            userApi = retrofit.create(UserApi.class);
         }
 
-        user = new User(userRoom);
-        System.out.println("USER ID and NAME ARE: "+ this.user.getId() +" " + this.user.getName());
-        System.out.println(this.user.toString());
+        //set Daos
+        this.userDao = AppDatabaseRoom.getInstance(this).userDao();
+        this.hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
+        this.tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
 
-        //get default water amount and goal from user room
-        this.defaultWaterAmount = userRoom.getWaterDefault();
-        this.waterGoal = userRoom.getHydrationGoal();
-        System.out.println("WATER GOAL IS: " + this.waterGoal);
-        System.out.println("WATER GOAL IS: " + this.defaultWaterAmount);
+        /***************** DELETING HYDRATION *********************/
+//        new Thread(() -> {
+//            this.hydrationRoomDao.deleteAllHydrations();
+//            this.tempHydrationRoomDao.deleteAllTempHydration();
+//        }).start();
 
-        String addWaterTxt = this.defaultWaterAmount + "ml";
-        this.addWaterBtn.setText(addWaterTxt);
+        // Fetch the single user from local
+        getUserRoomTh();
+
+        if(this.userRoom == null) {
+            System.out.println("USER ROOM IS NULL (OnCreate)");
+            Toast.makeText(this, "NO USER WAS FOUND", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        // Fetch hydration data from local
+        getNewestHydrationFromRoom();
+        if(this.hydrationRoom != null)
+            getNewestTempHydrationFromRoom(this.hydrationRoom);
+        else{
+            System.out.println("HYDRATION ROOM IS NULL (OnCreate)");
+            Toast.makeText(this, "NO HYDRATION FOUND IS NULL", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        // Set date for daily reset
+        this.prevDate = this.hydrationRoom.getDate();
+        System.out.println("PREV DATE IS: "+this.prevDate);
+
+//        // Check Reset
+//        checkResetData(this.prevDate);
+//
+        //load water def, goal and amount
+        this.defaultWaterAmount = this.userRoom.getWaterDefault();
+        this.waterGoal = this.userRoom.getHydrationGoal();
+        System.out.println("WATER GOAL IS: "+this.waterGoal);
+        System.out.println("WATER DEFAULT IS: "+this.defaultWaterAmount);
+
+        //load newest hydration
+        getNewestHydrationFromRoom();
+        if(this.hydrationRoom != null)
+            getNewestTempHydrationFromRoom(this.hydrationRoom);
+        else {
+            System.out.println("HYDRATION ROOM IS NULL (OnCreate)");
+            Toast.makeText(this, "NO HYDRATION FOUND IS NULL", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        this.currentWaterAmount = this.hydrationRoom.getDrank();
+        System.out.println("CURRENT WATER AMOUNT IS: " + this.currentWaterAmount);
+
+        //update visuals
+        String defaultWaterTxt = this.defaultWaterAmount + "ml";
+        addWaterBtn.setText(defaultWaterTxt);
+
+        updateWaterProgress(0,(float) this.currentWaterAmount);
+
         String waterOutputStr = (int) this.currentWaterAmount + " ml / " + this.waterGoal + " ml";
-        this.waterOutput.setText(waterOutputStr);
+        waterOutput.setText(waterOutputStr);
 
+        //get hydration data
+        getAllUserHydrations(this.userRoom.getId());
+        if(this.allHydrations == null) {
+            //add example data
+            addExampleHydrationsToRoom();
+        }
 
+        //get hydration data
+        getAllUserHydrations(this.userRoom.getId());
 
-        /******* TEST *******/
-        new Thread(()-> {
-            saveHydration();
-        }).start();
-        System.out.println("HYDRATION SAVED!!!!!");
-        HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
-        hydrationRoomDao.deleteOldestHydration();
-        System.out.println("DELETE OLDEST NO ERROR!!!!!");
-        new Thread(()-> {
-            List<HydrationRoom> hydList = hydrationRoomDao.getAllHydrationsForCustomer(1L);
-            if(hydList == null){
-                System.out.println("HYDRATION LIST IS NULL!!!!");
-                return;
+        //check hydration list
+        if(this.allHydrations != null) {
+            for (int i = 0; i < this.allHydrations.size(); i++) {
+                System.out.println("HYDRATION NUM: " + i);
+                HydrationRoom hydR = this.allHydrations.get(i);
+                System.out.println("HYDRATION DATE: " + hydR.getDate() + " " + hydR.getDrank());
             }
-            HydrationRoom hydrationRoom = hydList.get(0);
-            if(hydrationRoom != null){
-                System.out.println("DELETED HYDRATION ROOM!!!!");
-            }
-        }).start();
+            //load barChart
+            loadBarChart(this.allHydrations);
+        }
+        else
+            System.out.println("HYDRATION LIST IS NULL (OnCreate");
 
-        //fillWaterBottle();
-
-        //load barChart
-        //loadBarChart();
+        //listeners for buttons
+        addWaterBtn.setOnClickListener(v -> addWater());
+        editWaterDefault.setOnClickListener(v -> showEditAmountDialog());
     }
 
-    private void fetchUserRoomTh() {
-        this.userRoom = null;
+    /**************************************** Getters And Setters ****************************************/
+    //getters and setters
+    private void setThisUser(User user){synchronized (this){this.user = user;}}
+
+    private User getThisUser(){synchronized (this){return this.user;}}
+
+    private UserRoom getThisUserRoom() {synchronized (this){return this.userRoom;}}
+
+    private void setThisUserRoom(UserRoom userRoom) {synchronized (this){this.userRoom = userRoom;}}
+
+    private void setThisHydrationRoom(HydrationRoom hydrationRoom) {synchronized (this){this.hydrationRoom= hydrationRoom;}}
+
+    private HydrationRoom getThisHydrationRoom() {synchronized (this){return this.hydrationRoom;}}
+
+    private void setThisTempHydrationRoom(TempHydrationRoom tempHydrationRoom) {
+        synchronized (this){this.tempHydrationRoom= tempHydrationRoom;}}
+
+    private TempHydrationRoom getThisTempHydrationRoom() {
+        synchronized (this){return this.tempHydrationRoom;}}
+
+    private void setAllHydrations(List<HydrationRoom> allHydrations) {
+        synchronized (this){this.allHydrations = allHydrations;}
+    }
+
+    private List<HydrationRoom> getAllHydrations() {
+        synchronized (this){return this.allHydrations;}
+    }
+
+    private void updateWaterProgress(float from, float to){
+        ProgressBarAnimation anim = new ProgressBarAnimation(this.waterProgressBar,
+                from*100/this.waterGoal, to*100/this.waterGoal);
+        anim.setDuration(750);
+        this.waterProgressBar.startAnimation(anim);
+    }
+
+//    private void setAllTempHydrations(List<TempHydrationRoom> allTempHydrations) {
+//        synchronized (this){this.allTempHydrations = allTempHydrations;}
+//    }
+//
+//    private List<TempHydrationRoom> getAllTempHydrations() {
+//        synchronized (this){return this.allTempHydrations;}
+//    }
+
+    /**************************************** Load The Data ****************************************/
+    //gets the local user from server
+    private void getUserFromServer(String email){
+        // Call the API to get the user by email from the server
+        Call<User> call = userApi.findByEmail(email);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    User user = response.body();
+
+                    //get user saved in room
+                    UserRoom usRoom = getThisUserRoom();
+
+                    //update the user saved in room with the user saved in server
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        userDao.updateUser(usRoom);
+                        setThisUserRoom(usRoom);
+                        setThisUser(user);
+                        System.out.println("UPDATED USER IN ROOM FROM SERVER: "+usRoom.getId()+" "+usRoom.getEmail());
+                    });
+                } else {
+                    System.out.println("USER NOT FOUND IN SERVER");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                // Handle failure (e.g., network issues, server not responding)
+                Toast.makeText(hydration_tracking.this, "Failed to load user: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private boolean CheckConnection() {
+        if (!NetworkUtils.isNetworkAvailable(this))
+            return false;
+        return NetworkUtils.isServerReachable();
+    }
+
+    //get user from room
+    private void getUserRoomTh() {
         Thread fetchUserRoomTh = new Thread(() -> {
             //get all users
-            List<UserRoom> userRoomList = userDao.getAllUsers();
+            UserRoom userRoom = userDao.getFirstUser();
             //check if there is no users
-            if (userRoomList.isEmpty() || userRoomList == null) {
+            if (userRoom == null) {
                 System.out.println("NO USERS WERE FOUND");
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
@@ -195,103 +337,397 @@ public class hydration_tracking extends AppCompatActivity {
                 });
                 return;
             }
-            //get user from list
-            userRoom = userRoomList.get(0);
-            System.out.println("LOAD DATA: LOADED USER ROOM");
-            System.out.println("USER ROOM NAME IS: " + userRoom.getName());
+            else {
+                //get user from list
+                setThisUserRoom(userRoom);
+                System.out.println("LOAD DATA: LOADED USER ROOM");
+                System.out.println("USER ROOM IS: " + userRoom.getId() + " " + userRoom.getEmail());
+            }
         });
         fetchUserRoomTh.start();
 
         try {
             // Wait for the thread to finish
             fetchUserRoomTh.join();
-        } catch (InterruptedException e) {
-            Log.e("HYDRATION_TRACKING","SOMETHING WENT WRONG",e);
+        } catch (Exception e) {
+            System.out.println("EXCEPTION WHILE GETTING USER ROOM");
             Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+            //finish activity and go back to home
+            finish();
         }
     }
 
-    private void loadBarChart(){
-        // Sample data for hydration levels (in liters)
-        barEntries.add(new BarEntry(0, 1.5f)); // Monday: 1.5 liters
-        barEntries.add(new BarEntry(1, 2.0f)); // Tuesday: 2.0 liters
-        barEntries.add(new BarEntry(2, 1.2f)); // Wednesday: 1.2 liters
-        barEntries.add(new BarEntry(3, 2.5f)); // Thursday: 2.5 liters
-        barEntries.add(new BarEntry(4, 1.8f)); // Friday: 1.8 liters
-        barEntries.add(new BarEntry(5, 3.0f)); // Saturday: 3.0 liters
-        barEntries.add(new BarEntry(6, 2.2f)); // Sunday: 2.2 liters
+    private void getAllUserHydrations(Long userId){
+        if(this.connected){
+            getUserHydrationsFromServer(userId);
+        }
+        else{
+            Thread getHydrationListTh = new Thread(() -> {
+                List<HydrationRoom> allHydRoom = this.hydrationRoomDao.getAllHydrationsForCustomer(userId);
+                if(allHydRoom ==null)
+                    System.out.println("HYD LIST IS NULL (getHydrationListTh)");
+                setAllHydrations(allHydRoom);
+            });
+            getHydrationListTh.start();
 
-        BarDataSet barDataSet = new BarDataSet(barEntries, "Hydration Level (Liters)");
-        barDataSet.setColor(getResources().getColor(R.color.blue));
-
-        BarData barData = new BarData(barDataSet);
-        barData.setBarWidth(0.9f); // Set the bar width
-
-//        // Set up X-axis labels for days of the week
-//        String[] daysOfWeek = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-//        XAxis xAxis = barChart.getXAxis();
-//        xAxis.setValueFormatter(new IndexAxisValueFormatter(daysOfWeek));
-//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//        xAxis.setGranularity(1f); // Ensures labels are not skipped
-//        xAxis.setGranularityEnabled(true);
-
-        barChart.setData(barData);
-        barChart.invalidate(); // Refresh the chart
-        barChart.setFitBars(true); // Makes the bars fit the screen
-        barChart.getDescription().setEnabled(false); // Disable description text
-        barChart.animateY(1000); // Animation
+            try {
+                //wait for thread to finish
+                getHydrationListTh.join();
+            } catch (Exception e) {
+                Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+                System.out.println("EXCEPTION WHILE GETTING USER "+userId+" HYD LIST");
+                //finish activity and go back to home
+                finish();
+            }
+        }
+        return;
     }
 
-    private int getSavedWaterAmount(){
-        int waterAmount = 0;
-        this.sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        if(this.sharedPreferences == null){
-            System.out.println("DATA NOT FOUND");
-            Toast.makeText(this, "data not found", Toast.LENGTH_SHORT).show();
+    private List<HydrationRoom> convertHydToHydRoom(List<Hydration> allHyd){
+        List<HydrationRoom> allHydRoom = new ArrayList<HydrationRoom>();
+        for(Hydration hyd : allHyd){
+            allHydRoom.add(new HydrationRoom(hyd));
         }
-        waterAmount = sharedPreferences.getInt("drank", 0);
-        return waterAmount;
+        return allHydRoom;
+    }
+
+    private void getUserHydrationsFromServer(Long userId){
+        // Call the API to get the user by email from the server
+        Call<List<Hydration>> call = hydrationApi.getHydrationsByCustomerId(userId);
+
+        call.enqueue(new Callback<List<Hydration>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Hydration>> call, @NonNull Response<List<Hydration>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Hydration> hydrList = response.body();
+                    System.out.println("HYDRATION LIST SIZE IN SERVER: " + hydrList.size()+" USERID: "+userId);
+                    setAllHydrations(convertHydToHydRoom(hydrList));
+                } else {
+                    System.out.println("NO HYDRATION WAS FOUND IN SERVER OR SOMETHING WENT WRONG");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Hydration>> call, @NonNull Throwable t) {
+                // Handle failure (e.g., network issues, server not responding)
+                System.out.println("Failed to load user hydrations: " + t.getMessage());
+                Toast.makeText(hydration_tracking.this, "Failed to load hydrations: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //get latest hydration from room
+    private void getNewestHydrationFromRoom(){
+        Thread getNewestHydrationTh = new Thread(() -> {
+            System.out.println("GET NEWEST HYDRATION THREAD");
+          
+            //get newest hydration
+            HydrationRoom newestHydration = this.hydrationRoomDao.getNewestHydration();
+          
+            //check if there is no users
+            if (newestHydration == null) {
+                System.out.println("NO HYDRATION WAS FOUND");
+//                new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(hydration_tracking.this, "No hydration data found", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+                System.out.println("GOING TO CREATE A NEW HYDRATION (NULL)");
+                createNewHydration(this.userRoom.getId());
+                System.out.println("CREATED NEW HYDRATION DATE IS: "+this.hydrationRoom.getDate());
+                return;
+            }
+            else {
+                //get user from list
+                setThisHydrationRoom(newestHydration);
+                System.out.println("LOAD DATA: LOADED HYDRATION ROOM");
+                System.out.println("HYDRATION ROOM IS: " + newestHydration.getDate() + " " + newestHydration.getDrank());
+            }
+        });
+        getNewestHydrationTh.start();
+
+        try {
+            // Wait for the thread to finish
+            getNewestHydrationTh.join();
+        } catch (Exception e) {
+            Log.e("HYDRATION_TRACKING", "SOMETHING WENT WRONG", e);
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+            //finish activity and go back to home
+            finish();
+        }
+    }
+
+    private void getNewestTempHydrationFromRoom(HydrationRoom hydrationRoom){
+        Thread getNewestTemptHydrationTh = new Thread(() -> {
+            System.out.println("GET NEWEST TEMP HYDRATION THREAD");
+          
+            //get newest hydration
+            TempHydrationRoom newestTempHydrationRoom = null;
+            newestTempHydrationRoom = tempHydrationRoomDao.getTempHydByDate(hydrationRoom.getDate());
+            //check if there is no users
+            if (newestTempHydrationRoom == null) {
+                System.out.println("NO TEMP HYDRATION WAS FOUND");
+//                new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(hydration_tracking.this, "No temp hydration data found", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+                System.out.println("GOING TO CREATE A NEW TEMP HYDRATION (NULL)");
+                createNewTempHydration(this.userRoom.getId());
+                System.out.println("CREATED NEW TEMP HYDRATION DATE IS: "+this.tempHydrationRoom.getDate());
+                return;
+            }
+            else {
+                //get user from list
+                setThisTempHydrationRoom(newestTempHydrationRoom);
+                System.out.println("LOADED TEMP HYDRATION ROOM");
+                System.out.println("NEWEST TEMP HYDRATION ROOM IS: " + newestTempHydrationRoom.getDate() + " " + newestTempHydrationRoom.getDrank());
+            }
+        });
+        getNewestTemptHydrationTh.start();
+
+        try {
+            // Wait for the thread to finish
+            getNewestTemptHydrationTh.join();
+        } catch (Exception e) {
+            Log.e("HYDRATION_TRACKING", "SOMETHING WENT WRONG", e);
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+            //finish activity and go back to home
+            finish();
+        }
+    }
+
+    private void createNewHydration(Long userId){
+        HydrationRoom newHydration = new HydrationRoom(this.userRoom.getId(), 0.0, LocalDate.now());
+        Thread createHydrationTh = new Thread(() -> {
+            this.hydrationRoomDao.insertHydration(newHydration);
+            this.hydrationRoom = newHydration;
+        });
+        createHydrationTh.start();
+
+        try {
+            //wait for thread to finish
+            createHydrationTh.join();
+        } catch (Exception e) {
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+            //finish activity and go back to home
+            finish();
+        }
+    }
+
+    private void createNewTempHydration(Long userId){
+        TempHydrationRoom newTempHydration = new TempHydrationRoom(this.userRoom.getId(), 0.0, LocalDate.now());
+        System.out.println("CREATED NEW TEMP HYDRATION: "+newTempHydration.getDate()+" "+newTempHydration.getCustomerId());
+        Thread createTempHydrationTh = new Thread(() -> {
+            this.tempHydrationRoomDao.insertTempHydration(newTempHydration);
+            this.tempHydrationRoom = newTempHydration;
+        });
+       createTempHydrationTh.start();
+
+        try {
+            //wait for thread to finish
+            createTempHydrationTh.join();
+        } catch (Exception e) {
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+            //finish activity and go back to home
+            finish();
+        }
+    }
+
+    //creates example hydration for barChart
+    private void addExampleHydrationsToRoom() {
+        List<HydrationRoom> hydrationList = new ArrayList<>();
+
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1500.0, LocalDate.of(2024, 9, 1)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2000.0, LocalDate.of(2024, 9, 2)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1200.0, LocalDate.of(2024, 9, 3)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2500.0, LocalDate.of(2024, 9, 4)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1000.0, LocalDate.of(2024, 9, 5)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2300.0, LocalDate.of(2024, 9, 6)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1700.0, LocalDate.of(2024, 9, 7)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2100.0, LocalDate.of(2024, 9, 8)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 4000.0, LocalDate.of(2024, 9, 9)));
+        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 3000.0, LocalDate.of(2024, 9, 10)));
+
+        // Iterate through the hydrationList and insert each HydrationRoom
+        for (HydrationRoom hydrationRoom : hydrationList) {
+            addHydrationToRoom(hydrationRoom);
+        }
+    }
+
+    //adds a hydration to the room
+    private void addHydrationToRoom(HydrationRoom hydrationRoom){
+        Thread addHydrationTh = new Thread(() -> {
+            this.hydrationRoomDao.insertHydration(hydrationRoom);
+        });
+        addHydrationTh.start();
+
+        try {
+            //wait for thread to finish
+            addHydrationTh.join();
+        } catch (Exception e) {
+            System.out.println("EXCEPTION WHEN ADDING EXAMPLE HYDRATION");
+            //finish activity and go back to home
+            finish();
+        }
+    }
+
+    private void loadBarChart(List<HydrationRoom> hydrationData) {
+        Thread loadBarChartTh = new Thread(() -> {
+            // Prepare the entries for the bar chart
+            List<BarEntry> entries = new ArrayList<>();
+            List<String> formattedDates = new ArrayList<>(); // To store formatted dates for x-axis labels
+
+            // Date formatter to format the date as "dd-MM" (day-month)
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
+
+            for (int i = 0; i < hydrationData.size(); i++) {
+                HydrationRoom hydration = hydrationData.get(i);
+
+                // Use the index as x-axis and the drank as y-axis
+                entries.add(new BarEntry(i, hydration.getDrank().intValue()));
+
+                // Format the date without the year (day-month)
+                Date hydrationDate = Converters.localDateToDate(hydration.getDate());
+                String formattedDate = sdf.format(hydrationDate);
+                formattedDates.add(formattedDate); // Collect formatted dates for x-axis labels
+            }
+
+            // Post the data to the main thread to update the chart
+            runOnUiThread(() -> {
+                // Create the dataset
+                BarDataSet dataSet = new BarDataSet(entries, "Hydration");
+                dataSet.setColor(getResources().getColor(R.color.blue)); // Set bar color
+                dataSet.setValueTextColor(getResources().getColor(R.color.black)); // Value text color
+
+                // Customize bar width
+                BarData barData = new BarData(dataSet);
+                barData.setBarWidth(0.8f); // Set custom bar width
+
+                // Set the data to the chart
+                this.barChart.setData(barData);
+                this.barChart.setFitBars(true); // Make the bars fit nicely within the chart
+                this.barChart.invalidate();  // Refresh the chart with the new data
+
+                // Customize x-axis
+                XAxis xAxis = this.barChart.getXAxis();
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(formattedDates)); // Display formatted dates (day-month) on x-axis
+                xAxis.setGranularity(1f); // Ensure labels are spaced evenly
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Position x-axis labels at the bottom
+
+                // Customize y-axis
+                YAxis leftAxis = this.barChart.getAxisLeft();
+                leftAxis.setAxisMinimum(0f); // Start y-axis at 0
+                float maxDrank = getMaxDrank(hydrationData).floatValue() +500;
+                leftAxis.setAxisMaximum(maxDrank); // Set a maximum limit for better visualization (optional)
+
+                // Add goal line (LimitLine) at 10,000 steps
+                String goalLineStr = "Hydration Goal: "+this.waterGoal+"ml";
+                LimitLine goalLine = new LimitLine(this.waterGoal, goalLineStr);
+                goalLine.setLineWidth(1.5f); // Set the thickness of the goal line
+                goalLine.setLineColor(getResources().getColor(R.color.red)); // Set the color of the goal line
+                goalLine.setTextSize(8f); // Set the text size for the label
+                goalLine.setTextColor(getResources().getColor(R.color.red)); // Set the text color for the label
+
+                // Add the goal line to the left axis
+                leftAxis.addLimitLine(goalLine);
+
+                // Enable chart scaling and dragging
+                this.barChart.setDragEnabled(true); // Enable dragging
+                this.barChart.setScaleEnabled(true); // Enable scaling
+                this.barChart.setScaleXEnabled(true); // Enable horizontal scaling
+                this.barChart.setPinchZoom(false); // Disable pinch zooming
+                this.barChart.setDoubleTapToZoomEnabled(true); // Enable double-tap zoom
+
+                this.barChart.getAxisRight().setEnabled(false); // Disable the right y-axis
+                this.barChart.getLegend().setEnabled(false); // Disable the legend
+                this.barChart.getDescription().setText("");
+                this.barChart.setDrawGridBackground(false); // Disable grid lines
+
+                // Set visible range (number of bars visible at once)
+                this.barChart.setVisibleXRangeMaximum(7); // Show only 7 bars at a time
+                this.barChart.moveViewToX(entries.size() - 7); // Move to the last 7 entries
+
+                // Add animation
+                this.barChart.animateY(1000); // Animate chart on the y-axis for 1 second
+            });
+        });
+        loadBarChartTh.start();
+
+        try {
+            // Wait for the thread to finish
+            loadBarChartTh.join();
+        } catch (Exception e) {
+            System.out.println("EXCEPTION WHEN LOADING BAR CHART");
+        }
+    }
+
+    private Double getMaxDrank(List<HydrationRoom> hydrationList) {
+        if (hydrationList == null || hydrationList.isEmpty()) {
+            return null; // Return null or some default value if the list is empty or null
+        }
+
+        // Initialize maxDrank with the first object's "drank" value
+        Double maxDrank = Double.MIN_VALUE;
+
+        // Iterate through the list to find the maximum drank value
+        for (HydrationRoom hydration : hydrationList) {
+            if (hydration.getDrank() > maxDrank) {
+                maxDrank = hydration.getDrank();
+            }
+        }
+
+        return maxDrank; // Return the maximum "drank" value
     }
 
     /**************************************** Add Water ****************************************/
-    private void addWater(){
+    private void addWater() {
+        float prevWaterAmount = (float)this.currentWaterAmount;
         this.currentWaterAmount = this.currentWaterAmount + this.defaultWaterAmount;
 
-        //update water amount in shared preferences
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("drank",(int) this.currentWaterAmount);
-        editor.apply();
+        this.hydrationRoom.setDrank(this.currentWaterAmount);
+        this.tempHydrationRoom.setDrank(this.currentWaterAmount);
 
-        String waterOutputStr = (int)this.currentWaterAmount + " ml / " + this.waterGoal + " ml";
+        //update hydration in room
+        Thread addHydrationTh = new Thread(() -> {
+            hydrationRoomDao.updateHydration(this.hydrationRoom);
+            tempHydrationRoomDao.updateTempHydration(this.tempHydrationRoom);
+        });
+        addHydrationTh.start();
+
+        try {
+            //wait for thread to finish
+            addHydrationTh.join();
+        } catch (Exception e) {
+            System.out.println("EXCEPTION WHEN ADDING WATER");
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+            //finish activity and go back to home
+        }
+
+        String waterOutputStr = (int) this.currentWaterAmount + " ml / " + this.waterGoal + " ml";
         waterOutput.setText(waterOutputStr);
 
-        ////////////////////// update animation //////////////////////
-    }
-
-    private void fillWaterBottle(){
-//        if (waterGif != null) {
-//            int totalFrames = waterGif.getFrameCount();
-//
-//            // Set frame based on current water amount
-//            int currentFrame = (this.currentWaterAmount * totalFrames) / waterGoal;
-//        }
+        //update water bottle
+        updateWaterProgress(prevWaterAmount,(float) this.currentWaterAmount);
     }
 
     /**************************************** Edit Default Water Amount ****************************************/
     private void showEditAmountDialog() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
-            builder.setTitle("Default Water Amount");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
+        builder.setTitle("Default Water Amount");
 
-            // Set up the layout for the dialog
-            View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_amount, null);
-            builder.setView(dialogView);
+        // Set up the layout for the dialog
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_amount, null);
+        builder.setView(dialogView);
 
-            // Find the EditText and Spinner in the dialog layout
-            final EditText input = dialogView.findViewById(R.id.amountInput);
+        // Find the EditText and Spinner in the dialog layout
+        final EditText input = dialogView.findViewById(R.id.amountInput);
 
-            // Find the buttons in the dialog layout
-            Button SaveBtn = dialogView.findViewById(R.id.Save);
-            Button cancelBtn = dialogView.findViewById(R.id.cancelButton);
+        // Find the buttons in the dialog layout
+        Button SaveBtn = dialogView.findViewById(R.id.Save);
+        Button cancelBtn = dialogView.findViewById(R.id.cancelButton);
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -301,91 +737,129 @@ public class hydration_tracking extends AppCompatActivity {
             String inputStr = input.getText().toString();
             if (!inputStr.isEmpty()) {
                 int inputWaterAmount = Integer.parseInt(inputStr);
-                if(inputWaterAmount <= 0){
-                    Toast.makeText(this, "please enter a positive number", Toast.LENGTH_SHORT).show();
+                if (inputWaterAmount <= 0) {
+                    Toast.makeText(this, "Please enter a positive number!", Toast.LENGTH_SHORT).show();
+                    input.setText("");
+                } else if (inputWaterAmount > this.waterGoal) {
+                    Toast.makeText(this, "Number larger than goal!", Toast.LENGTH_SHORT).show();
                     input.setText("");
                 }
-                else if(inputWaterAmount > this.waterGoal){
-                    Toast.makeText(this, "number should be smaller than your goal", Toast.LENGTH_SHORT).show();
+                else if(inputWaterAmount == this.defaultWaterAmount){
+                    Toast.makeText(this, "No change", Toast.LENGTH_SHORT).show();
                     input.setText("");
                 }
                 else {
-                    /*************************************************/
                     this.defaultWaterAmount = inputWaterAmount;
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("defaultWater", this.defaultWaterAmount);
-                    editor.apply();
-
+                    System.out.println("UPDATED WATER DEFAULT: "+this.defaultWaterAmount);
                     //update default hydration in room
-                    new Thread(()-> {
-                        userRoom.setWaterDefault(this.defaultWaterAmount);
-                        userDao.updateUser(userRoom);
-                    }).start();
+                    Thread updateDefaultWaterTh = new Thread(() -> {
+                        this.userRoom.setWaterDefault(this.defaultWaterAmount);
+                        this.userDao.updateUser(userRoom);
+                    });
+                    updateDefaultWaterTh.start();
+
+                    try {
+                        //wait for thread to finish
+                        updateDefaultWaterTh.join();
+                    } catch (Exception e) {
+                        System.out.println("EXCEPTION WHEN UPDATING DEFAULT WATER");
+                        Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+                        //finish activity and go back to home
+                    }
 
                     //set button text
                     String addWaterTxt = this.defaultWaterAmount + "ml";
                     addWaterBtn.setText(addWaterTxt);
 
-                    Toast.makeText(this, "new default is: "+this.defaultWaterAmount+"ml", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "New default is: " + this.defaultWaterAmount + "ml", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
-                dialog.dismiss();
-            }
-            else{
-                Toast.makeText(this, "please enter amount", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Please enter amount", Toast.LENGTH_SHORT).show();
             }
         });
         cancelBtn.setOnClickListener(v -> dialog.dismiss());
     }
 
     /**************************************** Save the Data ****************************************/
-    public void scheduleDailyReset() {
-        Calendar currentDate = Calendar.getInstance();
-        Calendar dueDate = Calendar.getInstance();
+    private void checkResetData(LocalDate prevDate){
+        LocalDate currDate = LocalDate.now();
+        if(currDate.isAfter(prevDate)) {
+            Thread resetThread = new Thread(() -> {
 
-        // Set the time to 00:00
-        dueDate.set(Calendar.HOUR_OF_DAY, 0);
-        dueDate.set(Calendar.MINUTE, 0);
-        dueDate.set(Calendar.SECOND, 0);
+                List<HydrationRoom> allHyd = hydrationRoomDao.getAllHydrationsForCustomer(this.userRoom.getId());
+                List<TempHydrationRoom> allTempHyd = tempHydrationRoomDao.getAllTempHydrations();
+                if (allHyd == null || allTempHyd == null) {
+                    System.out.println("NO HYDRATION WAS IN TABLE");
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(hydration_tracking.this, "No hydration data was found", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    finish();
+                } else if (allHyd.size() > 7) {
+                    hydrationRoomDao.deleteOldestHydration();
+                }
+                //getting user from server
+                if(this.connected) {
 
-        // Check if the dueDate has already passed today, schedule for the next day
-        if (dueDate.before(currentDate)) {
-            dueDate.add(Calendar.HOUR_OF_DAY, 24);
+                    getUserFromServer(this.userRoom.getEmail());
+                    if (this.user == null) {
+                        System.out.println("NO USER FOUND IN SERVER");
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(hydration_tracking.this, "user not found in server", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        finish();
+                    }
+                    else {
+                        this.user.setWaterDefault(this.userRoom.getWaterDefault());
+                        uploadUserToServer(this.user);
+                        if(allTempHyd != null)
+                            uploadAllTempHydration(allTempHyd, this.user);
+                        this.tempHydrationRoomDao.deleteAllTempHydration();
+                    }
+
+                }
+                createNewHydration(this.userRoom.getId());
+                createNewTempHydration(this.userRoom.getId());
+            });
+            resetThread.start();
+
+            try {
+                // Wait for the thread to finish
+                resetThread.join();
+            } catch (Exception e) {
+                Log.e("HYDRATION_TRACKING", "SOMETHING WENT WRONG", e);
+                Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+                //finish activity and go back to home
+                finish();
+            }
         }
-
-        long timeDiff = dueDate.getTimeInMillis() - currentDate.getTimeInMillis();
-
-        // Schedule the work
-//        WorkRequest dailyWorkRequest =
-//                new PeriodicWorkRequest.Builder(ResetWorker.class, 24, TimeUnit.HOURS)
-//                        .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
-//                        .build();
-//
-//        WorkManager.getInstance(getApplicationContext()).enqueue(dailyWorkRequest);
-
-        //update user in server
-        Service.getInstance().updateUser(userRoom.getId(), this.user);
-
-        //save new hydration in room and server
-        saveHydration();
+        else{
+            return;
+        }
     }
 
-    private void saveHydration(){
-        //create new hydration
-        Hydration hydration = new Hydration(this.user.getId() ,this.currentWaterAmount , LocalDate.now());
+    //uploads a user to server
+    private void uploadUserToServer(User user) {
+        this.userApi.updateUser(user.getId(),user);
+    }
 
-        //create new hydrationRoom
-        HydrationRoom hydrationRoom = new HydrationRoom(hydration);
+    //upload a temp hydration to server
+    private void uploadHydrationToServer(Hydration hydration){
+        this.hydrationApi.createHydration(hydration);
+    }
 
-        //create hydration Dao
-        HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
-
-        //add hydrationRoom in room
-        new Thread(()-> {
-            hydrationRoom.setDrank(this.currentWaterAmount);
-            hydrationRoomDao.insertHydration(hydrationRoom);
-        }).start();
-
-        //add hydration in server
-        //Service.getInstance().addHydration(hydration);
+    //uploads all temp hydration to server
+    private void uploadAllTempHydration(List<TempHydrationRoom> allTempHydrations, User user){
+        for(TempHydrationRoom tempH : allTempHydrations){
+            Hydration hydration = new Hydration(tempH);
+            hydration.setCustomerId(user.getId());
+            uploadHydrationToServer(hydration);
+        }
     }
 }

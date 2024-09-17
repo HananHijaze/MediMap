@@ -24,34 +24,30 @@
 
     <!-- 1.Body type -->
     <string-array name="body_type_array">
-        <item>Select your body type</item>
-        <item>Skinny</item>
-        <item>Normal</item>
-        <item>Overweight</item>
+        <item>skinny</item>
+        <item>normal</item>
+        <item>heavier</item>
     </string-array>
 
     <!-- 2.Goal -->
     <string-array name="goal_array">
-        <item>Select your goal</item>
-        <item>Gain muscle</item>
-        <item>Weight loss</item>
-        <item>Healthy lifestyle</item>
+        <item>gain muscle</item>
+        <item>lose weight</item>
+        <item>healthy life</item>
     </string-array>
 
     <!-- 3.Diet type -->
     <string-array name="diet_type_array">
-        <item>Select your diet type</item>
-        <item>Vegetarian</item>
-        <item>Vegan</item>
-        <item>Keto</item>
-        <item>Gluten-free</item>
-        <item>Dairy-free</item>
-        <item>Pescatarian</item>
+        <item>vegetarian</item>
+        <item>vegan</item>
+        <item>keto</item>
+        <item>paleo</item>
+        <item>balanced</item>
+        <item>low carb</item>
     </string-array>
 
     <!-- 4.Allergies -->
     <string-array name="allergies_array">
-        <item>Select an allergy if it exists</item>
         <item>Dairy</item>
         <item>Gluten</item>
         <item>Nuts</item>
@@ -63,7 +59,6 @@
 
     <!-- 5.Training days -->
     <string-array name="training_days_array">
-        <item>Select days for your training</item>
         <item>Sunday</item>
         <item>Monday</item>
         <item>Tuesday</item>
@@ -116,6 +111,11 @@
             <item>2</item>
         </string-array>
     <string name="meals_per_day">Meals per day</string>
+
+    <string-array name="workout_location_array">
+        <item>gym</item>
+        <item>home</item>
+    </string-array>
 
     <!-- Snacks Per Day -->
     <string name="snacks_per_day">Snacks per day</string>

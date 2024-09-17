@@ -9,31 +9,40 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface WorkoutPlanApi {
 
     // Get a list of all workout plans
-    @GET("api/workoutplans")
+    @GET("workoutplans")
     Call<List<WorkoutPlan>> getAllWorkoutPlans();
 
     // Get a workout plan by ID
-    @GET("api/workoutplans/{id}")
+    @GET("workoutplans/{id}")
     Call<WorkoutPlan> getWorkoutPlanById(@Path("id") Long id);
 
     // Create a new workout plan
-    @POST("api/workoutplans")
+    @POST("workoutplans")
     Call<WorkoutPlan> createWorkoutPlan(@Body WorkoutPlan workoutPlan);
 
     // Update an existing workout plan
-    @PUT("api/workoutplans/{id}")
+    @PUT("workoutplans/{id}")
     Call<WorkoutPlan> updateWorkoutPlan(@Path("id") Long id, @Body WorkoutPlan workoutPlan);
 
     // Delete a workout plan by ID
-    @DELETE("api/workoutplans/{id}")
+    @DELETE("workoutplans/{id}")
     Call<Void> deleteWorkoutPlan(@Path("id") Long id);
 
-    @GET("workout/latest/{customerID}")
+    @GET("workoutplans/latest/{customerID}")
     Call<WorkoutPlan> getLatestWorkoutPlan(@Path("customerID") Long customerID);
+
+    @GET("workoutplans/latestWorkout")
+    Call<List<WorkoutPlan>> getDatedTrainingPlans(
+            @Query("customerId") Long customerId,
+            @Query("inputDate") String inputDate
+    );
+
+
 
 }
 

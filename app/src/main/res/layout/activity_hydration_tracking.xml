@@ -14,7 +14,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="204dp"
+        android:layout_marginTop="10dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_edit"
         android:gravity="center"
@@ -27,57 +27,84 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addWaterBtn"
-        app:layout_constraintVertical_bias="0.7"
+        app:layout_constraintVertical_bias="0.0"
         app:strokeColor="@color/blue" />
 
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/barChart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/water"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottleCap"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.308" />
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginVertical="15dp"
+        android:layout_marginHorizontal="10dp"
+        tools:context=".hydration_tracking">
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barChart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/bottleCap"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:src="@drawable/bottle_cap"
+        app:layout_constraintBottom_toTopOf="@+id/waterBottle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
-        android:id="@+id/water"
-        android:layout_width="200dp"
+        android:id="@+id/waterBottle"
+        android:layout_width="100dp"
         android:layout_height="300dp"
         android:layout_marginBottom="20dp"
         android:layout_weight="1"
         android:background="@drawable/custom_linear_layout"
+        android:backgroundTint="#B6F9FF"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/addWaterBtn"
+        app:layout_constraintBottom_toTopOf="@+id/waterOutput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/waterbottle"
-            android:layout_width="150dp"
-            android:layout_height="250dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/waterbottle2" />
-
-        <TextView
-            android:id="@+id/waterOutput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="300ml / 3000ml"
-            android:textColor="@color/blue"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
+        <ProgressBar
+            android:id="@+id/waterProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:progressDrawable="@drawable/custom_water_progress" />
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/waterOutput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:text="0ml / 3000ml"
+        android:textColor="#004C75"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/addWaterBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/addWaterBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="272dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/ic_plus"
         android:text="150ml"
@@ -88,7 +115,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.828"
         app:strokeColor="@color/blue"
-        app:strokeWidth="1dp" />
+        app:strokeWidth="2dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

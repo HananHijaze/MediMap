@@ -25,10 +25,12 @@ public interface StepCountDao {
     @Query("DELETE FROM step_count_table WHERE userId = :userId")
     void deleteAllStepsForUser(Long userId);
 
+
+    // Query to get the row with the latest date
+    @Query("SELECT * FROM step_count_table WHERE date = (SELECT MAX(date) FROM step_count_table)")
+    StepCountRoom getLatestStepCount();
+
     @Query("SELECT * FROM step_count_table WHERE userId = :userId ORDER BY date DESC")
     List<StepCountRoom> getAllStepCounts(Long userId);
-
-
-
 
 }

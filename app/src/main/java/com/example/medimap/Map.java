@@ -79,8 +79,12 @@ public class Map extends AppCompatActivity implements LocationListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Configuration.getInstance().load(this, getPreferences(Context.MODE_PRIVATE));
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_map);
+        initializeUI();  // Initialize the UI elements
+        checkNetworkAndLocationAvailability();  // Check network and location availability
+        checkLocationPermission();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -127,8 +131,7 @@ public class Map extends AppCompatActivity implements LocationListener {
             Toast.makeText(this, "Network is available!", Toast.LENGTH_SHORT).show();
             checkLocationPermission();
         } else {
-            Log.d(TAG, "No internet connection.");
-            Toast.makeText(this, "No internet connection.", Toast.LENGTH_LONG).show();
+            showNoInternetDialog();
         }
     }
 
@@ -138,8 +141,11 @@ public class Map extends AppCompatActivity implements LocationListener {
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
         } else {
+            // Permission is already granted, continue with location access
             checkIfGPSEnabled();
         }
     }
@@ -420,6 +426,15 @@ public class Map extends AppCompatActivity implements LocationListener {
     public void onPause() {
         super.onPause();
         locationManager.removeUpdates(this);
+    }
+    private void showNoInternetDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_no_internet, null);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+        Button btnOk = dialogView.findViewById(R.id.Save);
+        btnOk.setOnClickListener(v -> dialog.dismiss());
     }
    /* private void showRatingDialog() {
         // Inflate the dialog layout

@@ -53,6 +53,7 @@ public class FrequencyMeal extends AppCompatActivity {
                 saveFrequency();
                 retrieveAndShowFrequency();
                 Intent intent = new Intent(FrequencyMeal.this, WorkOutPlaces.class);
+               intent.putExtra("currentPage", currentPage + 1);  // Pass the updated page number to the next activity
                 startActivity(intent);
             } else {
                 Toast.makeText(FrequencyMeal.this, "Please select both meal and snack frequencies", Toast.LENGTH_SHORT).show();
@@ -70,7 +71,7 @@ public class FrequencyMeal extends AppCompatActivity {
                 resetSelections(false);
             }
             layout.setBackgroundResource(R.drawable.border_selected);
-            Toast.makeText(FrequencyMeal.this, type + " selected", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(FrequencyMeal.this, type + " selected", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -108,7 +109,7 @@ public class FrequencyMeal extends AppCompatActivity {
         int savedMeals = sharedPreferences.getInt("meals", 0); // Default to 0 if no meals selected
         int savedSnacks = sharedPreferences.getInt("snacks", 0); // Default to 0 if no snacks selected
 
-        Toast.makeText(this, "Meals: " + savedMeals + "\nSnacks: " + savedSnacks, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Meals: " + savedMeals + "\nSnacks: " + savedSnacks, Toast.LENGTH_LONG).show();
     }
 
     // Helper method to extract the number from the string using split

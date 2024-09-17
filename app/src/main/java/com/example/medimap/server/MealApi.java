@@ -34,7 +34,7 @@ public interface MealApi {
     @DELETE("meals/{id}")
     Call<Void> deleteMeal(@Path("id") Long id);
 
-    @GET("api/meals/search")
+    @GET("meals/search")
     Call<List<Meal>> getMealsByTypeAndCluster(
             @Query("type") String type,
             @Query("cluster") int cluster
