@@ -26,6 +26,7 @@ import com.example.medimap.roomdb.AllergyRoom;
 import com.example.medimap.roomdb.AppDatabaseRoom;
 import com.example.medimap.roomdb.HydrationRoom;
 import com.example.medimap.roomdb.HydrationRoomDao;
+import com.example.medimap.roomdb.TempHydrationRoom;
 import com.example.medimap.roomdb.TempHydrationRoomDao;
 import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.roomdb.UserRoom;
@@ -79,9 +80,25 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Room database and UserDao
         this.userDao = db.userDao();
 
-        // Create a shortcut if supported
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            createShortcut();
+//        // Create a shortcut if supported
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+//            createShortcut();
+//        }
+
+        Thread deleteExamplesTh = new Thread(() -> {
+            HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
+            hydrationRoomDao.deleteAllHydrations();
+            TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
+            tempHydrationRoomDao.deleteAllTempHydration();
+        });
+        deleteExamplesTh.start();
+
+        try{
+            deleteExamplesTh.join();
+        }catch (Exception e){
+            System.out.println("EXCEPTION WHEN DELETING EXAMPLE HYDRATION");
+            //finish activity and go back to home
+            finish();
         }
 
         // Check the users and navigate accordingly using a background thread
@@ -99,13 +116,23 @@ public class MainActivity extends AppCompatActivity {
                     //delete existing hydration data
                     HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
                     TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
-                    new Thread(() -> {
+
+                    Thread HydrationExamplesTh = new Thread(() -> {
                         hydrationRoomDao.deleteAllHydrations();
                         tempHydrationRoomDao.deleteAllTempHydration();
-                    }).start();
 
-                    //add example hydration data
-                    addExampleHydrationsToRoom(userRoom);
+                        //add example hydration data
+                        addExampleHydrationsToRoom(userRoom);
+                    });
+                    HydrationExamplesTh.start();
+
+                    try{
+                        HydrationExamplesTh.join();
+                    }catch (Exception e){
+                        System.out.println("EXCEPTION WHEN DELETING AND ADDING EXAMPLE HYDRATION");
+                        //finish activity and go back to home
+                        finish();
+                    }
                     navigateTo(Home.class); // Navigate to Home if logged in
 
                 } else {
@@ -116,12 +143,24 @@ public class MainActivity extends AppCompatActivity {
                     //delete existing hydration data
                     HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
                     TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
-                    new Thread(() -> {
+
+                    Thread HydrationExamplesTh = new Thread(() -> {
                         hydrationRoomDao.deleteAllHydrations();
                         tempHydrationRoomDao.deleteAllTempHydration();
-                    }).start();
-                    //add example hydration data
-                    addExampleHydrationsToRoom(userRoom);
+
+                        //add example hydration data
+                        addExampleHydrationsToRoom(userRoom);
+                    });
+                    HydrationExamplesTh.start();
+
+                    try{
+                        HydrationExamplesTh.join();
+                    }catch (Exception e){
+                        System.out.println("EXCEPTION WHEN DELETING AND ADDING EXAMPLE HYDRATION");
+                        //finish activity and go back to home
+                        finish();
+                    }
+
                     navigateTo(LogIn.class); // Navigate to LogIn if not logged in
 
                 }
@@ -155,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         hydrationList.add(new HydrationRoom(userRoom.getId(), 3000.0, LocalDate.of(2024, 9, 10)));
 
         // Iterate through the hydrationList and insert each HydrationRoom
+
         Long Hid = 1L;
         for (HydrationRoom hydrationRoom : hydrationList) {
             hydrationRoom.setId(Hid++);
@@ -227,34 +267,35 @@ public class MainActivity extends AppCompatActivity {
         return sharedPreferences.getBoolean("isLoggedIn", false); // Default to false if not set
     }
 
-    // Method to create a shortcut if supported (for Android 7.1+)
-    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
-    private void createShortcut() {
-        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+//    // Method to create a shortcut if supported (for Android 7.1+)
+//    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
+//    private void createShortcut() {
+//        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+//
+//        if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported()) {
+//            // Check if the shortcut already exists
+//            boolean shortcutExists = false;
+//            for (ShortcutInfo pinnedShortcut : shortcutManager.getPinnedShortcuts()) {
+//                if (pinnedShortcut.getId().equals("shortcut_example")) {
+//                    shortcutExists = true;
+//                    break;
+//                }
+//            }
+//
+//            // If the shortcut does not exist, create and pin it
+//            if (!shortcutExists) {
+//                ShortcutInfo shortcut = new ShortcutInfo.Builder(this, "shortcut_example")
+//                        .setShortLabel(getString(R.string.shortcut_short_label))
+//                        .setLongLabel(getString(R.string.shortcut_long_label))
+//                        .setIcon(Icon.createWithResource(this, R.drawable.ic_shortcut))
+//                        .setIntent(new Intent(Intent.ACTION_VIEW, null, this, Home.class))
+//                        .build();
+//
+//                shortcutManager.requestPinShortcut(shortcut, null);
+//            }
+//        }
+//    }
 
-        if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported()) {
-            // Check if the shortcut already exists
-            boolean shortcutExists = false;
-            for (ShortcutInfo pinnedShortcut : shortcutManager.getPinnedShortcuts()) {
-                if (pinnedShortcut.getId().equals("shortcut_example")) {
-                    shortcutExists = true;
-                    break;
-                }
-            }
-
-            // If the shortcut does not exist, create and pin it
-            if (!shortcutExists) {
-                ShortcutInfo shortcut = new ShortcutInfo.Builder(this, "shortcut_example")
-                        .setShortLabel(getString(R.string.shortcut_short_label))
-                        .setLongLabel(getString(R.string.shortcut_long_label))
-                        .setIcon(Icon.createWithResource(this, R.drawable.ic_shortcut))
-                        .setIntent(new Intent(Intent.ACTION_VIEW, null, this, Home.class))
-                        .build();
-
-                shortcutManager.requestPinShortcut(shortcut, null);
-            }
-        }
-    }
     //initialize allergie room table
     public void insertDefaultAllergiesIfNotPresent() {
         AsyncTask.execute(() -> {
