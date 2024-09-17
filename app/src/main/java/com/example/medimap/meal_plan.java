@@ -22,6 +22,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.medimap.roomdb.AppDatabaseRoom;
+import com.example.medimap.roomdb.UserDao;
 import com.example.medimap.server.Meal;
 import com.example.medimap.server.MealApi;
 import com.example.medimap.server.MealPlan;
@@ -77,7 +79,7 @@ public class meal_plan extends AppCompatActivity {
         // Setup RecyclerView and Adapter
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mealAdapter = new MealAdapter(mealList);
+        mealAdapter = new MealAdapter(mealList, this::onLongMealCardClick); // Pass callback for item clicks
         recyclerView.setAdapter(mealAdapter);
 
     }
@@ -219,38 +221,22 @@ public class meal_plan extends AppCompatActivity {
     }
 
     private void loadUserAndFetchMealPlans() {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserSignUpData", MODE_PRIVATE);
-        String email = sharedPreferences.getString("email", "user6@example.com"); // Use the actual stored email
-        UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
-
-        // Show progress bar while fetching user data
-
-        // Make the API call to get the user by email
-        Call<User> call = userApi.findByEmail("user4@example.com"); // Dynamic email based on stored value
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    User user = response.body();
+        UserDao userDao = AppDatabaseRoom.getInstance(this).userDao();
+        new Thread(() -> {
+          Long userid=  userDao.getAllUsers().get(0).getId();
                     if (selectedDate != null) {
                         // Use formatted date for API call
                         try {
-                            fetchMealPlans(user.getId(), selectedDate);
+                            fetchMealPlans(userid, selectedDate);
                         } catch (ParseException e) {
                             throw new RuntimeException(e);
                         }
                     } else {
                         Toast.makeText(meal_plan.this, "Please select a date.", Toast.LENGTH_SHORT).show();
                     }
-                }
-            }
+                }).start();
+        }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(meal_plan.this, "Error fetching user data.", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void fetchMealPlans(long userId, Date selectedDate) throws ParseException {
         MealPlanApi mealPlanApi = RetrofitClient.getRetrofitInstance().create(MealPlanApi.class);
@@ -324,5 +310,10 @@ public class meal_plan extends AppCompatActivity {
                 }
             });
         }
+    }
+    private void onLongMealCardClick(Meal meal) {
+        // Handle the click event, storing the selected meal ID and performing necessary actions
+        Toast.makeText(this, "Meal ID: " + meal.getMealID() + " clicked.", Toast.LENGTH_SHORT).show();
+        // Add additional actions here (e.g., navigate to meal details)
     }
 }

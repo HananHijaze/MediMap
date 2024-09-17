@@ -233,7 +233,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
 
         System.out.println("GOING TO CREATE HYDRATION SECTION");
         //create hydration section
-        createHydrationTrackingPage();
+        //createHydrationTrackingPage();
     }
 
     /***************************************** Steps *****************************************/
@@ -332,7 +332,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
             sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-        createHydrationTrackingPage();
+        //createHydrationTrackingPage();
     }
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
