@@ -45,7 +45,8 @@ import com.google.android.material.button.MaterialButton;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.AlertDialog;
-//*
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -73,6 +74,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -596,10 +599,10 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         this.tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
 
         /***************** DELETING HYDRATION *********************/
-        new Thread(() -> {
-            this.hydrationRoomDao.deleteAllHydrations();
-            this.tempHydrationRoomDao.deleteAllTempHydration();
-        }).start();
+//        new Thread(() -> {
+//            this.hydrationRoomDao.deleteAllHydrations();
+//            this.tempHydrationRoomDao.deleteAllTempHydration();
+//        }).start();
 
         // Fetch the single user from local
         getUserRoomTh();
@@ -610,16 +613,21 @@ public class Home extends AppCompatActivity implements SensorEventListener {
             finish();
         }
         else{
-            nameText.setText(this.userRoom.getName());
+            System.out.println("USER ROOM IS NOT NULL (OnCreate)");
+            String greeting = "Hello, "+this.userRoom.getName();
+            nameText.setText(greeting);
         }
 
         // Fetch hydration data from local
         getNewestHydrationFromRoom();
-        if(this.hydrationRoom != null)
+        System.out.println("GOT NEWEST HYDRATION: "+this.hydrationRoom.getDate());
+        if(this.hydrationRoom != null) {
             getNewestTempHydrationFromRoom(this.hydrationRoom);
+            System.out.println("GOT NEWEST TEMP HYDRATION: "+this.tempHydrationRoom.getDate());
+        }
         else{
             System.out.println("HYDRATION ROOM IS NULL (OnCreate)");
-            Toast.makeText(this, "NO HYDRATION FOUND IS NULL", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -627,8 +635,8 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         this.prevDate = this.hydrationRoom.getDate();
         System.out.println("PREV DATE IS: "+this.prevDate);
 
-//        // Check Reset
-//        checkResetData(this.prevDate);
+        // Check Reset
+        checkResetData(this.prevDate);
 
         //load water def, goal and amount
         this.defaultWaterAmount = this.userRoom.getWaterDefault();
@@ -638,11 +646,13 @@ public class Home extends AppCompatActivity implements SensorEventListener {
 
         //load newest hydration
         getNewestHydrationFromRoom();
-        if(this.hydrationRoom != null)
+        if(this.hydrationRoom != null) {
             getNewestTempHydrationFromRoom(this.hydrationRoom);
+            System.out.println("GOT NEWEST TEMP HYDRATION: " + this.tempHydrationRoom.getDate());
+        }
         else {
             System.out.println("HYDRATION ROOM IS NULL (OnCreate)");
-            Toast.makeText(this, "NO HYDRATION FOUND IS NULL", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -657,9 +667,6 @@ public class Home extends AppCompatActivity implements SensorEventListener {
 
         String waterOutputStr = (int) this.currentWaterAmount+"ml";
         waterOutput.setText(waterOutputStr);
-
-        //add example data
-        addExampleHydrationsToRoom();
 
         //listeners for buttons
         addWaterBtn.setOnClickListener(v -> addWater());
@@ -1028,11 +1035,61 @@ public class Home extends AppCompatActivity implements SensorEventListener {
             //finish activity and go back to home
         }
 
-        String waterOutputStr = (int) this.currentWaterAmount+"ml";
+        String waterOutputStr = (int) this.currentWaterAmount +" ml";
         waterOutput.setText(waterOutputStr);
 
         //update water bottle
         updateWaterProgress(prevWaterAmount,(float) this.currentWaterAmount);
+
+        if(this.currentWaterAmount >= this.waterGoal) {
+            boolean ReachedGoalNoti = sharedPreferences.getBoolean("ReachedHydGoalNotification", false);
+            if (ReachedGoalNoti) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("ReachedHydGoalNotification", true);
+                editor.apply(); // Apply changes
+
+                //send notification
+                sendNotification();
+            }
+        }
+    }
+
+    private void sendNotification() {
+        String channelId = "hydration_goal_channel"; // The same ID used when creating the channel
+        String title = "Hydration Goal Reached!";
+        String message = "Congratulations! You've reached your daily hydration goal of " + this.waterGoal + " ml.";
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.congrats) // Add a small icon here (replace with your app's icon)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setColor(ContextCompat.getColor(this, R.color.blue)) // Optional: Set a color for the notification
+                .setAutoCancel(true); // Dismiss notification when clicked
+
+        // Show the notification
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.notify(1, builder.build()); // You can use a different ID for each notification if needed
+        }
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            String channelId = "hydration_goal_channel";
+            CharSequence name = "Hydration Goal";
+            String description = "Notifications for reaching hydration goal";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+            channel.setDescription(description);
+
+            // Register the channel with the system
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
     /**************************************** Save the Data ****************************************/

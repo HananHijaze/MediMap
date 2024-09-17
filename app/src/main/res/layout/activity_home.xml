@@ -171,8 +171,8 @@
 
                         <LinearLayout
                             android:id="@+id/waterLayout"
-                            android:layout_width="75dp"
-                            android:layout_height="300dp"
+                            android:layout_width="70dp"
+                            android:layout_height="200dp"
                             android:layout_weight="1"
                             android:background="@drawable/custom_linear_layout"
                             android:gravity="center"
