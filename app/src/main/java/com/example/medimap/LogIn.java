@@ -62,7 +62,7 @@ public class LogIn extends AppCompatActivity {
     UserDao userDao;
     private UserApi userApi;
     boolean serverReachable;
-    private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss";
+    private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 
 
@@ -210,7 +210,7 @@ public class LogIn extends AppCompatActivity {
                 user.getGender(),
                 (int) user.getHeight(),  // Assuming height is a double in User and int in UserRoom
                 (int) user.getWeight(),  // Assuming weight is a double in User and int in UserRoom
-                getFormattedDate(user.getBirthDate().getTime()),// Assuming you want to save birthDate as a String in Room
+                getFormattedDate(user.getBirthDate().getTime()),
                 user.getBodyType(),
                 user.getGoal(),
                 user.getStepcountgoal(),
@@ -448,6 +448,6 @@ public class LogIn extends AppCompatActivity {
 
     private String formatDate(Date date) throws ParseException {
         return sdf.format(date);
-        }
+    }
 
 }
