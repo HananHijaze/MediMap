@@ -75,14 +75,22 @@ public class steps_tracking extends AppCompatActivity {
         //
         loadStepDataIntoChart();
     }
-
-
-
     private void loadStepDataIntoChart() {
         new Thread(() -> {
+            // Manually created step data and dates for testing purposes
+            List<StepCountRoom> stepData = new ArrayList<>();
             // Retrieve data from the database
             Long userId = userDao.getAllUsers().get(0).getId();
-            List<StepCountRoom> stepData = stepCountRoomDao.getAllStepCounts(userId);
+
+            // Example step data (replace these with your desired manual data)
+            stepData.add(new StepCountRoom(userId,5003,"2024-09-10")); // Date format: yyyy-MM-dd
+            stepData.add(new StepCountRoom(userId,2668,"2024-09-11"));
+            stepData.add(new StepCountRoom(userId,4286,"2024-09-12"));
+            stepData.add(new StepCountRoom(userId,6853,"2024-09-13"));
+            stepData.add(new StepCountRoom(userId,7002,"2024-09-14"));
+            stepData.add(new StepCountRoom(userId,4750,"2024-09-15"));
+            stepData.add(new StepCountRoom(userId,4017,"2024-09-16"));
+
 
             // Prepare the entries for the bar chart
             List<BarEntry> entries = new ArrayList<>();
@@ -106,7 +114,7 @@ public class steps_tracking extends AppCompatActivity {
 
                 // Create the dataset
                 BarDataSet dataSet = new BarDataSet(entries, "Steps");
-                dataSet.setColor(getResources().getColor(R.color.white)); // Set bar color
+                dataSet.setColor(getResources().getColor(R.color.blue)); // Set bar color
                 dataSet.setValueTextColor(getResources().getColor(R.color.black)); // Value text color
 
                 // Customize bar width
@@ -130,11 +138,11 @@ public class steps_tracking extends AppCompatActivity {
                 leftAxis.setAxisMaximum(12000f); // Set a maximum limit for better visualization (optional)
 
                 // Add goal line (LimitLine) at 10,000 steps
-                LimitLine goalLine = new LimitLine(10000f, "Step Goal (10,000)");
+                LimitLine goalLine = new LimitLine(6000f);
                 goalLine.setLineWidth(2f); // Set the thickness of the goal line
-                goalLine.setLineColor(getResources().getColor(R.color.red)); // Set the color of the goal line
+                goalLine.setLineColor(getResources().getColor(R.color.black)); // Set the color of the goal line
                 goalLine.setTextSize(12f); // Set the text size for the label
-                goalLine.setTextColor(getResources().getColor(R.color.red)); // Set the text color for the label
+                goalLine.setTextColor(getResources().getColor(R.color.black)); // Set the text color for the label
 
                 // Add the goal line to the left axis
                 leftAxis.addLimitLine(goalLine);
@@ -168,8 +176,10 @@ public class steps_tracking extends AppCompatActivity {
 
 
 
+
+
     private void updateProgressBar(int stepCount) {
-        int maxSteps = 10000; // Maximum number of steps for the day
+        int maxSteps = 6000; // Maximum number of steps for the day
         progressBar.setMax(maxSteps);
         progressBar.setProgress(stepCount);
         steps.setText(String.valueOf(stepCount)); // Show the actual step count
