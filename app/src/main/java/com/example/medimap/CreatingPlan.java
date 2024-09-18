@@ -61,10 +61,10 @@ public class CreatingPlan {
     public void createPlan(Context context, User user) {
         roomdb = AppDatabaseRoom.getInstance(context);
         // Initialize database and DAOs outside the background thread
-        WeeklyTrainingPlanRoomDao workoutPlanDao = roomdb.weeklyTrainingPlanRoomDao();
-        WeeklyMealPlanRoomDao mealPlanDao = roomdb.weeklyMealPlanRoomDao();
-        MealDao mealDao = roomdb.mealDao();
-        WorkoutDao workoutDao = roomdb.workoutDao();
+        workoutPlanDao = roomdb.weeklyTrainingPlanRoomDao();
+        mealPlanDao = roomdb.weeklyMealPlanRoomDao();
+        mealDao = roomdb.mealDao();
+        workoutDao = roomdb.workoutDao();
         deletefromroom();
         // Encode the User into an encodedUser
         encodedUser encodedUser = UserDataEncoder.encodeValues(user);

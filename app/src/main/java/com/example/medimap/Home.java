@@ -670,6 +670,11 @@ public class Home extends AppCompatActivity implements SensorEventListener {
         String waterOutputStr = (int) this.currentWaterAmount+"ml";
         waterOutput.setText(waterOutputStr);
 
+
+        //add example data
+        //addExampleHydrationsToRoom();
+
+
         //listeners for buttons
         addWaterBtn.setOnClickListener(v -> addWater());
     }
