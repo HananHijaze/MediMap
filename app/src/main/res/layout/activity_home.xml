@@ -127,7 +127,7 @@
                                 android:id="@+id/textView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="8,500"
+                                android:text="4500"
                                 android:textColor="@color/blue"
                                 android:textSize="30sp"
                                 android:textStyle="bold" />
@@ -136,7 +136,7 @@
                                 android:id="@+id/outof"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="/10,000 Steps"
+                                android:text="/6000 Steps"
                                 android:textColor="@color/blue"
                                 android:textSize="24dp"
                                 android:textStyle="bold" />
@@ -171,8 +171,8 @@
 
                         <LinearLayout
                             android:id="@+id/waterLayout"
-                            android:layout_width="75dp"
-                            android:layout_height="300dp"
+                            android:layout_width="70dp"
+                            android:layout_height="200dp"
                             android:layout_weight="1"
                             android:background="@drawable/custom_linear_layout"
                             android:gravity="center"

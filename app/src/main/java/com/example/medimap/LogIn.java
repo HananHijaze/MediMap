@@ -448,6 +448,6 @@ public class LogIn extends AppCompatActivity {
 
     private String formatDate(Date date) throws ParseException {
         return sdf.format(date);
-        }
+    }
 
 }

@@ -5,6 +5,10 @@
     <color name="blue">#198ECD</color> <!-- Blue color -->
     <color name="red">#FF0000</color>
     <color name="orange">#FF9900</color>
+    <color name="darkgreen">#00B400</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="purple">#FF00FF</color>
+    <color name="pink">#FFC0CB</color>
 
     <!-- Define the missing colors -->
     <color name="colorPrimary">#198ECD</color> <!-- You can use your blue color -->

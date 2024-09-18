@@ -3,7 +3,15 @@ package com.example.medimap;
 import static java.lang.Long.getLong;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.Typeface;
+import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -17,7 +25,10 @@ import android.os.Handler;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -107,13 +118,20 @@ public class hydration_tracking extends AppCompatActivity {
             return insets;
         });
         System.out.println("CREATED HYDRATION TRACKING");
+
         createHydrationTrackingPage();
+
+        // Create a shortcut if supported
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            createShortcut();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         System.out.println("ON RESUME HYDRATION TRACKING");
+
         createHydrationTrackingPage();
     }
 
@@ -134,8 +152,10 @@ public class hydration_tracking extends AppCompatActivity {
         //barChart
         barChart = findViewById(R.id.barChart);
 
-        //check network and server connection
-        this.connected = CheckConnection();
+        sharedPreferences = getSharedPreferences("waterPrefs", MODE_PRIVATE);
+
+        //check network and server connection (sets this.connected variable)
+        checkServerConnection();
 
         if(connected){
             //get server components
@@ -178,9 +198,9 @@ public class hydration_tracking extends AppCompatActivity {
         this.prevDate = this.hydrationRoom.getDate();
         System.out.println("PREV DATE IS: "+this.prevDate);
 
-//        // Check Reset
-//        checkResetData(this.prevDate);
-//
+        // Check Reset
+        checkResetData(this.prevDate);
+
         //load water def, goal and amount
         this.defaultWaterAmount = this.userRoom.getWaterDefault();
         this.waterGoal = this.userRoom.getHydrationGoal();
@@ -193,7 +213,7 @@ public class hydration_tracking extends AppCompatActivity {
             getNewestTempHydrationFromRoom(this.hydrationRoom);
         else {
             System.out.println("HYDRATION ROOM IS NULL (OnCreate)");
-            Toast.makeText(this, "NO HYDRATION FOUND IS NULL", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -213,14 +233,12 @@ public class hydration_tracking extends AppCompatActivity {
         getAllUserHydrations(this.userRoom.getId());
         if(this.allHydrations == null) {
             //add example data
-            addExampleHydrationsToRoom();
+            //addExampleHydrationsToRoom();
+            System.out.println("HYDRATION ROOM IS NULL (OnCreate)");
+            Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+            finish();
         }
-
-        //get hydration data
-        getAllUserHydrations(this.userRoom.getId());
-
-        //check hydration list
-        if(this.allHydrations != null) {
+        else{
             for (int i = 0; i < this.allHydrations.size(); i++) {
                 System.out.println("HYDRATION NUM: " + i);
                 HydrationRoom hydR = this.allHydrations.get(i);
@@ -229,58 +247,151 @@ public class hydration_tracking extends AppCompatActivity {
             //load barChart
             loadBarChart(this.allHydrations);
         }
-        else
+
+        //get hydration data
+        getAllUserHydrations(this.userRoom.getId());
+
+        //check hydration list
+        if(this.allHydrations != null) {
+        }
+        else {
             System.out.println("HYDRATION LIST IS NULL (OnCreate");
+
+        }
 
         //listeners for buttons
         addWaterBtn.setOnClickListener(v -> addWater());
         editWaterDefault.setOnClickListener(v -> showEditAmountDialog());
     }
 
+    // Method to create a shortcut if supported (for Android 7.1+)
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
+    private void createShortcut() {
+        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+
+        if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported()) {
+            // Check if the shortcut already exists
+            boolean shortcutExists = false;
+            for (ShortcutInfo pinnedShortcut : shortcutManager.getPinnedShortcuts()) {
+                if (pinnedShortcut.getId().equals("shortcut_example")) {
+                    shortcutExists = true;
+                    break;
+                }
+            }
+
+            // If the shortcut does not exist, create and pin it
+            if (!shortcutExists) {
+                Intent addWaterIntent = new Intent(this, AddWaterReceiver.class);
+                addWaterIntent.setAction("com.example.medimap.ADD_WATER");
+
+                ShortcutInfo shortcut = new ShortcutInfo.Builder(this, "shortcut_example")
+                        .setShortLabel(getString(R.string.shortcut_short_label))
+                        .setLongLabel(getString(R.string.shortcut_long_label))
+                        .setIcon(Icon.createWithResource(this, R.drawable.ic_shortcut))
+                        .setIntent(new Intent(Intent.ACTION_VIEW, null, this, Home.class))
+                        .build();
+
+                shortcutManager.requestPinShortcut(shortcut, null);
+            }
+        }
+    }
+
     /**************************************** Getters And Setters ****************************************/
     //getters and setters
-    private void setThisUser(User user){synchronized (this){this.user = user;}}
+    public void setThisUser(User user){synchronized (this){this.user = user;}}
 
-    private User getThisUser(){synchronized (this){return this.user;}}
+    public User getThisUser(){synchronized (this){return this.user;}}
 
-    private UserRoom getThisUserRoom() {synchronized (this){return this.userRoom;}}
+    public UserRoom getThisUserRoom() {synchronized (this){return this.userRoom;}}
 
-    private void setThisUserRoom(UserRoom userRoom) {synchronized (this){this.userRoom = userRoom;}}
+    public void setThisUserRoom(UserRoom userRoom) {synchronized (this){this.userRoom = userRoom;}}
 
-    private void setThisHydrationRoom(HydrationRoom hydrationRoom) {synchronized (this){this.hydrationRoom= hydrationRoom;}}
+    public void setThisHydrationRoom(HydrationRoom hydrationRoom) {synchronized (this){this.hydrationRoom= hydrationRoom;}}
 
-    private HydrationRoom getThisHydrationRoom() {synchronized (this){return this.hydrationRoom;}}
+    public HydrationRoom getThisHydrationRoom() {synchronized (this){return this.hydrationRoom;}}
 
-    private void setThisTempHydrationRoom(TempHydrationRoom tempHydrationRoom) {
+    public void setThisTempHydrationRoom(TempHydrationRoom tempHydrationRoom) {
         synchronized (this){this.tempHydrationRoom= tempHydrationRoom;}}
 
-    private TempHydrationRoom getThisTempHydrationRoom() {
+    public TempHydrationRoom getThisTempHydrationRoom() {
         synchronized (this){return this.tempHydrationRoom;}}
 
-    private void setAllHydrations(List<HydrationRoom> allHydrations) {
+    public void setAllHydrations(List<HydrationRoom> allHydrations) {
         synchronized (this){this.allHydrations = allHydrations;}
     }
 
-    private List<HydrationRoom> getAllHydrations() {
+    public List<HydrationRoom> getAllHydrations() {
         synchronized (this){return this.allHydrations;}
     }
 
-    private void updateWaterProgress(float from, float to){
+    public void setConnected(boolean connected){this.connected = connected;}
+
+    public boolean getConnected(){return this.connected;}
+
+    public void updateWaterProgress(float from, float to){
         ProgressBarAnimation anim = new ProgressBarAnimation(this.waterProgressBar,
                 from*100/this.waterGoal, to*100/this.waterGoal);
         anim.setDuration(750);
         this.waterProgressBar.startAnimation(anim);
     }
 
-//    private void setAllTempHydrations(List<TempHydrationRoom> allTempHydrations) {
+    public void getAddWater(){ this.addWater();}
+
+//    public void setAllTempHydrations(List<TempHydrationRoom> allTempHydrations) {
 //        synchronized (this){this.allTempHydrations = allTempHydrations;}
 //    }
 //
-//    private List<TempHydrationRoom> getAllTempHydrations() {
+//    public List<TempHydrationRoom> getAllTempHydrations() {
 //        synchronized (this){return this.allTempHydrations;}
 //    }
 
     /**************************************** Load The Data ****************************************/
+    //check server connection
+    private void checkServerConnection() {
+            if (NetworkUtils.isNetworkAvailable(this)){
+
+                Thread checkServerThread = new Thread(() -> {
+
+                    // Call a lightweight endpoint to check server availability
+                    Retrofit retrofit = RetrofitClient.getRetrofitInstance();
+                    UserApi userApi = retrofit.create(UserApi.class);
+                    Call<Void> call = userApi.pingServer();
+
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse
+                                (@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                setConnected(true);
+                                System.out.println("SERVER IS CONNECTED: "+getConnected());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                            setConnected(false);
+                            System.out.println("CONNECTED TO SERVER: "+getConnected());
+                            Toast.makeText(hydration_tracking.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                });
+            checkServerThread.start();
+
+            try {
+                //wait for thread to finish
+                checkServerThread.join();
+            } catch (Exception e) {
+                Toast.makeText(this, "SOMETHING WENT WRONG", Toast.LENGTH_SHORT).show();
+                System.out.println("SOMETHING WENT WRONG WITH THE SERVER CHECK");
+                //finish activity and go back to home
+                finish();
+            }
+        }else{
+                setConnected(false);
+            }
+    }
+
     //gets the local user from server
     private void getUserFromServer(String email){
         // Call the API to get the user by email from the server
@@ -315,11 +426,11 @@ public class hydration_tracking extends AppCompatActivity {
         });
     }
 
-    private boolean CheckConnection() {
-        if (!NetworkUtils.isNetworkAvailable(this))
-            return false;
-        return NetworkUtils.isServerReachable();
-    }
+//    private boolean CheckConnection() {
+//        if (!NetworkUtils.isNetworkAvailable(this))
+//            return false;
+//        return NetworkUtils.isServerReachable();
+//    }
 
     //get user from room
     private void getUserRoomTh() {
@@ -536,44 +647,6 @@ public class hydration_tracking extends AppCompatActivity {
         }
     }
 
-    //creates example hydration for barChart
-    private void addExampleHydrationsToRoom() {
-        List<HydrationRoom> hydrationList = new ArrayList<>();
-
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1500.0, LocalDate.of(2024, 9, 1)));
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2000.0, LocalDate.of(2024, 9, 2)));
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1200.0, LocalDate.of(2024, 9, 3)));
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2500.0, LocalDate.of(2024, 9, 4)));
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1000.0, LocalDate.of(2024, 9, 5)));
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2300.0, LocalDate.of(2024, 9, 6)));
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 1700.0, LocalDate.of(2024, 9, 7)));
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 2100.0, LocalDate.of(2024, 9, 8)));
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 4000.0, LocalDate.of(2024, 9, 9)));
-        hydrationList.add(new HydrationRoom(this.userRoom.getId(), 3000.0, LocalDate.of(2024, 9, 10)));
-
-        // Iterate through the hydrationList and insert each HydrationRoom
-        for (HydrationRoom hydrationRoom : hydrationList) {
-            addHydrationToRoom(hydrationRoom);
-        }
-    }
-
-    //adds a hydration to the room
-    private void addHydrationToRoom(HydrationRoom hydrationRoom){
-        Thread addHydrationTh = new Thread(() -> {
-            this.hydrationRoomDao.insertHydration(hydrationRoom);
-        });
-        addHydrationTh.start();
-
-        try {
-            //wait for thread to finish
-            addHydrationTh.join();
-        } catch (Exception e) {
-            System.out.println("EXCEPTION WHEN ADDING EXAMPLE HYDRATION");
-            //finish activity and go back to home
-            finish();
-        }
-    }
-
     private void loadBarChart(List<HydrationRoom> hydrationData) {
         Thread loadBarChartTh = new Thread(() -> {
             // Prepare the entries for the bar chart
@@ -604,7 +677,7 @@ public class hydration_tracking extends AppCompatActivity {
 
                 // Customize bar width
                 BarData barData = new BarData(dataSet);
-                barData.setBarWidth(0.8f); // Set custom bar width
+                barData.setBarWidth(0.6f); // Set custom bar width
 
                 // Set the data to the chart
                 this.barChart.setData(barData);
@@ -617,19 +690,24 @@ public class hydration_tracking extends AppCompatActivity {
                 xAxis.setGranularity(1f); // Ensure labels are spaced evenly
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Position x-axis labels at the bottom
 
+                // Set font to bold
+                Typeface boldTypeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD);
+                xAxis.setTypeface(boldTypeface);
+
                 // Customize y-axis
                 YAxis leftAxis = this.barChart.getAxisLeft();
                 leftAxis.setAxisMinimum(0f); // Start y-axis at 0
                 float maxDrank = getMaxDrank(hydrationData).floatValue() +500;
                 leftAxis.setAxisMaximum(maxDrank); // Set a maximum limit for better visualization (optional)
+                leftAxis.setTypeface(boldTypeface);
 
                 // Add goal line (LimitLine) at 10,000 steps
                 String goalLineStr = "Hydration Goal: "+this.waterGoal+"ml";
                 LimitLine goalLine = new LimitLine(this.waterGoal, goalLineStr);
                 goalLine.setLineWidth(1.5f); // Set the thickness of the goal line
-                goalLine.setLineColor(getResources().getColor(R.color.red)); // Set the color of the goal line
+                goalLine.setLineColor(getResources().getColor(R.color.darkgreen)); // Set the color of the goal line
                 goalLine.setTextSize(8f); // Set the text size for the label
-                goalLine.setTextColor(getResources().getColor(R.color.red)); // Set the text color for the label
+                goalLine.setTextColor(getResources().getColor(R.color.darkgreen)); // Set the text color for the label
 
                 // Add the goal line to the left axis
                 leftAxis.addLimitLine(goalLine);
@@ -711,6 +789,60 @@ public class hydration_tracking extends AppCompatActivity {
 
         //update water bottle
         updateWaterProgress(prevWaterAmount,(float) this.currentWaterAmount);
+
+        if(this.currentWaterAmount >= this.waterGoal) {
+            boolean ReachedGoalNoti = sharedPreferences.getBoolean("ReachedHydGoalNoti", false);
+            if (ReachedGoalNoti) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("ReachedHydGoalNoti", true);
+                editor.apply(); // Apply changes
+
+                Toast.makeText(this, "Hydration goal reached!", Toast.LENGTH_SHORT).show();
+
+                //send notification
+                sendNotification();
+            }
+        }
+    }
+
+    private void sendNotification() {
+        createNotificationChannelHyd();
+
+        String channelId = "hydration_goal_channel"; // The same ID used when creating the channel
+        String title = "Hydration Goal Reached!";
+        String message = "Congratulations! You've reached your daily hydration goal of " + this.waterGoal + " ml.";
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.congrats) // Add a small icon here (replace with your app's icon)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setColor(ContextCompat.getColor(this, R.color.blue)) // Optional: Set a color for the notification
+                .setAutoCancel(true); // Dismiss notification when clicked
+
+        // Show the notification
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.notify(1, builder.build()); // You can use a different ID for each notification if needed
+        }
+    }
+
+    private void createNotificationChannelHyd() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            String channelId = "hydration_goal_channel";
+            CharSequence name = "Hydration Goal";
+            String description = "Notifications for reaching hydration goal";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+            channel.setDescription(description);
+
+            // Register the channel with the system
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
     /**************************************** Edit Default Water Amount ****************************************/
@@ -824,8 +956,13 @@ public class hydration_tracking extends AppCompatActivity {
                     }
 
                 }
+                if(this.tempHydrationRoom !=null) {
+                    LocalDate today = LocalDate.now();
+                    if( !(this.tempHydrationRoom.getDate().equals(today)) ) {
+                        createNewTempHydration(this.userRoom.getId());
+                    }
+                }
                 createNewHydration(this.userRoom.getId());
-                createNewTempHydration(this.userRoom.getId());
             });
             resetThread.start();
 
