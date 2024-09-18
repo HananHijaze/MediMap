@@ -208,7 +208,7 @@ public class TrainingPlan extends AppCompatActivity {
         UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
 
         // Make the API call to get the user by email
-        Call<User> call = userApi.findByEmail("user4@example.com");
+        Call<User> call = userApi.findByEmail(email);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

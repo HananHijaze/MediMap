@@ -155,7 +155,7 @@ public class LogIn extends AppCompatActivity {
 
                     // Check if the password matches
                     if (user.getPassword().equals(passwordIn)) {
-                        Toast.makeText(LogIn.this, "Login successful (server)", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LogIn.this, "Login successful", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LogIn.this, Home.class);
                         saveLoginStatus(true);
 
