@@ -153,13 +153,16 @@
 
         <!-- Right Side: Image -->
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:id="@+id/body_image"
+            android:layout_width="116dp"
+            android:layout_height="135dp"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_type" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_type"
+            android:background="@drawable/border_unselected"
+        />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -49,7 +49,7 @@ public class build_profile extends AppCompatActivity {
     private static final String PREFS_NAME = "UserSignUpData"; // SharedPreferences file name
     private AppDatabaseRoom appDatabase; // Room database instance
     private User user;
-    private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss";
+    private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 
     @Override
@@ -68,11 +68,37 @@ public class build_profile extends AppCompatActivity {
         // Initialize Room database
         appDatabase = AppDatabaseRoom.getInstance(this);
 
-        try {
-            insertUser(); // Insert user into Room and server
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+// Handler to run code on the main thread
+        Handler handler = new Handler(Looper.getMainLooper());
+        // In your method
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    insertUser(); // Insert user into Room and server
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // Use handler to execute code after the thread finishes
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // This will run on the main (UI) thread
+                        if (NetworkUtils.isNetworkAvailable(build_profile.this)) {
+                            retrieveAndSaveUserDataToDatabase();
+                            createplan();
+                        } else {
+                            showNoInternetDialog(); // Show dialog if no internet
+                        }
+                    }
+                });
+            }
+        });
+
+// Start the thread
+        thread.start();
+
 
         // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -83,12 +109,12 @@ public class build_profile extends AppCompatActivity {
         }, 5000);
 
 ////        // Check internet connection before proceeding (preserved as a comment for now)
-       if (NetworkUtils.isNetworkAvailable(this)) {
+   //    if (NetworkUtils.isNetworkAvailable(this)) {
            retrieveAndSaveUserDataToDatabase();
             createplan();
-       } else {
-           showNoInternetDialog(); // Show dialog if no internet
-        }
+     //  } else {
+           //showNoInternetDialog(); // Show dialog if no internet
+      //  }
     }
 
     // Method to retrieve user data from SharedPreferences and save to Room and server
@@ -238,30 +264,9 @@ public class build_profile extends AppCompatActivity {
                 email, fullName, password, gender, height, weight, parseDate(getFormattedDate(birthdate)),
                 bodyType, goal, 6000, waterGoal, workoutPlace, dietType, mealsPerDay, snacksPerDay, 150
         );
-        Throwable t = null;
-        Log.e("we are here","hereweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+newUser_Server.getId()+newUser_Server.getEmail(),t);
+
         // Send user to server
-
-        Thread addUserThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Call the addUser function inside the thread
-                Service.getInstance().addUser(newUser_Server);
-            }
-        });
-
-// Start the thread
-        addUserThread.start();
-
-        try {
-            // Wait for the thread to complete before calling getplan()
-            addUserThread.join();
-            // Now call getplan after the addUser thread has finished
-            getplan(newUser_Server);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        Service.getInstance().addUser(newUser_Server);
     }
 
     // Method to parse String to Date
@@ -287,7 +292,7 @@ public class build_profile extends AppCompatActivity {
         UserApi userApi = RetrofitClient.getRetrofitInstance().create(UserApi.class);
 
         // Make the API call to get the user by email
-        Call<User> call = userApi.getUserById(1L);
+        Call<User> call = userApi.findByEmail(email);
 
         call.enqueue(new Callback<User>() {
             @Override

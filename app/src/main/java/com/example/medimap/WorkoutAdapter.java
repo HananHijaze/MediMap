@@ -3,6 +3,7 @@ package com.example.medimap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,11 +30,27 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
     public void onBindViewHolder(WorkoutViewHolder holder, int position) {
         Workout workout = workouts.get(position);
         holder.nameTextView.setText(workout.getName());
-        holder.typeTextView.setText(workout.getWorkoutType());
         holder.durationTextView.setText("Duration: " + workout.getDuration() + " mins");
         holder.repsTextView.setText("Reps: " + workout.getRepetitions());
         holder.setsTextView.setText("Sets: " + workout.getSets());
         holder.locationTextView.setText("Location: " + workout.getLocation());
+        String description = workout.getDescription();
+
+// Check for substrings in the description and set the corresponding image
+        if (description.contains("upper-body")) {
+            holder.typeTextView.setText("upper-body");
+            holder.imageView.setImageResource(R.drawable.upperbody); // upper-body.jpeg
+        } else if (description.contains("lower-body")) {
+            holder.typeTextView.setText("lower-body");
+           holder.imageView.setImageResource(R.drawable.lowerbody); // lower-body.jpeg
+        } else if (description.contains("full-body")) {
+            holder.typeTextView.setText("full-body");
+          holder.imageView.setImageResource(R.drawable.fullbody);  // full-body.jpeg
+        } else if (description.contains("core")) {
+            holder.typeTextView.setText("core");
+           holder.imageView.setImageResource(R.drawable.core);       // core.jpeg
+        }
+
     }
 
     @Override
@@ -43,6 +60,7 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
 
     public static class WorkoutViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView, typeTextView, durationTextView, repsTextView, setsTextView, locationTextView;
+        public ImageView imageView;
 
         public WorkoutViewHolder(View itemView) {
             super(itemView);
@@ -52,6 +70,7 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
             repsTextView = itemView.findViewById(R.id.workout_reps);
             setsTextView = itemView.findViewById(R.id.workout_sets);
             locationTextView = itemView.findViewById(R.id.workout_location);
+            imageView = itemView.findViewById(R.id.body_image);
         }
     }
 }
