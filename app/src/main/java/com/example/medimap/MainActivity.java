@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         // Show loading animation after a delay using a background thread
         ImageView imageView = findViewById(R.id.imageView7);
 
-// Create a new thread to delay the GIF loading
 
         new Thread(() -> {
             // No delay; GIF will start loading immediately
@@ -97,10 +96,10 @@ public class MainActivity extends AppCompatActivity {
                     UserRoom userRoom = users.get(0); // Get the first user
                     System.out.println("USER NAME: " + userRoom.getId()+" "+userRoom.getName());
 
-                    //delete existing hydration data
-                    HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
-                    TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
-
+//                    //delete existing hydration data
+//                    HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
+//                    TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
+//
 //                    Thread HydrationExamplesTh = new Thread(() -> {
 //                        hydrationRoomDao.deleteAllHydrations();
 //                        tempHydrationRoomDao.deleteAllTempHydration();
@@ -124,10 +123,10 @@ public class MainActivity extends AppCompatActivity {
                     UserRoom userRoom = users.get(0); // Get the first user
                     System.out.println("USER NAME: " + userRoom.getId()+" "+userRoom.getName());
 
-                    //delete existing hydration data
-                    HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
-                    TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
-
+//                    //delete existing hydration data
+//                    HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
+//                    TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
+//
 //                    Thread HydrationExamplesTh = new Thread(() -> {
 //                        hydrationRoomDao.deleteAllHydrations();
 //                        tempHydrationRoomDao.deleteAllTempHydration();
@@ -155,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*********************************** ADDING TESTER USER ***********************************/
         // Remove all existing users in the background
-//        new Thread(() -> {
+//       new Thread(() -> {
 //            userDao.deleteAllUsers();
 //            UserRoom newUser = createTestUser();// Create a new test user
 //            userDao.insertUser(newUser); // Insert the test user
@@ -226,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         return new UserRoom(
                 1L,
                 "tester@test.com",
-                "test test",
+                "Michel",
                 "test123",
                 "male",
                 170,

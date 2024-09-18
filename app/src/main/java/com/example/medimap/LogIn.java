@@ -43,7 +43,9 @@ import com.example.medimap.server.UsersAllergiesApi;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -60,12 +62,11 @@ public class LogIn extends AppCompatActivity {
     TextInputEditText email, password;
     Button login;
     UserDao userDao;
+    UserRoom userRoom;
     private UserApi userApi;
-    boolean serverReachable;
+    UsersAllergiesDao usersAllergiesDao;
     private static final String DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,13 +92,12 @@ public class LogIn extends AppCompatActivity {
         // Initialize Room database and UserDao
         AppDatabaseRoom db = AppDatabaseRoom.getInstance(this);
         userDao = db.userDao();
+        usersAllergiesDao = db.usersAllergiesRoomDao();
 
-        // Setup login button click listener
         login.setOnClickListener(view -> {
-            // Run the login check in a background thread
             Executors.newSingleThreadExecutor().execute(() -> {
-                String enteredEmail = email.getText().toString().trim();
-                String enteredPassword = password.getText().toString().trim();
+                final String enteredEmail = email.getText().toString().trim();  // Declare final
+                final String enteredPassword = password.getText().toString().trim();  // Declare final
 
                 // Check that email and password fields aren't empty
                 if (enteredEmail.isEmpty() || enteredPassword.isEmpty()) {
@@ -110,8 +110,10 @@ public class LogIn extends AppCompatActivity {
                 if (localUser != null && localUser.getPassword().equals(enteredPassword)) {
                     // If local login is successful
                     runOnUiThread(() -> {
-                        Toast.makeText(LogIn.this, "Login successful (local)", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LogIn.this, "Login successful", Toast.LENGTH_SHORT).show();
                         saveLoginStatus(true); // Save login status
+                       // checkAndInsertHydrationData(LogIn.this, localUser.getId());
+                      //  checkAndInsertStepCountData(LogIn.this, localUser.getId());
                         startActivity(new Intent(LogIn.this, Home.class)); // Start Home activity
                     });
                 } else {
@@ -156,10 +158,9 @@ public class LogIn extends AppCompatActivity {
                         Toast.makeText(LogIn.this, "Login successful (server)", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LogIn.this, Home.class);
                         saveLoginStatus(true);
-                        startActivity(intent);
 
                         // Convert server User to UserRoom
-                        UserRoom userRoom = null;
+                         userRoom = null;
                         try {
                             userRoom = convertToUserRoom(user);
                         } catch (ParseException e) {
@@ -167,21 +168,20 @@ public class LogIn extends AppCompatActivity {
                         }
 
                         // Save the user to the Room database after deleting all existing users
-                        UserRoom finalUserRoom = userRoom;
                         Executors.newSingleThreadExecutor().execute(() -> {
                             userDao.deleteAllUsers();  // Delete existing users
-                            userDao.insertUser(finalUserRoom);  // Insert new user
-                        });
-                        syncHydrationData(LogIn.this, userRoom.getId()); // Sync hydration data
-                        syncStepCountData(LogIn.this, userRoom.getId()); // Sync step count data
-                        syncAllergiesData(LogIn.this, userRoom.getId()); // Sync allergies data
-                        syncWeekdaysData(LogIn.this, userRoom.getId()); // Sync weekdays data
+                            userDao.insertUser(userRoom);  // Insert new user
 
+                            // Fill hydration and step count data after inserting user
+                         //   checkAndInsertHydrationData(LogIn.this, userRoom.getId());
+                          //  checkAndInsertStepCountData(LogIn.this, userRoom.getId());
+                        });
+                        startActivity(intent);
                     } else {
-                        Toast.makeText(LogIn.this, "Incorrect email or password (server)", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LogIn.this, "Incorrect email or password ", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(LogIn.this, "User not found (server)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LogIn.this, "User not found", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -238,7 +238,9 @@ public class LogIn extends AppCompatActivity {
             UserRoom user = userDao.getUserByEmail(emailIn);
             runOnUiThread(() -> {
                 if (user != null && user.getPassword().equals(passwordIn)) {
-                    Toast.makeText(LogIn.this, "Login successful (local)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LogIn.this, "Login successful", Toast.LENGTH_SHORT).show();
+                   // checkAndInsertHydrationData(LogIn.this, user.getId());
+                  //  checkAndInsertStepCountData(LogIn.this, user.getId());
                     saveLoginStatus(true);
                     Intent in = new Intent(LogIn.this, Home.class);
                     startActivity(in);
@@ -249,7 +251,7 @@ public class LogIn extends AppCompatActivity {
         });
     }
 
-    //filling hydration data from the server to the room
+    // Filling hydration data from the server to the room
     public void syncHydrationData(Context context, Long customerId) {
         HydrationApi hydrationApi = RetrofitClient.getRetrofitInstance().create(HydrationApi.class);
         Call<List<Hydration>> call = hydrationApi.getLast7DaysHydration(customerId);
@@ -273,7 +275,7 @@ public class LogIn extends AppCompatActivity {
                             HydrationRoom hydrationRoom = new HydrationRoom(hydration);
                             hydrationRoomDao.insertHydration(hydrationRoom);
                         }
-
+                       // checkAndInsertHydrationData(LogIn.this, customerId);
                         Log.d("Hydration Sync", "Hydration data synced successfully.");
                     });
                 } else {
@@ -288,7 +290,7 @@ public class LogIn extends AppCompatActivity {
         });
     }
 
-    //filling steps data from the server to the room
+    // Filling steps data from the server to the room
     public void syncStepCountData(Context context, Long userId) {
         StepCountApi stepCountApi = RetrofitClient.getRetrofitInstance().create(StepCountApi.class);
         Call<List<StepCount>> call = stepCountApi.getLast7DaysSteps(userId);
@@ -316,7 +318,7 @@ public class LogIn extends AppCompatActivity {
                             );
                             stepCountDao.insertStepCount(stepCountRoom);
                         }
-
+                       // checkAndInsertStepCountData(LogIn.this, userId);
                         Log.d("StepCount Sync", "Step count data synced successfully.");
                     });
                 } else {
@@ -432,17 +434,15 @@ public class LogIn extends AppCompatActivity {
         }
         return roomWeekdaysList;
     }
+
     // Method to parse String to Date
     public Date parseDate(String dateString) throws ParseException {
         return sdf.parse(dateString);
     }
 
     private String getFormattedDate(Long timeInMillis) {
-        // Convert the time in milliseconds to a Date object
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeInMillis);
-
-        // Format the date using the specified DATE_FORMAT
         return sdf.format(calendar.getTime());
     }
 
@@ -450,4 +450,76 @@ public class LogIn extends AppCompatActivity {
         return sdf.format(date);
     }
 
+    public void checkAndInsertStepCountData(Context context, Long userId) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDatabaseRoom db = AppDatabaseRoom.getInstance(context);
+            StepCountDao stepCountDao = db.stepCountDao();
+
+            // Delete all existing step count records for the user
+            stepCountDao.deleteAllStepsForUser(userId);
+
+            // Insert predefined data
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 6063, "2024-09-07"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 3093, "2024-09-08"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 4073, "2024-09-09"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 5803, "2024-09-10"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 2668, "2024-09-11"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 4286, "2024-09-12"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 6853, "2024-09-13"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 7002, "2024-09-14"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 4750, "2024-09-15"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 4017, "2024-09-16"));
+            stepCountDao.insertStepCount(new StepCountRoom(userId, 5500, "2024-09-17"));
+
+            Log.d("StepCount Sync", "Inserted step count data successfully.");
+        });
+    }
+
+    public void checkAndInsertHydrationData(Context context, Long customerId) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDatabaseRoom db = AppDatabaseRoom.getInstance(context);
+            HydrationRoomDao hydrationRoomDao = db.hydrationRoomDao();
+
+            // Delete all existing hydration records for the customer
+            hydrationRoomDao.deleteAllHydrations();
+
+            // Insert predefined data
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 2500.0, LocalDate.parse("2024-09-07")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 1800.0, LocalDate.parse("2024-09-08")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 3000.0, LocalDate.parse("2024-09-09")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 2200.0, LocalDate.parse("2024-09-10")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 1500.0, LocalDate.parse("2024-09-11")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 2000.0, LocalDate.parse("2024-09-12")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 2800.0, LocalDate.parse("2024-09-13")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 2100.0, LocalDate.parse("2024-09-14")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 1900.0, LocalDate.parse("2024-09-15")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 2400.0, LocalDate.parse("2024-09-16")));
+            hydrationRoomDao.insertHydration(new HydrationRoom(customerId, 2700.0, LocalDate.parse("2024-09-17")));
+
+            Log.d("Hydration Sync", "Inserted hydration data successfully.");
+        });
+    }
+
+    public void checkAndInsertUsersAllergies(Context context, Long userId) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            // Check if the users_allergies_table is empty
+            List<UsersAllergiesRoom> existingRecords = usersAllergiesDao.getAllUsersAllergiesByUserId(userId);
+
+            if (existingRecords == null || existingRecords.isEmpty()) {
+                // Predefined user-allergy associations for the given userId
+                List<UsersAllergiesRoom> usersAllergies = Arrays.asList(
+                        new UsersAllergiesRoom(userId, 2L), // User has Allergy 2
+                        new UsersAllergiesRoom(userId, 6L)  // User has Allergy 6
+                );
+
+                // Insert the predefined user-allergy associations into the database
+                for (UsersAllergiesRoom userAllergy : usersAllergies) {
+                    usersAllergiesDao.insertUsersAllergies(userAllergy);
+                }
+                Log.d("UsersAllergies Sync", "Inserted users allergies data successfully for user ID: " + userId);
+            } else {
+                Log.d("UsersAllergies Sync", "Users allergies data already exists in the database for user ID: " + userId);
+            }
+        });
+    }
 }

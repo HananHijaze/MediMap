@@ -409,7 +409,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
             sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-        createHydrationTrackingPage();
+        //createHydrationTrackingPage();
     }
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -440,8 +440,24 @@ public class Home extends AppCompatActivity implements SensorEventListener {
                 .setNegativeButton("No", (dialog, which) -> {
                     // User denied permission, handle accordingly
                     Toast.makeText(this, "Permission required for step tracking.", Toast.LENGTH_SHORT).show();
-                })
-                .show();
+                });
+
+        // Create the dialog
+        AlertDialog dialog = builder.create();
+
+        // Show the dialog
+        dialog.show();
+
+        // Change the button text colors
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+        if (positiveButton != null) {
+            positiveButton.setTextColor(getResources().getColor(R.color.blue));
+        }
+        if (negativeButton != null) {
+            negativeButton.setTextColor(getResources().getColor(R.color.blue));
+        }
     }
 
     // Request the Activity Recognition permission
@@ -1119,8 +1135,6 @@ public class Home extends AppCompatActivity implements SensorEventListener {
     }
 
     private void sendNotification() {
-        createNotificationChannelHyd();
-
         String channelId = "hydration_goal_channel"; // The same ID used when creating the channel
         String title = "Hydration Goal Reached!";
         String message = "Congratulations! You've reached your daily hydration goal of " + this.waterGoal + " ml.";
@@ -1210,6 +1224,7 @@ public class Home extends AppCompatActivity implements SensorEventListener {
                     }
                 }
                 createNewHydration(this.userRoom.getId());
+                createNewTempHydration(this.userRoom.getId());
             });
             resetThread.start();
 

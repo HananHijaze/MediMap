@@ -5,6 +5,7 @@ import static java.lang.Long.getLong;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
@@ -176,7 +177,26 @@ public class hydration_tracking extends AppCompatActivity {
 //        }).start();
 
         // Fetch the single user from local
+        System.out.println("GOING TO FETCH USER FROM THE ROOM");
         getUserRoomTh();
+        System.out.println("GOT USER FROM ROOM SUCCESSFULLY");
+
+        Thread HydrationExamplesTh = new Thread(() -> {
+            hydrationRoomDao.deleteAllHydrations();
+            tempHydrationRoomDao.deleteAllTempHydration();
+
+            //add example hydration data
+            addExampleHydrationsToRoom(userRoom);
+        });
+        HydrationExamplesTh.start();
+
+        try{
+            HydrationExamplesTh.join();
+        }catch (Exception e){
+            System.out.println("EXCEPTION WHEN DELETING AND ADDING EXAMPLE HYDRATION");
+            //finish activity and go back to home
+            finish();
+        }
 
         if(this.userRoom == null) {
             System.out.println("USER ROOM IS NULL (OnCreate)");
@@ -264,13 +284,11 @@ public class hydration_tracking extends AppCompatActivity {
         editWaterDefault.setOnClickListener(v -> showEditAmountDialog());
     }
 
-    // Method to create a shortcut if supported (for Android 7.1+)
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     private void createShortcut() {
         ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
 
         if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported()) {
-            // Check if the shortcut already exists
             boolean shortcutExists = false;
             for (ShortcutInfo pinnedShortcut : shortcutManager.getPinnedShortcuts()) {
                 if (pinnedShortcut.getId().equals("shortcut_example")) {
@@ -279,22 +297,25 @@ public class hydration_tracking extends AppCompatActivity {
                 }
             }
 
-            // If the shortcut does not exist, create and pin it
             if (!shortcutExists) {
                 Intent addWaterIntent = new Intent(this, AddWaterReceiver.class);
                 addWaterIntent.setAction("com.example.medimap.ADD_WATER");
+                addWaterIntent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND); // Ensure it's a foreground receiver
 
                 ShortcutInfo shortcut = new ShortcutInfo.Builder(this, "shortcut_example")
                         .setShortLabel(getString(R.string.shortcut_short_label))
                         .setLongLabel(getString(R.string.shortcut_long_label))
                         .setIcon(Icon.createWithResource(this, R.drawable.ic_shortcut))
-                        .setIntent(new Intent(Intent.ACTION_VIEW, null, this, Home.class))
+                        .setIntent(addWaterIntent) // Set the intent for the shortcut
                         .build();
 
                 shortcutManager.requestPinShortcut(shortcut, null);
             }
         }
     }
+
+
+
 
     /**************************************** Getters And Setters ****************************************/
     //getters and setters
@@ -997,6 +1018,76 @@ public class hydration_tracking extends AppCompatActivity {
             Hydration hydration = new Hydration(tempH);
             hydration.setCustomerId(user.getId());
             uploadHydrationToServer(hydration);
+        }
+    }
+
+    public void onReceive(Context context, Intent intent) {
+        // Retrieve user data and hydration information
+        AppDatabaseRoom db = AppDatabaseRoom.getInstance(context);
+        HydrationRoomDao hydrationRoomDao = db.hydrationRoomDao();
+        UserRoom userRoom = db.userDao().getFirstUser(); // Assuming this method exists
+
+        if (userRoom != null) {
+            // User is logged in, proceed to add water
+            HydrationRoom hydrationRoom = hydrationRoomDao.getNewestHydration(); // Fetch the latest hydration entry
+
+            if (hydrationRoom != null) {
+                double currentWaterAmount = hydrationRoom.getDrank();
+                double defaultWaterAmount = userRoom.getWaterDefault(); // Default water amount to add
+
+                // Update the hydration amount
+                hydrationRoom.setDrank(currentWaterAmount + defaultWaterAmount);
+                new Thread(() -> hydrationRoomDao.updateHydration(hydrationRoom)).start();
+
+                Toast.makeText(context, defaultWaterAmount + " ml added to your hydration today!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "No hydration record found.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // User is not logged in
+            Toast.makeText(context, "Please log in to add water.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void addExampleHydrationsToRoom(UserRoom userRoom) {
+        List<HydrationRoom> hydrationList = new ArrayList<>();
+
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 1500.0, LocalDate.of(2024, 9, 1)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 2000.0, LocalDate.of(2024, 9, 2)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 1200.0, LocalDate.of(2024, 9, 3)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 2500.0, LocalDate.of(2024, 9, 4)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 1000.0, LocalDate.of(2024, 9, 5)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 2300.0, LocalDate.of(2024, 9, 6)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 1700.0, LocalDate.of(2024, 9, 7)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 2100.0, LocalDate.of(2024, 9, 8)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 4000.0, LocalDate.of(2024, 9, 9)));
+        hydrationList.add(new HydrationRoom(userRoom.getId(), 3000.0, LocalDate.of(2024, 9, 10)));
+
+        // Iterate through the hydrationList and insert each HydrationRoom
+
+        Long Hid = 1L;
+        for (HydrationRoom hydrationRoom : hydrationList) {
+            hydrationRoom.setId(Hid++);
+            addHydrationToRoom(hydrationRoom);
+        }
+    }
+
+    //adds a hydration to the room
+    private void addHydrationToRoom(HydrationRoom hydrationRoom){
+        HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
+
+        Thread addHydrationTh = new Thread(() -> {
+            hydrationRoomDao.insertHydration(hydrationRoom);
+        });
+        addHydrationTh.start();
+
+        try {
+            //wait for thread to finish
+            addHydrationTh.join();
+        } catch (Exception e) {
+            System.out.println("EXCEPTION WHEN ADDING EXAMPLE HYDRATION");
+            //finish activity and go back to home
+            finish();
         }
     }
 }
