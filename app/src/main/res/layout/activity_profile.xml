@@ -54,7 +54,8 @@
                     android:layout_width="356dp"
                     android:layout_height="31dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/custom_progressbar"/>
+                    android:progressDrawable="@drawable/custom_progressbar" />
+                />
 
             </androidx.cardview.widget.CardView>
 
@@ -274,7 +275,7 @@
                     android:layout_width="351dp"
                     android:layout_height="39dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/custom_progressbar"/>
+                    android:progressDrawable="@drawable/custom_progressbar" />/>
 
             </androidx.cardview.widget.CardView>
 

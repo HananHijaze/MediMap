@@ -34,6 +34,8 @@ public class Profile extends AppCompatActivity {
     private static final int PICK_IMAGE = 1;
     private AppDatabaseRoom appDatabase;
     private String gender;
+    private ProgressBar stepProgressBar, waterProgressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,11 @@ public class Profile extends AppCompatActivity {
 
         bmiLabel = findViewById(R.id.bmi_label);
         nameTextView = findViewById(R.id.nameTextView);
+
+        // Initialize UI components
+        stepProgressBar = findViewById(R.id.stepsbar);
+        waterProgressBar = findViewById(R.id.hydrationbar);
+        setProgressManually();
 
         // Navigation buttons
         MaterialButton leftButton = findViewById(R.id.left);
@@ -116,9 +123,9 @@ public class Profile extends AppCompatActivity {
                     bmiLabel.setText("Your BMI: " + String.format("%.2f", bmi));
 
                     // Fetch and display step count for the last 7 days
-                    fetchAndDisplayStepCount(firstUser.getId());
+                  //  fetchAndDisplayStepCount(firstUser.getId());
 
-                    fetchAndDisplayWaterGoalAverage(firstUser.getId());
+                  //  fetchAndDisplayWaterGoalAverage(firstUser.getId());
                 });
             }
         }).start();
@@ -209,5 +216,16 @@ public class Profile extends AppCompatActivity {
         } else {
             profileImageView.setImageResource(R.drawable.profile_tsofen);
         }
+    }
+    private void setProgressManually() {
+        // Assuming the max value of both progress bars is 100, adjust if needed.
+        stepProgressBar.setMax(100);   // Max steps progress (change if different)
+        waterProgressBar.setMax(100);  // Max water progress (change if different)
+
+        // Set progress for steps to 55%
+        stepProgressBar.setProgress(55);
+
+        // Set progress for hydration to 70%
+        waterProgressBar.setProgress(70);
     }
 }

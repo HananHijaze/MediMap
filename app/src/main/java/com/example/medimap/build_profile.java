@@ -68,53 +68,26 @@ public class build_profile extends AppCompatActivity {
         // Initialize Room database
         appDatabase = AppDatabaseRoom.getInstance(this);
 
-// Handler to run code on the main thread
-        Handler handler = new Handler(Looper.getMainLooper());
-        // In your method
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    insertUser(); // Insert user into Room and server
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // Use handler to execute code after the thread finishes
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        // This will run on the main (UI) thread
-                        if (NetworkUtils.isNetworkAvailable(build_profile.this)) {
-                            retrieveAndSaveUserDataToDatabase();
-                            createplan();
-                        } else {
-                            showNoInternetDialog(); // Show dialog if no internet
-                        }
-                    }
-                });
-            }
-        });
-
-// Start the thread
-        thread.start();
 
 
+        try {
+            insertUser(); // Insert user into Room and server
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        waitForTenSeconds();
         // Simulate loading for 5 seconds before navigating to the home screen
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent in = new Intent(this, Home.class);
             in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(in);
             finish(); // Optionally finish this activity if you don't want to return to it
-        }, 5000);
+        }, 6000);
 
-        // Check internet connection before proceeding (preserved as a comment for now)
-        if (NetworkUtils.isNetworkAvailable(this)) {
-            retrieveAndSaveUserDataToDatabase();
-            createplan();
-        } else {
-            showNoInternetDialog(); // Show dialog if no internet
-        }
+        retrieveAndSaveUserDataToDatabase();
+        createplan();
+
     }
 
     // Method to retrieve user data from SharedPreferences and save to Room and server
@@ -264,9 +237,6 @@ public class build_profile extends AppCompatActivity {
                 email, fullName, password, gender, height, weight, parseDate(getFormattedDate(birthdate)),
                 bodyType, goal, 6000, waterGoal, workoutPlace, dietType, mealsPerDay, snacksPerDay, 150
         );
-        Throwable t = null;
-        Log.e("we are here","hereweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+newUser_Server.getId()+newUser_Server.getEmail(),t);
-        // Send user to server
 
 
         Service.getInstance().addUser(newUser_Server);
@@ -320,4 +290,14 @@ public class build_profile extends AppCompatActivity {
         CreatingPlan creatingPlan = CreatingPlan.getInstance();
         creatingPlan.createPlan(this,user);
     }
+    public void waitForTenSeconds() {
+        try {
+            // Make the main thread sleep for 10 seconds (10000 milliseconds)
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            // Handle the exception if the sleep is interrupted
+            e.printStackTrace();
+        }
+    }
+
 }

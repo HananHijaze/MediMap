@@ -2,10 +2,12 @@ package com.example.medimap;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Path;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -15,26 +17,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import com.example.medimap.server.Pathloc;
-import com.example.medimap.server.PathlocApi;
-import com.example.medimap.server.RetrofitClient;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -42,172 +40,110 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import com.example.medimap.server.Pathloc;
+import com.example.medimap.server.PathlocApi;
+import com.example.medimap.NetworkUtils;
+import com.example.medimap.server.RetrofitClient;
+
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Map extends AppCompatActivity implements LocationListener {
+public class Map extends AppCompatActivity {
 
-    // Constants
-    private static final String TAG = "MapActivity"; // Log tag
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1; // Permission request code for location
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 10; // 10 seconds between location updates
-    private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters between location updates
-
-    // UI elements
+    private static final String TAG = "MapActivity";  // Define a log tag
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private MapView mapView;
-    private FloatingActionButton fabMyLocation;
     private ImageButton addLocationButton;
-
-    // Location services
-    private LocationManager locationManager;
     private PathlocApi pathlocApi;
-    private Location userLocation; // Stores the user's current location
-
-    // card view elements
     private CardView locationCardView;
     private TextView locationNameTextView;
     private TextView locationDescriptionTextView;
     private TextView locationDifficultyTextView;
     private TextView locationRatingTextView;
+    private LocationManager locationManager;
+    private FloatingActionButton fabMyLocation;  // Button to return to user location
+    private Location userLocation;  // Store user location
 
-    /**
-     * Called when the activity is first created. Initializes the UI and checks for location/network availability.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Configuration.getInstance().load(this, getPreferences(Context.MODE_PRIVATE));
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_map);
-        initializeUI();  // Initialize the UI elements
-        checkNetworkAndLocationAvailability();  // Check network and location availability
-        checkLocationPermission();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-    }
-
-    /**
-     * Initializes the UI elements and sets up the location manager and Retrofit API instance.
-     */
-    private void initializeUI() {
+        // Initialize map
         mapView = findViewById(R.id.mapView);
         Configuration.getInstance().load(this, getPreferences(Context.MODE_PRIVATE));
         mapView.setMultiTouchControls(true);
         IMapController mapController = mapView.getController();
-        mapController.setZoom(15.0); // Set default zoom level
+        mapController.setZoom(15.0);
 
-        fabMyLocation = findViewById(R.id.fab_my_location);
-        fabMyLocation.setOnClickListener(this::recenterMapOnUserLocation);
-
-        addLocationButton = findViewById(R.id.addLocationButton);
-        addLocationButton.setOnClickListener(v -> showAddLocationDialog());
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        pathlocApi = RetrofitClient.getRetrofitInstance().create(PathlocApi.class); // Create Retrofit instance
         // Initialize CardView and its contents
         locationCardView = findViewById(R.id.locationCardView);
         locationNameTextView = findViewById(R.id.locationNameTextView);
         locationDescriptionTextView = findViewById(R.id.locationDescriptionTextView);
         locationDifficultyTextView = findViewById(R.id.locationDifficultyTextView);
         locationRatingTextView = findViewById(R.id.locationRatingTextView);
-        //rating the path when click on the card view
-        /*locationCardView.setOnClickListener(v -> showRatingDialog());*/
 
-    }
+        // Initialize Location Manager
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-    /**
-     * Checks if the network is available and the app has location permissions.
-     * Prompts the user to enable GPS if necessary.
-     */
-    private void checkNetworkAndLocationAvailability() {
+        // FloatingActionButton to go back to user's location
+        fabMyLocation = findViewById(R.id.fab_my_location);
+
+        // Initialize Add Location Button
+        addLocationButton = findViewById(R.id.addLocationButton);
+
+        // Check for internet connection and location permissions
         if (NetworkUtils.isNetworkAvailable(this)) {
             Log.d(TAG, "Network is available!");
             Toast.makeText(this, "Network is available!", Toast.LENGTH_SHORT).show();
             checkLocationPermission();
+            fetchAndPinPathsFromServer(); // Fetch and pin paths when network is available
         } else {
-            showNoInternetDialog();
+            // No network connection
+            Log.d(TAG, "No internet connection.");
+            Toast.makeText(this, "No internet connection.", Toast.LENGTH_LONG).show();
         }
+
+        // Recenter map to user's location when FloatingActionButton is clicked
+        fabMyLocation.setOnClickListener(view -> {
+            if (userLocation != null) {
+                // Recenter the map on the user's current location
+                GeoPoint userGeoPoint = new GeoPoint(userLocation.getLatitude(), userLocation.getLongitude());
+                mapController.setCenter(userGeoPoint);
+                Toast.makeText(this, "Returning to your location", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "User location not available", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set listener for add location button
+        addLocationButton.setOnClickListener(v -> showAddLocationDialog());
     }
 
     /**
-     * Checks if the app has location permissions. If not, it requests them.
+     * This method checks whether the app has permission to access the device's location.
+     * If not, it requests location permission from the user.
+     * If permission is already granted, it proceeds to check if GPS is enabled.
      */
     private void checkLocationPermission() {
+        // Check if location permission is granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE);
+            // Permission is not granted, request it
+            Log.d(TAG, "Requesting location permission.");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
-            // Permission is already granted, continue with location access
+            // Permission is already granted, proceed with location-based logic
+            Log.d(TAG, "Location permission already granted.");
             checkIfGPSEnabled();
-        }
-    }
-
-    /**
-     * Checks if GPS is enabled. If not, prompts the user to enable it.
-     */
-    private void checkIfGPSEnabled() {
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showGPSDisabledDialog();
-        } else {
-            requestLocationUpdates();
-        }
-    }
-
-    /**
-     * Displays a dialog asking the user to enable GPS if it is disabled.
-     */
-    private void showGPSDisabledDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enable GPS")
-                .setMessage("GPS is required to access your location. Would you like to enable it?")
-                .setPositiveButton("Yes", (dialogInterface, i) -> {
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                })
-                .setNegativeButton("No", (dialogInterface, i) -> Log.d(TAG, "User declined to enable GPS."))
-                .show();
-    }
-
-    /**
-     * Requests location updates from both GPS and network providers.
-     */
-    private void requestLocationUpdates() {
-        try {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-            }
-        } catch (SecurityException e) {
-            Log.e(TAG, "Location permission not granted.", e);
-        }
-    }
-
-    /**
-     * Recenters the map on the user's current location.
-     *
-     * @param view The view that triggered this method (e.g., the FloatingActionButton).
-     */
-    private void recenterMapOnUserLocation(View view) {
-        if (userLocation != null) {
-            GeoPoint userGeoPoint = new GeoPoint(userLocation.getLatitude(), userLocation.getLongitude());
-
-            // Center the map on the user's current location
-            mapView.getController().setCenter(userGeoPoint);
-
-            // Optionally, set the zoom level here if needed
-            mapView.getController().setZoom(15.0); // Example zoom level
-
-            Toast.makeText(this, "Returning to your location", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "User location not available", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -215,14 +151,18 @@ public class Map extends AppCompatActivity implements LocationListener {
      * Fetches all paths from the server and pins them on the map.
      */
     private void fetchAndPinPathsFromServer() {
+        Log.d(TAG, "Fetching paths from the server...");
+        pathlocApi = RetrofitClient.getRetrofitInstance().create(PathlocApi.class);
         Call<List<Pathloc>> call = pathlocApi.getAllPaths();
         call.enqueue(new Callback<List<Pathloc>>() {
             @Override
             public void onResponse(Call<List<Pathloc>> call, Response<List<Pathloc>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    // Pin each path on the map
                     List<Pathloc> paths = response.body();
+                    Log.d(TAG, "Successfully retrieved " + paths.size() + " paths from the server.");
                     for (Pathloc path : paths) {
-                        pinPathOnMap(path);
+                        pinPathOnMap(path);  // Correctly use path's GeoPoint
                     }
                 } else {
                     Log.e(TAG, "Failed to retrieve paths from the server.");
@@ -239,19 +179,21 @@ public class Map extends AppCompatActivity implements LocationListener {
     }
 
     /**
-     * Pins a specific path on the map.
+     * Pins a given Pathloc object on the map.
      *
-     * @param path The path to be pinned on the map.
+     * @param path The path object to be pinned on the map.
      */
     private void pinPathOnMap(Pathloc path) {
-        // Create a GeoPoint for the path's location
+        Log.d(TAG, "Pinning path: " + path.getName());
+
+        // Create GeoPoint for the path
         GeoPoint pathLocation = new GeoPoint(path.getStartLatitude(), path.getStartLongitude());
 
-        // Create a new marker for the path
+        // Create and configure marker for the path
         Marker pathMarker = new Marker(mapView);
-        pathMarker.setPosition(pathLocation); // Set the marker's position to the path's location
-        pathMarker.setIcon(getResources().getDrawable(R.drawable.ic_location)); // Set a custom icon for the marker
-        pathMarker.setTitle(path.getName()); // Set the marker's title
+        pathMarker.setPosition(pathLocation);
+        pathMarker.setIcon(getResources().getDrawable(R.drawable.ic_location)); // Use a different icon for path locations
+        pathMarker.setTitle(path.getName());
 
         // Set click listener for the marker
         pathMarker.setOnMarkerClickListener((marker, mapView) -> {
@@ -275,24 +217,135 @@ public class Map extends AppCompatActivity implements LocationListener {
         mapView.invalidate();
     }
 
+    /**
+     * This method checks if the GPS is enabled.
+     * If it's not, it prompts the user to enable it by showing a dialog.
+     */
+    private void checkIfGPSEnabled() {
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Log.d(TAG, "GPS is disabled, prompting user to enable GPS.");
+            showGPSDisabledDialog();
+        } else {
+            // GPS is enabled, proceed with fetching the user's location
+            Log.d(TAG, "GPS is enabled.");
+            fetchUserLocation();
+        }
+    }
 
     /**
-     * Shows a dialog allowing the user to add a new location.
+     * Show a dialog that informs the user that GPS is disabled and provides an option to open
+     * the device's location settings to enable GPS.
+     */
+    private void showGPSDisabledDialog() {
+        Log.d(TAG, "Showing GPS disabled dialog.");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enable GPS")
+                .setMessage("GPS is required to access your location. Would you like to enable it?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Redirect the user to the location settings
+                        Log.d(TAG, "User agreed to enable GPS.");
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d(TAG, "User declined to enable GPS.");
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Location permission was granted, proceed with checking if GPS is enabled
+                Log.d(TAG, "Location permission granted.");
+                checkIfGPSEnabled();
+            } else {
+                // Permission denied, show a message to the user
+                Log.d(TAG, "Location permission denied.");
+                Toast.makeText(this, "Location permission is required to use this feature.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    /**
+     * This method fetches the user's current location and places a marker on the map.
+     */
+    private void fetchUserLocation() {
+        try {
+            // Get the user's last known location from the GPS provider or network provider
+            Log.d(TAG, "Fetching user's current location.");
+            userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (userLocation == null) {
+                userLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+
+            if (userLocation != null) {
+                // Get the latitude and longitude from the user's location
+                double userLatitude = userLocation.getLatitude();
+                double userLongitude = userLocation.getLongitude();
+
+                Log.d(TAG, "User's location fetched: Latitude = " + userLatitude + ", Longitude = " + userLongitude);
+
+                // Create a GeoPoint for the user's location
+                GeoPoint userGeoPoint = new GeoPoint(userLatitude, userLongitude);
+
+                // Create a marker to pin the user's location on the map
+                Marker userMarker = new Marker(mapView);
+                userMarker.setPosition(userGeoPoint);
+                userMarker.setIcon(getResources().getDrawable(R.drawable.address)); // Use your custom icon
+                userMarker.setTitle("Your Location");
+
+                // Add the marker to the map's overlays
+                mapView.getOverlays().add(userMarker);
+
+                // Center the map on the user's location
+                IMapController mapController = mapView.getController();
+                mapController.setCenter(userGeoPoint);
+
+                // Refresh the map to display the marker
+                mapView.invalidate();
+
+                // Inform the user that the location has been pinned
+                Toast.makeText(this, "Your location has been pinned on the map.", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e(TAG, "Unable to determine user's location. GPS might be disabled.");
+                Toast.makeText(this, "Unable to determine your location. Ensure GPS is enabled.", Toast.LENGTH_LONG).show();
+            }
+        } catch (SecurityException e) {
+            Log.e(TAG, "Location permission not granted.", e);
+            Toast.makeText(this, "Location permission not granted.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * Show the Add Location Dialog.
      */
     private void showAddLocationDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
         builder.setTitle("Add New Location");
 
+        // Set up the layout for the dialog
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_location, null);
         builder.setView(dialogView);
 
+        // Find the EditText and Spinner in the dialog layout
         final EditText input = dialogView.findViewById(R.id.locationNameEditText);
         final Spinner difficultySpinner = dialogView.findViewById(R.id.difficultySpinner);
 
+        // Find the buttons in the dialog layout
         Button addButton = dialogView.findViewById(R.id.addButton);
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);
 
-        // Set up the spinner for selecting difficulty level
+        // Set up the Spinner with difficulty levels using built-in Android layouts
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.difficulty_levels, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -301,7 +354,7 @@ public class Map extends AppCompatActivity implements LocationListener {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        // Handle the add button click event
+        // Handle button clicks
         addButton.setOnClickListener(v -> {
             String locationName = input.getText().toString();
             String difficulty = difficultySpinner.getSelectedItem().toString();
@@ -315,47 +368,80 @@ public class Map extends AppCompatActivity implements LocationListener {
     }
 
     /**
-     * Adds a new location to the map and server.
+     * Adds a new location marker to the map using the user's current location.
      *
-     * @param locationName The name of the location to be added.
+     * @param locationName The name of the location.
      * @param difficulty   The difficulty level of the location.
      */
     private void addNewLocation(String locationName, String difficulty) {
+        // Check if the user's location is available
         if (userLocation != null) {
+            // Get the user's current location (latitude and longitude)
             GeoPoint userGeoPoint = new GeoPoint(userLocation.getLatitude(), userLocation.getLongitude());
-            int difficultyLevel = convertDifficultyToInt(difficulty);
 
-            Pathloc newPathloc = new Pathloc(locationName, "User-added location", userLocation.getLatitude(), userLocation.getLongitude(), difficultyLevel);
+            Drawable customMarkerIcon = ContextCompat.getDrawable(this, R.drawable.ic_location);
 
-            // Send the new path to the server
-            pathlocApi.createPath(newPathloc).enqueue(new Callback<Pathloc>() {
-                @Override
-                public void onResponse(Call<Pathloc> call, Response<Pathloc> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(Map.this, "Location added successfully!", Toast.LENGTH_SHORT).show();
-                        pinPathOnMap(response.body());
-                    } else {
-                        Log.e(TAG, "Failed to add location. Code: " + response.code());
-                        Toast.makeText(Map.this, "Failed to add location", Toast.LENGTH_LONG).show();
+            // Convert difficulty string to integer
+            int difficultyInt = convertDifficultyToInt(difficulty);
+
+            // Create a new marker for the user's location
+            Marker newMarker = new Marker(mapView);
+            newMarker.setPosition(userGeoPoint);
+            newMarker.setIcon(customMarkerIcon);
+            newMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            newMarker.setTitle(locationName);
+            newMarker.setSubDescription("Difficulty: " + difficulty);
+
+            // Set an OnMarkerClickListener to display details and make the server request
+            newMarker.setOnMarkerClickListener((marker, mapView) -> {
+                displayLocationData(locationName, "Difficulty: " + difficulty, marker.getPosition());
+
+                // Create Pathloc object with location data
+                PathlocApi pathlocApi = RetrofitClient.getRetrofitInstance().create(PathlocApi.class);
+                Pathloc newPathloc = new Pathloc(locationName, "Location Added By User", userLocation.getLatitude(), userLocation.getLongitude(), difficultyInt);
+
+                // Make asynchronous call to add location to the server using Retrofit
+                pathlocApi.createPath(newPathloc).enqueue(new Callback<Pathloc>() {
+                    @Override
+                    public void onResponse(Call<Pathloc> call, Response<Pathloc> response) {
+                        if (response.isSuccessful()) {
+                            // Handle success
+                            Toast.makeText(Map.this, "Path added successfully!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle API error
+                            Log.d("Pathloc", "Failed to add path. Response code: " + response.code());
+                            try {
+                                Log.d("Pathloc", "Error: " + response.errorBody().string());  // Log detailed error
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
-                }
+                    @Override
+                    public void onFailure(Call<Pathloc> call, Throwable t) {
+                        // Handle failure (e.g., network issues or server not reachable)
+                        Toast.makeText(Map.this, "Failed to add location: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
 
-                @Override
-                public void onFailure(Call<Pathloc> call, Throwable t) {
-                    Log.e(TAG, "Error occurred: " + t.getMessage(), t);
-                    Toast.makeText(Map.this, "Error adding location: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                }
+                return true; // Return true to indicate that the event was handled
             });
+
+            // Add the marker to the map's overlays and refresh the map
+            mapView.getOverlays().add(newMarker);
+            mapView.invalidate(); // Refresh the map to show the new marker
         } else {
-            Toast.makeText(this, "User location not available.", Toast.LENGTH_LONG).show();
+            // If the user's location is not available, notify the user
+            Toast.makeText(this, "User location not available. Ensure GPS is enabled.", Toast.LENGTH_LONG).show();
         }
     }
 
+
     /**
-     * Converts the difficulty string to an integer for server-side representation.
+     * Converts difficulty string to an integer.
      *
-     * @param difficulty The difficulty level as a string (e.g., "Easy", "Medium", "Hard").
-     * @return The corresponding integer for the difficulty level.
+     * @param difficulty the difficulty level as string
+     * @return the corresponding integer value
      */
     private int convertDifficultyToInt(String difficulty) {
         switch (difficulty) {
@@ -371,100 +457,12 @@ public class Map extends AppCompatActivity implements LocationListener {
     }
 
     /**
-     * Callback method that is triggered when the user's location changes.
-     *
-     * @param location The new location of the user.
+     * Displays location data in the CardView.
      */
-
-// Declare a variable to keep track of the user's location marker
-    private Marker currentLocationMarker;
-
-    @Override
-    public void onLocationChanged(Location location) {
-        userLocation = location; // Update the user's location
-
-        // Create a GeoPoint for the user's current location
-        GeoPoint userGeoPoint = new GeoPoint(userLocation.getLatitude(), userLocation.getLongitude());
-
-        // Remove the existing marker if it exists
-        if (currentLocationMarker != null) {
-            mapView.getOverlays().remove(currentLocationMarker); // Remove the old marker
-        }
-
-        // Create a new marker for the user's location
-        currentLocationMarker = new Marker(mapView);
-        currentLocationMarker.setPosition(userGeoPoint); // Set the marker's position to the user's location
-        currentLocationMarker.setIcon(getResources().getDrawable(R.drawable.address)); // Set a custom icon for the marker
-        currentLocationMarker.setTitle("Your Location"); // Set the marker's title
-
-        // Add the new marker to the map's overlays
-        mapView.getOverlays().add(currentLocationMarker);
-
-        // Refresh the map to display the marker
-        mapView.invalidate();
-
-        // Log the updated location for debugging
-        Log.d(TAG, "User location updated: " + location.getLatitude() + ", " + location.getLongitude());
+    private void displayLocationData(String locationName, String difficulty, GeoPoint position) {
+        locationNameTextView.setText(locationName);
+        locationDifficultyTextView.setText(difficulty);
+        locationDescriptionTextView.setText("Lat: " + position.getLatitude() + " Lon: " + position.getLongitude());
+        locationCardView.setVisibility(View.VISIBLE);
     }
-
-
-
-
-    /**
-     * Called when the activity is resumed. Requests location updates.
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-        requestLocationUpdates();
-    }
-
-    /**
-     * Called when the activity is paused. Stops location updates to save battery.
-     */
-    @Override
-    public void onPause() {
-        super.onPause();
-        locationManager.removeUpdates(this);
-    }
-    private void showNoInternetDialog() {
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_no_internet, null);
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setView(dialogView);
-        android.app.AlertDialog dialog = builder.create();
-        dialog.show();
-        Button btnOk = dialogView.findViewById(R.id.Save);
-        btnOk.setOnClickListener(v -> dialog.dismiss());
-    }
-   /* private void showRatingDialog() {
-        // Inflate the dialog layout
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_rate, null);
-
-        // Create and show the dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView);
-
-        // Get references to dialog UI elements
-        RatingBar ratingBar = dialogView.findViewById(R.id.ratingBar);
-        Button submitButton = dialogView.findViewById(R.id.submitButton);
-        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
-
-        // Create the AlertDialog
-        AlertDialog dialog = builder.create();
-
-        // Set click listeners for the buttons
-        submitButton.setOnClickListener(v -> {
-            float rating = ratingBar.getRating();
-            Toast.makeText(this, "Rating submitted: " + rating, Toast.LENGTH_SHORT).show();
-            // Handle the submitted rating here
-
-            dialog.dismiss();// Dismiss the dialog
-        });
-
-        cancelButton.setOnClickListener(v -> {
-            dialog.dismiss(); // Dismiss the dialog without action
-        });
-        // Show the dialog
-        dialog.show();
-    }*/
 }

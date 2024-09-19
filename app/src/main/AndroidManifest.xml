@@ -44,7 +44,12 @@
             android:exported="false" />
 
 
-        <receiver android:name=".AddWaterReceiver" />
+        <receiver android:name=".AddWaterReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.medimap.ADD_WATER"/>
+            </intent-filter>
+        </receiver>
 
 
         <activity

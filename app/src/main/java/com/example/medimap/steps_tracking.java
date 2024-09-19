@@ -70,27 +70,48 @@ public class steps_tracking extends AppCompatActivity {
 
 // Update UI with step count
         updateProgressBar(stepCount);
+        deleteData();
+       adddata();
 
 
         //
         loadStepDataIntoChart();
     }
+    private void deleteData() {
+        Thread deleteDataTh = new Thread(() -> {
+            Long userId = userDao.getAllUsers().get(0).getId();
+            stepCountRoomDao.deleteAllStepsForUser(userId);
+        });
+        deleteDataTh.start();
+    }
+
+
+    private void adddata() {
+        Thread insertStepDataTh = new Thread(() -> {
+            Long userId = userDao.getAllUsers().get(0).getId();
+            stepCountRoomDao.insertStepCount(new StepCountRoom(userId, 5003, "2024-09-10"));
+            stepCountRoomDao.insertStepCount(new StepCountRoom(userId, 2668, "2024-09-11"));
+            stepCountRoomDao.insertStepCount(new StepCountRoom(userId, 4286, "2024-09-12"));
+            stepCountRoomDao.insertStepCount(new StepCountRoom(userId, 6853, "2024-09-13"));
+            stepCountRoomDao.insertStepCount(new StepCountRoom(userId, 7002, "2024-09-14"));
+            stepCountRoomDao.insertStepCount(new StepCountRoom(userId, 4750, "2024-09-15"));
+            stepCountRoomDao.insertStepCount(new StepCountRoom(userId, 4017, "2024-09-16"));
+            stepCountRoomDao.insertStepCount(new StepCountRoom(userId, 5500, "2024-09-17"));
+        });
+        insertStepDataTh.start();
+        try{
+            insertStepDataTh.join();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
     private void loadStepDataIntoChart() {
         new Thread(() -> {
-            // Manually created step data and dates for testing purposes
-            List<StepCountRoom> stepData = new ArrayList<>();
             // Retrieve data from the database
             Long userId = userDao.getAllUsers().get(0).getId();
 
-            // Example step data (replace these with your desired manual data)
-            stepData.add(new StepCountRoom(userId,5003,"2024-09-10")); // Date format: yyyy-MM-dd
-            stepData.add(new StepCountRoom(userId,2668,"2024-09-11"));
-            stepData.add(new StepCountRoom(userId,4286,"2024-09-12"));
-            stepData.add(new StepCountRoom(userId,6853,"2024-09-13"));
-            stepData.add(new StepCountRoom(userId,7002,"2024-09-14"));
-            stepData.add(new StepCountRoom(userId,4750,"2024-09-15"));
-            stepData.add(new StepCountRoom(userId,4017,"2024-09-16"));
-
+            // Manually created step data and dates for testing purposes
+            List<StepCountRoom> stepData = stepCountRoomDao.getAllStepCounts(userId);
 
             // Prepare the entries for the bar chart
             List<BarEntry> entries = new ArrayList<>();

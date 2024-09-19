@@ -68,15 +68,46 @@ public class AddWaterReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals("com.example.medimap.ADD_WATER")) {
-            // Get the activity context and call the addWater method
-            if (context instanceof hydration_tracking) {
-                ((hydration_tracking) context).getAddWater();
+        if ("com.example.medimap.ADD_WATER".equals(intent.getAction())) {
+            // Initialize Room DAOs
+            AppDatabaseRoom db = AppDatabaseRoom.getInstance(context);
+            userDao = db.userDao();
+            hydrationRoomDao = db.hydrationRoomDao();
+            tempHydrationRoomDao = db.tempHydrationRoomDao();
+
+            // Get the user from the database
+            UserRoom userRoom = userDao.getFirstUser();
+            if (userRoom != null) {
+                // Fetch the latest hydration record
+                HydrationRoom hydrationRoom = hydrationRoomDao.getNewestHydration();
+                if (hydrationRoom != null) {
+                    // Update water intake
+                    double defaultWaterAmount = userRoom.getWaterDefault();
+                    double newWaterAmount = hydrationRoom.getDrank() + defaultWaterAmount;
+                    hydrationRoom.setDrank(newWaterAmount);
+
+                    // Update the hydration record in the database
+                    new Thread(() -> {
+                        hydrationRoomDao.updateHydration(hydrationRoom);
+                        // Notify the user
+                        showToast(context, defaultWaterAmount);
+                    }).start();
+                } else {
+                    showToast(context, "No hydration record found.");
+                }
+            } else {
+                showToast(context, "No user found.");
             }
         }
-        System.out.println("ON RECEIVE SHORTCUT");
-        this.sharedPreferences = context.getSharedPreferences("waterPrefs", MODE_PRIVATE);
-//        createHydrationTrackingPage();
+    }
+
+    private void showToast(Context context, double amount) {
+        String message = amount + " ml added to your hydration today!";
+        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show());
+    }
+
+    private void showToast(Context context, String message) {
+        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show());
     }
 
 //    private void createHydrationTrackingPage(){
