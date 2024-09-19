@@ -128,22 +128,21 @@ public class MainActivity extends AppCompatActivity {
                     HydrationRoomDao hydrationRoomDao = AppDatabaseRoom.getInstance(this).hydrationRoomDao();
                     TempHydrationRoomDao tempHydrationRoomDao = AppDatabaseRoom.getInstance(this).tempHydrationRoomDao();
 
-//                    Thread HydrationExamplesTh = new Thread(() -> {
-//                        hydrationRoomDao.deleteAllHydrations();
-//                        tempHydrationRoomDao.deleteAllTempHydration();
+                    Thread HydrationExamplesTh = new Thread(() -> {
+                        hydrationRoomDao.deleteAllHydrations();
+                        tempHydrationRoomDao.deleteAllTempHydration();
 //
 //                        //add example hydration data
 //                        addExampleHydrationsToRoom(userRoom);
-//                    });
-//                    HydrationExamplesTh.start();
-//
-//                    try{
-//                        HydrationExamplesTh.join();
-//                    }catch (Exception e){
-//                        System.out.println("EXCEPTION WHEN DELETING AND ADDING EXAMPLE HYDRATION");
-//                        //finish activity and go back to home
-//                        finish();
-//                    }
+                    });
+                    HydrationExamplesTh.start();
+                    try{
+                        HydrationExamplesTh.join();
+                    }catch (Exception e){
+                        System.out.println("EXCEPTION WHEN DELETING AND ADDING EXAMPLE HYDRATION");
+                        //finish activity and go back to home
+                        finish();
+                    }
 
                     navigateTo(LogIn.class); // Navigate to LogIn if not logged in
 
@@ -155,12 +154,12 @@ public class MainActivity extends AppCompatActivity {
 
         /*********************************** ADDING TESTER USER ***********************************/
         // Remove all existing users in the background
-//        new Thread(() -> {
-//            userDao.deleteAllUsers();
+        new Thread(() -> {
+            userDao.deleteAllUsers();
 //            UserRoom newUser = createTestUser();// Create a new test user
 //            userDao.insertUser(newUser); // Insert the test user
 //            Log.d("MainActivity", "Test user added: " + newUser.toString());
-//        }).start();
+        }).start();
     }
 
     private void addExampleHydrationsToRoom(UserRoom userRoom) {
